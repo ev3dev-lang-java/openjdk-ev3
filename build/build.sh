@@ -1,5 +1,7 @@
 #!/bin/bash
-cd /build/jdk9u
+set -e
+
+pushd /build/jdk9u
 
 # refresh patched build system
 bash ./common/autoconf/autogen.sh
@@ -36,5 +38,5 @@ bash ./configure --with-boot-jdk=/opt/jdkcross/jdk-9.0.1 \
 #                              BUILD_NM="gcc-nm"
 
 
-# start building
+# start the build
 make clean images
