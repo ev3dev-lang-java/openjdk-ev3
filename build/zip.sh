@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # enter images directory
 pushd /build/jdk9u/build/linux-arm-normal-client-release/images
 
