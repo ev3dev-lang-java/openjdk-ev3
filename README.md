@@ -21,7 +21,9 @@ sudo docker run -it -v <path on host, where the sources should be stored>:/build
 ```
 ./build.sh
 ```
-6. If the build has successfully finished, JDK9 images are created in
-`/build/jdk9u/build/linux-arm-normal-client-release/images`.
-If you have mounted something to `/build`, you can also use
-`<path on host, where the sources should be stored>/jdk9u/build/linux-arm-normal-client-release/images`.
+6. Create the zipped images:
+```
+./zip.sh
+```
+7. If the build was successful, JDK9 packages were created in `/build/jre-ev3.zip` and `/build/jdk-ev3.zip`.
+If you have mounted `/build`, you can access the files from the host.
