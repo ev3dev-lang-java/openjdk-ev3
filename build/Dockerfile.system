@@ -48,23 +48,11 @@ RUN dpkg --add-architecture armel && \
         mercurial \
         zlib1g-dev
 
-
-# copy build patches & scripts
-RUN mkdir /opt/jdkcross
-COPY *.patch *.sh /opt/jdkcross/
-RUN chmod +x /opt/jdkcross/*.sh
-
-# download JDK >=8
+# download JDK 9
 RUN curl -SL http://download.java.net/java/GA/jdk9/9.0.1/binaries/openjdk-9.0.1_linux-x64_bin.tar.gz | tar -xzC /opt/jdkcross
 
-# this directory should be mounted
-VOLUME /build
-
-# prepare nonroot user
+# prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler
 RUN chmod 0440 /etc/sudoers.d/compiler && \
     adduser --disabled-password --gecos \"\" compiler && \
     usermod -a -G sudo compiler
-USER compiler
-WORKDIR /opt/jdkcross
-CMD ["/bin/bash"] ["--login"]
