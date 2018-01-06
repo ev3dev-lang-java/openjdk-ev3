@@ -6,8 +6,7 @@ A custom Build of OpenJDK 9 Sources for EV3, a Lego Mindstorms Brick using ARM S
 1. Install [Docker](https://docs.docker.com/engine/installation/) for your operating system.
 2. Build the jdk9 cross-compilation environment:
 ```sh
-cd build
-sudo docker build -t jdk9cross .
+sudo docker build -t jdk9cross build
 ```
 3. Run the newly prepared container. We recommend mounting a host directory to the the `/build` directory in the container. At least 2 GB of free space will be needed.
 ```
