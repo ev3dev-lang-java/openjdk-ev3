@@ -9,7 +9,8 @@ A custom Build of OpenJDK 9 Sources for EV3, a Lego Mindstorms Brick using ARM S
 sudo docker build -t ev3dev-lang-java:jdk9-system -f build/Dockerfile.system  build
 sudo docker build -t ev3dev-lang-java:jdk9-build  -f build/Dockerfile.scripts build
 ```
-3. Run the newly prepared container. We recommend mounting a host directory to the the `/build` directory in the container. At least 2 GB of free space will be needed.
+3. Run the newly prepared container. You have to mount a host directory to the the `/build` directory in the container,
+otherwise the build would get discarded. The final build needs at least 6.5 GB of free space (in the build directory).
 ```
 sudo docker run --rm -it -v <path on host, where the sources should be stored>:/build ev3dev-lang-java:jdk9-build
 ```
