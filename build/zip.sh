@@ -14,13 +14,11 @@ rm     jdk-ev3
    --endian little \
    --compress 0 \
    --strip-debug \
-   --add-modules java.se,jdk.jdwp.agent \
+   --add-modules java.se,jdk.jdwp.agent,jdk.jshell \
    --output ./jre-ev3
 
 # rename jdk directory
 ln -s ./jdk ./jdk-ev3
-
-
 
 # create zip files
 zip -9r /build/jdk-ev3.zip jdk-ev3
