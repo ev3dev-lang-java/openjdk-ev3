@@ -13,7 +13,6 @@ bash ./configure --with-boot-jdk=/opt/jdkcross/jdk-9.0.1 \
                  --with-freetype-include=/usr/include \
                  --with-jvm-variants=client \
                  --with-extra-cflags="-Wno-maybe-uninitialized -D__SOFTFP__" \
-                 --with-version-string="9.0.1" \
                  AR="arm-linux-gnueabi-gcc-ar" \
                  NM="arm-linux-gnueabi-gcc-nm" \
                  BUILD_AR="gcc-ar" \
