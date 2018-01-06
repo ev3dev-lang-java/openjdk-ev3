@@ -11,7 +11,7 @@ sudo docker build -t ev3dev-lang-java:jdk9-build  -f build/Dockerfile.scripts bu
 ```
 3. Run the newly prepared container. We recommend mounting a host directory to the the `/build` directory in the container. At least 2 GB of free space will be needed.
 ```
-sudo docker run -it -v <path on host, where the sources should be stored>:/build ev3dev-lang-java:jdk9-build
+sudo docker run --rm -it -v <path on host, where the sources should be stored>:/build ev3dev-lang-java:jdk9-build
 ```
 4. Let's fetch the OpenJDK sources:
 ```
