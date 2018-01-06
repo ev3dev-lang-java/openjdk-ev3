@@ -1,0 +1,65 @@
+FROM debian:jessie
+
+# setup repositories and install required packages
+COPY apt.sources.list.debian /etc/apt/sources.list
+RUN dpkg --add-architecture armel && \
+    dpkg --add-architecture armhf && \
+    apt-key adv --keyserver pgp.mit.edu --recv-keys D57D95AF93178A7C && \
+    apt-key adv --keyserver pgp.mit.edu --recv-keys 7DE089671804772E && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
+        bash-completion \
+        ca-certificates \
+        cmake \
+        build-essential \
+        crossbuild-essential-armel \
+        crossbuild-essential-armhf \
+        gdb \
+        less \
+        man-db \
+        nano \
+        pkg-config \
+        qemu-user-static \
+        sudo \
+        tree \
+        vim \
+        wget \
+        xz-utils \
+        libcups2-dev:armel \
+        libfreetype6-dev:armel \
+        libasound2-dev:armel \
+        libx11-dev:armel \
+        libxext-dev:armel \
+        libxrender-dev:armel \
+        libxtst-dev:armel \
+        libxt-dev:armel \
+        curl \
+        make \
+        m4 \
+        cpio \
+        gawk \
+        file \
+        zip \
+        unzip \
+        procps \
+        autoconf \
+        autoconf-archive \
+        automake \
+        autotools-dev
+
+
+# copy build patches
+RUN mkdir /opt/jdkcross
+COPY *.patch *.sh /opt/jdkcross/
+RUN chmod +x /opt/jdkcross/*.sh
+RUN curl -SL http://download.java.net/java/GA/jdk9/9.0.1/binaries/openjdk-9.0.1_linux-x64_bin.tar.gz | tar -xzC /opt/jdkcross
+
+VOLUME /build
+
+COPY compiler.sudoers /etc/sudoers.d/compiler
+RUN chmod 0440 /etc/sudoers.d/compiler && \
+    adduser --disabled-password --gecos \"\" compiler && \
+    usermod -a -G sudo compiler
+USER compiler
+WORKDIR /opt/jdkcross
+CMD ["/bin/bash"] ["--login"]
