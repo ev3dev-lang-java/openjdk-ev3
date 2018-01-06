@@ -1,7 +1,6 @@
 FROM ev3dev-lang-java:jdk9-system
 
 # copy build patches & scripts
-RUN mkdir /opt/jdkcross
 COPY *.patch *.sh /opt/jdkcross/
 RUN chmod +x /opt/jdkcross/*.sh
 
