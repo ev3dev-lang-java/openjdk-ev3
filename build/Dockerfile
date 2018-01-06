@@ -1,5 +1,7 @@
 FROM debian:jessie
 
+# this is a customized version of ev3dev-jessie-cross image
+
 # setup repositories and install required packages
 COPY apt.sources.list.debian /etc/apt/sources.list
 RUN dpkg --add-architecture armel && \
@@ -48,14 +50,18 @@ RUN dpkg --add-architecture armel && \
         autotools-dev
 
 
-# copy build patches
+# copy build patches & scripts
 RUN mkdir /opt/jdkcross
 COPY *.patch *.sh /opt/jdkcross/
 RUN chmod +x /opt/jdkcross/*.sh
+
+# download JDK >=8
 RUN curl -SL http://download.java.net/java/GA/jdk9/9.0.1/binaries/openjdk-9.0.1_linux-x64_bin.tar.gz | tar -xzC /opt/jdkcross
 
+# this directory should be mounted
 VOLUME /build
 
+# prepare nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler
 RUN chmod 0440 /etc/sudoers.d/compiler && \
     adduser --disabled-password --gecos \"\" compiler && \
