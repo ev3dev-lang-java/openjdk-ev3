@@ -50,5 +50,3 @@ cp "$SCRIPTDIR/jshell-launch.sh" ./jdk-pc/bin
 zip -9r "$BUILDDIR/jdk-ev3.zip" jdk-ev3
 zip -9r "$BUILDDIR/jre-ev3.zip" jre-ev3
 zip -9r "$BUILDDIR/jdk-pc.zip"  jdk-pc
-
-popd
