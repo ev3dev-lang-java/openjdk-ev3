@@ -5,6 +5,9 @@ set -e
 # enter images directory
 pushd /build/jdk9u/build/linux-arm-normal-client-release/images
 
+rm -rf jre-ev3
+rm     jdk-ev3
+
 # build ev3 runtime image
 /opt/jdkcross/jdk-9.0.1/bin/jlink \
    --module-path ./jmods/ \
@@ -17,8 +20,10 @@ pushd /build/jdk9u/build/linux-arm-normal-client-release/images
 # rename jdk directory
 ln -s ./jdk ./jdk-ev3
 
+
+
 # create zip files
-zip -r /build/jdk-ev3.zip jdk-ev3
-zip -r /build/jre-ev3.zip jre-ev3
+zip -9r /build/jdk-ev3.zip jdk-ev3
+zip -9r /build/jre-ev3.zip jre-ev3
 
 popd
