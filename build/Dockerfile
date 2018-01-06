@@ -45,7 +45,8 @@ RUN dpkg --add-architecture armel && \
         autoconf-archive \
         automake \
         autotools-dev \
-        mercurial
+        mercurial \
+        zlib1g-dev
 
 
 # copy build patches & scripts
