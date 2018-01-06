@@ -15,7 +15,7 @@ pushd /build/jdk9u/build/linux-arm-normal-client-release/images
    --output ./jre-ev3
 
 # rename jdk directory
-mv ./jdk ./jdk-ev3
+ln -s ./jdk ./jdk-ev3
 
 # create zip files
 zip -r /build/jdk-ev3.zip jdk-ev3
