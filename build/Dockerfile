@@ -5,9 +5,7 @@ FROM debian:jessie
 # setup repositories and install required packages
 COPY apt.sources.list.debian /etc/apt/sources.list
 RUN dpkg --add-architecture armel && \
-    dpkg --add-architecture armhf && \
     apt-key adv --keyserver pgp.mit.edu --recv-keys D57D95AF93178A7C && \
-    apt-key adv --keyserver pgp.mit.edu --recv-keys 7DE089671804772E && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
         bash-completion \
@@ -15,7 +13,6 @@ RUN dpkg --add-architecture armel && \
         cmake \
         build-essential \
         crossbuild-essential-armel \
-        crossbuild-essential-armhf \
         gdb \
         less \
         man-db \
