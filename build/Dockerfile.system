@@ -6,6 +6,7 @@ FROM debian:jessie
 COPY apt.sources.list.debian /etc/apt/sources.list
 RUN dpkg --add-architecture armel && \
     apt-key adv --keyserver pgp.mit.edu --recv-keys D57D95AF93178A7C && \
+    apt-key adv --keyserver pgp.mit.edu --recv-keys 7DE089671804772E && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
         bash-completion \
