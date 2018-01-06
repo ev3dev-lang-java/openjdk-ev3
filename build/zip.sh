@@ -11,7 +11,7 @@ pushd /build/jdk9u/build/linux-arm-normal-client-release/images
    --endian little \
    --compress 0 \
    --strip-debug \
-   --add-modules java.se \
+   --add-modules java.se,jdk.jdwp.agent \
    --output ./jre-ev3
 
 # rename jdk directory
