@@ -11,7 +11,7 @@ cd "$IMAGEDIR"
 rm -rf ./jre-ev3
 rm -rf ./jdk-pc
 rm -rf ./jshell-support
-rm     ./jdk-ev3
+rm -f  ./jdk-ev3
 
 # build ev3 runtime image
 "$SCRIPTDIR/jdk-9.0.1/bin/jlink" \
