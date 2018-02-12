@@ -1,7 +1,7 @@
 #!/bin/bash
 
-JAVA_VERSION="9.0.1+11"
-JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk9u/"
+JAVA_VERSION="10+23"
+JAVA_REPO="http://hg.openjdk.java.net/jdk10/jdk10/"
 SCRIPTDIR="/opt/jdkcross"
 
 BUILDDIR="/build"
