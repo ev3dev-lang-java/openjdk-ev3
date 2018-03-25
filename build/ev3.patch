@@ -1,6 +1,6 @@
-diff -r a08cbfc0e4ec common/autoconf/flags.m4
---- a/common/autoconf/flags.m4	Thu Aug 03 18:56:56 2017 +0000
-+++ b/common/autoconf/flags.m4	Wed Dec 27 00:52:44 2017 +0100
+diff -r a08cbfc0e4ec make/autoconf/flags.m4
+--- a/make/autoconf/flags.m4	Thu Aug 03 18:56:56 2017 +0000
++++ b/make/autoconf/flags.m4	Wed Dec 27 00:52:44 2017 +0100
 @@ -30,7 +30,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
