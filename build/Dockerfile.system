@@ -50,7 +50,7 @@ RUN dpkg --add-architecture armel && \
 
 # download JDK 9
 RUN mkdir /opt/jdkcross
-RUN curl -SL http://download.java.net/java/GA/jdk9/9.0.1/binaries/openjdk-9.0.1_linux-x64_bin.tar.gz | tar -xzC /opt/jdkcross
+RUN curl -SL https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz | tar -xzC /opt/jdkcross
 
 # prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler
