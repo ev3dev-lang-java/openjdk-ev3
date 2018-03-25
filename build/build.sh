@@ -27,7 +27,7 @@ bash ./common/autoconf/autogen.sh
 #                              BUILD_NM="gcc-nm"
 
 # configure the build
-bash ./configure --with-boot-jdk="$SCRIPTDIR/jdk-9.0.1" \
+bash ./configure --with-boot-jdk="$SCRIPTDIR/jdk-9.0.4" \
                  --openjdk-target=arm-linux-gnueabi \
                  --with-abi-profile=arm-ev3 \
                  --enable-headless-only \
