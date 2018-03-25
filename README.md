@@ -45,13 +45,13 @@ JShell JDI agent on the remote side, which is handled by SSH as well.
 2. Adjust the JAVA_VERSION variable in `build/config.sh` to match the current OpenJDK tip: [OpenJDK 9 updates](http://hg.openjdk.java.net/jdk-updates/jdk9u/)
 3. Build the jdk9 cross-compilation environment:
 ```sh
-sudo docker build -t ev3dev-lang-java:jdk-stretch -f build/Dockerfile.system  build
-sudo docker build -t ev3dev-lang-java:jdk-build   -f build/Dockerfile.scripts build
+sudo docker build -t ev3dev-lang-java:jdk9-stretch -f build/Dockerfile.system  build
+sudo docker build -t ev3dev-lang-java:jdk9-build   -f build/Dockerfile.scripts build
 ```
 4. Run the newly prepared container. You have to mount a host directory to the the `/build` directory in the container,
 otherwise the build would get discarded. The final build needs at least 6.5 GB of free space (in the build directory).
 ```
-sudo docker run --rm -it -v <path on host, where the sources should be stored>:/build ev3dev-lang-java:jdk-build
+sudo docker run --rm -it -v <path on host, where the sources should be stored>:/build ev3dev-lang-java:jdk9-build
 ```
 5. Let's fetch the OpenJDK sources:
 ```

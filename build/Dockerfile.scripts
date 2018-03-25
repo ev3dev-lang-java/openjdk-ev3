@@ -1,4 +1,4 @@
-FROM ev3dev-lang-java:jdk-stretch
+FROM ev3dev-lang-java:jdk9-stretch
 
 # copy build patches & scripts
 COPY *.patch *.sh /opt/jdkcross/
