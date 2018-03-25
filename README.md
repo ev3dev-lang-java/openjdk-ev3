@@ -1,4 +1,4 @@
-# openjdk-9-ev3
+# OpenJDK 9 for EV3
 A custom build of OpenJDK 9 for EV3, a Lego Mindstorms programmable brick featuring a ARM926EJ-S CPU.
 
 ## Components
