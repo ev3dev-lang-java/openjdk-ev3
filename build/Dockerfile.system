@@ -1,12 +1,11 @@
-FROM debian:jessie
+FROM debian:stretch
 
-# this is a customized version of ev3dev-jessie-cross image
+# this is a customized version of ev3dev-stretch-cross image
 
 # setup repositories and install required packages
 COPY apt.sources.list.debian /etc/apt/sources.list
+COPY ev3dev-archive-keyring.gpg /etc/apt/trusted.gpg.d/
 RUN dpkg --add-architecture armel && \
-    apt-key adv --keyserver pgp.mit.edu --recv-keys D57D95AF93178A7C && \
-    apt-key adv --keyserver pgp.mit.edu --recv-keys 7DE089671804772E && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
         bash-completion \
@@ -14,7 +13,7 @@ RUN dpkg --add-architecture armel && \
         cmake \
         build-essential \
         crossbuild-essential-armel \
-        gdb \
+        gdb-multiarch \
         less \
         man-db \
         nano \
