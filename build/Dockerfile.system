@@ -26,6 +26,7 @@ RUN dpkg --add-architecture armel && \
         xz-utils \
         libcups2-dev:armel \
         libfreetype6-dev:armel \
+        libfontconfig1-dev:armel \
         libasound2-dev:armel \
         libx11-dev:armel \
         libxext-dev:armel \

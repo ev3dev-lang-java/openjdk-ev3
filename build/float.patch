@@ -1,6 +1,6 @@
-diff -r b756e7a2ec33 src/cpu/arm/vm/assembler_arm_32.hpp
---- a/src/cpu/arm/vm/assembler_arm_32.hpp	Thu Aug 03 18:56:57 2017 +0000
-+++ b/src/cpu/arm/vm/assembler_arm_32.hpp	Wed Dec 27 01:08:37 2017 +0100
+diff -r b756e7a2ec33 src/hotspot/cpu/arm/assembler_arm_32.hpp
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	Thu Aug 03 18:56:57 2017 +0000
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Wed Dec 27 01:08:37 2017 +0100
 @@ -1234,10 +1234,17 @@
  
  // Imported code from glibc soft-fp bundle for
