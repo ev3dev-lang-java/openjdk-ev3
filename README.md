@@ -1,5 +1,5 @@
-# openjdk-9-ev3
-A custom build of OpenJDK 9 for EV3, a Lego Mindstorms programmable brick featuring a ARM926EJ-S CPU.
+# OpenJDK 10 for EV3
+A custom build of OpenJDK 10 for EV3, a Lego Mindstorms programmable brick featuring a ARM926EJ-S CPU.
 
 ## Components
 The output consists of these parts:
@@ -7,7 +7,7 @@ The output consists of these parts:
   * Stripped down version -- a runtime image
 * JDK built for the EV3 - `jdk-ev3.zip`
   * Basically the full build
-* [Official OpenJDK linux-amd64](http://jdk.java.net/9/) with EV3 jmods
+* [Official OpenJDK linux-amd64](http://jdk.java.net/10/) with EV3 jmods
   * Only a stripped down version -- also a runtime image
   * It can be used for creating custom JRE images. For this, jlink and the ev3 jmods are included.
   * It has `javac` (jdk.compiler module).
@@ -42,8 +42,8 @@ JShell JDI agent on the remote side, which is handled by SSH as well.
 
 0. Clone/download this repo to your computer.
 1. Install [Docker](https://docs.docker.com/engine/installation/) for your operating system.
-2. Adjust the JAVA_VERSION variable in `build/config.sh` to match the current OpenJDK tip: [OpenJDK 9 updates](http://hg.openjdk.java.net/jdk-updates/jdk9u/)
-3. Build the jdk9 cross-compilation environment:
+2. Adjust the JAVA_VERSION variable in `build/config.sh` to match the current OpenJDK tip: [OpenJDK 10 updates](http://hg.openjdk.java.net/jdk-updates/jdk10u/)
+3. Build the jdk cross-compilation environment:
 ```sh
 sudo docker build -t ev3dev-lang-java:jdk-stretch -f build/Dockerfile.system  build
 sudo docker build -t ev3dev-lang-java:jdk-build   -f build/Dockerfile.scripts build
@@ -65,5 +65,5 @@ sudo docker run --rm -it -v <path on host, where the sources should be stored>:/
 ```
 ./zip.sh
 ```
-8. If the build was successful, JDK9 packages were created in `/build/jre-ev3.zip`, `/build/jdk-ev3.zip` and `/build/jdk-pc.zip`.
+8. If the build was successful, JDK packages were created in `/build/jre-ev3.zip`, `/build/jdk-ev3.zip` and `/build/jdk-pc.zip`.
 If you have mounted `/build`, you can access the files from the host.

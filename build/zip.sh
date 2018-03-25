@@ -14,7 +14,7 @@ rm -rf ./jshell-support
 rm -f  ./jdk-ev3
 
 # build ev3 runtime image
-"$SCRIPTDIR/jdk-9.0.1/bin/jlink" \
+"$SCRIPTDIR/jdk-10/bin/jlink" \
    --module-path ./jmods/ \
    --endian little \
    --compress 0 \
@@ -25,8 +25,8 @@ rm -f  ./jdk-ev3
    --output ./jre-ev3
 
 # build microjdk
-"$SCRIPTDIR/jdk-9.0.1/bin/jlink" \
-   --module-path "$SCRIPTDIR/jdk-9.0.1/jmods" \
+"$SCRIPTDIR/jdk-10/bin/jlink" \
+   --module-path "$SCRIPTDIR/jdk-10/jmods" \
    --compress 2 \
    --strip-debug \
    --no-header-files \
@@ -41,8 +41,8 @@ ln -s ./jdk ./jdk-ev3
 
 # JShell hack
 mkdir jshell-support
-"$SCRIPTDIR/jdk-9.0.1/bin/javac" -d ./jshell-support "$SCRIPTDIR/jshellhack/DumpPort.java"
-"$SCRIPTDIR/jdk-9.0.1/bin/jar" cf ./jshellhack.jar -C ./jshell-support jshellhack/DumpPort.class
+"$SCRIPTDIR/jdk-10/bin/javac" -d ./jshell-support "$SCRIPTDIR/jshellhack/DumpPort.java"
+"$SCRIPTDIR/jdk-10/bin/jar" cf ./jshellhack.jar -C ./jshell-support jshellhack/DumpPort.class
 cp ./jshellhack.jar ./jdk-pc/bin
 cp "$SCRIPTDIR/jshell-launch.sh" ./jdk-pc/bin
 
