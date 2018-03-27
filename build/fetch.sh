@@ -15,4 +15,6 @@ cd "$JDKDIR"
 patch -p1 < "$SCRIPTDIR/ev3.patch"
 #  - use the system-provided floating point implementation
 patch -p1 < "$SCRIPTDIR/float.patch"
+#  - remove illegal memory barriers on armv5
+patch -p1 < "$SCRIPTDIR/barrier.patch"
 

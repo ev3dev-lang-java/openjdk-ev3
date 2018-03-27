@@ -39,7 +39,7 @@ RUN dpkg --add-architecture armel && \
         cpio \
         gawk \
         file \
-        zip \
+        pigz \
         unzip \
         procps \
         autoconf \
