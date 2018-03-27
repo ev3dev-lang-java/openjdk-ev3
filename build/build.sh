@@ -27,14 +27,15 @@ bash ./common/autoconf/autogen.sh
 #                              BUILD_NM="gcc-nm"
 
 # configure the build
-bash ./configure --with-boot-jdk="$SCRIPTDIR/jdk-9.0.1" \
+bash ./configure --with-boot-jdk="$SCRIPTDIR/jdk-9.0.4" \
                  --openjdk-target=arm-linux-gnueabi \
                  --with-abi-profile=arm-ev3 \
                  --enable-headless-only \
                  --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
                  --with-freetype-include=/usr/include \
                  --with-jvm-variants=client \
-                 --with-extra-cflags="-Wno-maybe-uninitialized -D__SOFTFP__" \
+                 --with-extra-cflags="-w -Wno-error -D__SOFTFP__" \
+                 --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
                  --with-version-string="$JAVA_VERSION" \
                  AR="arm-linux-gnueabi-gcc-ar" \
                  NM="arm-linux-gnueabi-gcc-nm" \
