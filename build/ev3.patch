@@ -1,6 +1,6 @@
-diff -r a08cbfc0e4ec common/autoconf/flags.m4
---- a/common/autoconf/flags.m4	Thu Aug 03 18:56:56 2017 +0000
-+++ b/common/autoconf/flags.m4	Wed Dec 27 00:52:44 2017 +0100
+diff -r b09e56145e11 make/autoconf/flags.m4
+--- a/make/autoconf/flags.m4	Thu Mar 08 04:23:31 2018 +0000
++++ b/make/autoconf/flags.m4	Tue Mar 27 22:42:02 2018 +0200
 @@ -30,7 +30,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
@@ -20,7 +20,7 @@ diff -r a08cbfc0e4ec common/autoconf/flags.m4
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
        ARM_FLOAT_TYPE=vfp-sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
-@@ -1305,6 +1308,8 @@
+@@ -1378,6 +1381,8 @@
    if test "x$OPENJDK_$1_OS" = xlinux; then
      if test "x$OPENJDK_$1_CPU" = xx86; then
        $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -march=i586"
