@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # scripts root directory
-SCRIPTDIR="$(dirname ${BASH_SOURCE[0]})"
+SCRIPTDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 # output directory
 BUILDDIR="/build"
 # jdk repository directory
