@@ -1,9 +1,8 @@
-FROM ev3dev-lang-java:jdk9-stretch
+FROM ev3dev-lang-java:jdk-stretch
 
 # copy build patches & scripts
 COPY *.patch *.sh /opt/jdkcross/
-RUN chmod +x /opt/jdkcross/*.sh && mkdir /opt/jdkcross/jshellhack
-COPY DumpPort.java /opt/jdkcross/jshellhack/
+RUN chmod +x /opt/jdkcross/*.sh
 
 # this directory should be mounted
 VOLUME /build
