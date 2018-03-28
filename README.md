@@ -7,36 +7,8 @@ The output consists of these parts:
   * Stripped down version -- a runtime image
 * JDK built for the EV3 - `jdk-ev3.zip`
   * Basically the full build
-* [Official OpenJDK linux-amd64](http://jdk.java.net/10/) with EV3 jmods
-  * Only a stripped down version -- also a runtime image
-  * It can be used for creating custom JRE images. For this, jlink and the ev3 jmods are included.
-  * It has `javac` (jdk.compiler module).
-  * JShell remote launcher (hackish, linux-only) is available.
-
-## JShell on the EV3
-
-### Usage
-
-First, you have to either [add](https://askubuntu.com/a/4833) your pubkey to the EV3 brick's authorized_keys,
-or set the [SSH_ASKPASS](https://unix.stackexchange.com/a/83991) environment variable. Then, run a script from
-the amd64 JDK on your computer: `bin/jshell-launch.sh <ssh args>`, where `<ssh args>` is an address with an optinal
-port-specifying flag. The options are just added to the SSH command line and aren't sanitized in any way.
-
-### Theory
-
-We've managed to run JShell in a kind of "split-mode". The compiler part runs on your powerful computer,
-whether the not-so-demanding execution is done on the brick. This was almost supported out of the box - 
-the default JShell configuration already uses JDI transport. The only issue is that it does not provide an
-intuitive way to connect to a remote host. JShell always launches a new JVM process in the JDI mode.
-
-Our hack relies on replacing the agent in the VM started by JShell. The new dummy agent just
-writes the port number it was supposed to connect to a file `/tmp/jshellargs`. Then, if you make
-`jshellargs` a UNIX pipe, you can very easily pass the port to another application.
-
-JShell on your computer is the listening side of the JDWP channel. To reuse the existing remote agent,
-which is used in the local JDI mode, we tunnel a chosen port over the SSH session. SSH connects to the 
-JShell listening socket and itself listens on the remote side. Then, the last task is to run the
-JShell JDI agent on the remote side, which is handled by SSH as well.
+* EV3 jmods
+  * It can be used for creating custom JRE images.
 
 ## Building
 
@@ -67,3 +39,7 @@ sudo docker run --rm -it -v <path on host, where the sources should be stored>:/
 ```
 8. If the build was successful, JDK packages were created in `/build/jre-ev3.zip`, `/build/jdk-ev3.zip` and `/build/jdk-pc.zip`.
 If you have mounted `/build`, you can access the files from the host.
+
+## ~~JShell on the EV3~~
+
+No longer supported. JShell backend on the EV3 is a huge overkill.
