@@ -5,12 +5,20 @@ cd "$(dirname ${BASH_SOURCE[0]})"
 source ../config.sh
 SCRIPTDIR="$SCRIPTDIR/.."
 
+pushd "$JDKDIR" >/dev/null
+JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')"
+popd
+LEJOS_NAME="ejre-openjdk-$JAVA_VERSION"
+
 # temp directory
 rm -rf "$LEJOSDIR"
 mkdir -p "$LEJOSDIR/deb" "$LEJOSDIR/root"
 
 echo "copy in JRI"
 cp -rf --preserve=links "$IMAGEDIR/jri-ev3" "$LEJOSDIR/jri"
+
+echo "create version file ($JAVA_VERSION)"
+echo "$JAVA_VERSION" >"$LEJOSDIR/jri/jrever"
 
 echo "download DEB packages"
 cd "$LEJOSDIR/deb"
@@ -42,4 +50,4 @@ rm -rf "$LEJOSDIR/deb"
 echo "create archive"
 cd "$LEJOSDIR"
 mv "jri" "$LEJOS_NAME"
-tar -cf - "$LEJOS_NAME" | pigz -9 > "$BUILDDIR/lejos-$LEJOS_NAME.tar.gz"
+tar -cf - "$LEJOS_NAME" | pigz -9 > "$BUILDDIR/$LEJOS_NAME.tar.gz"
