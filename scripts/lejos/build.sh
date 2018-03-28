@@ -17,9 +17,6 @@ mkdir -p "$LEJOSDIR/deb" "$LEJOSDIR/root"
 echo "copy in JRI"
 cp -rf --preserve=links "$IMAGEDIR/jri-ev3" "$LEJOSDIR/jri"
 
-echo "create version file ($JAVA_VERSION)"
-echo "$JAVA_VERSION" >"$LEJOSDIR/jri/jrever"
-
 echo "download DEB packages"
 cd "$LEJOSDIR/deb"
 apt-get download `cat "$SCRIPTDIR/lejos/pkgs.txt"`
