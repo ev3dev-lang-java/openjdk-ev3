@@ -31,19 +31,23 @@ sudo docker run --rm -it -v <path on host, where the sources should be stored>:/
 export JDKVER=9
 export JDKVER=10
 ```
-5. Now we can download the OpenJDK sources:
+5. Before we can start the build process, Boot JDK must be downloaded:
+```
+./prepare.sh
+```
+6. Now we can download the OpenJDK sources:
 ```
 ./fetch.sh
 ```
-6. The OpenJDK source tree should be ready. Now you can start the cross-build itself:
+7. The OpenJDK source tree should be ready. Now you can start the cross-build itself:
 ```
 ./build.sh
 ```
-7. Create the zipped images:
+8. Create the zipped images:
 ```
 ./zip.sh
 ```
-8. If the build was successful, JDK packages were created in `/build/jri-ev3.tar.gz`, `/build/jdk-ev3.tar.gz` and `/build/jmods.tar.gz`.
+9. If the build was successful, JDK packages were created in `/build/jri-ev3.tar.gz`, `/build/jdk-ev3.tar.gz` and `/build/jmods.tar.gz`.
 If you have mounted `/build`, you can access the files from the host.
 
 ## ~~JShell on the EV3~~

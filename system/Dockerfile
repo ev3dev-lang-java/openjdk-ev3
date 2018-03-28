@@ -50,10 +50,6 @@ RUN dpkg --add-architecture armel && \
         mercurial \
         zlib1g-dev
 
-# download JDK 10
-RUN mkdir /opt/jdkcross
-RUN curl -SL https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz | tar -xzC /opt/jdkcross
-
 # prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler
 RUN chmod 0440 /etc/sudoers.d/compiler && \
