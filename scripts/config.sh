@@ -8,6 +8,8 @@ BUILDDIR="/build"
 JDKDIR="/build/jdk"
 # output images directory
 IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
+# lejos temp directory
+LEJOSDIR="/build/lejos"
 
 ##
 ## Version-specific configuration
@@ -45,6 +47,8 @@ IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
 # Download URL
 #HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
 
+# leJOS JRI name
+#LEJOS_NAME=openjdk9-jri
 
 # OpenJDK 9
 if [ "$JDKVER" -eq "9" ]; then
@@ -55,6 +59,7 @@ if [ "$JDKVER" -eq "9" ]; then
   HOSTJDK="$BUILDDIR/jdk-9.0.4"
   HOSTJDK_FILE="$BUILDDIR/openjdk-9.0.4_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
+  LEJOS_NAME=openjdk9-jri
 
 # OpenJDK 10
 elif [ "$JDKVER" -eq "10" ]; then
@@ -65,6 +70,7 @@ elif [ "$JDKVER" -eq "10" ]; then
   HOSTJDK="$BUILDDIR/jdk-10"
   HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
+  LEJOS_NAME=openjdk10-jri
 
 # invalid or unset version
 else
