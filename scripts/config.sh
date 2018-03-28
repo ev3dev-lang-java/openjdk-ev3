@@ -25,4 +25,5 @@ else
   echo "Acceptable values:" >&2
   echo "JDKVER=9" >&2
   echo "JDKVER=10" >&2
+  exit 1
 fi
