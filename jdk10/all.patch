@@ -1,0 +1,86 @@
+diff -r b09e56145e11 make/autoconf/flags.m4
+--- a/make/autoconf/flags.m4	Thu Mar 08 04:23:31 2018 +0000
++++ b/make/autoconf/flags.m4	Wed Mar 28 01:46:33 2018 +0200
+@@ -30,7 +30,7 @@
+ AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
+ [
+   AC_ARG_WITH(abi-profile, [AS_HELP_STRING([--with-abi-profile],
+-      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt, armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
++      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt,arm-ev3,armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
+ 
+   if test "x$with_abi_profile" != x; then
+     if test "x$OPENJDK_TARGET_CPU" != xarm && \
+@@ -51,6 +51,9 @@
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
+       ARM_FLOAT_TYPE=sflt
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
++      ARM_FLOAT_TYPE=sflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=arm926ej-s -marm'
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
+       ARM_FLOAT_TYPE=vfp-sflt
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
+@@ -1378,6 +1381,8 @@
+   if test "x$OPENJDK_$1_OS" = xlinux; then
+     if test "x$OPENJDK_$1_CPU" = xx86; then
+       $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -march=i586"
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
++      $2JVM_ASFLAGS="-mcpu=arm926ej-s"
+     fi
+   elif test "x$OPENJDK_$1_OS" = xmacosx; then
+     $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -x assembler-with-cpp -mno-omit-leaf-frame-pointer -mstack-alignment=16"
+diff -r b09e56145e11 src/hotspot/cpu/arm/assembler_arm_32.hpp
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	Thu Mar 08 04:23:31 2018 +0000
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Wed Mar 28 01:46:33 2018 +0200
+@@ -498,7 +498,7 @@
+   void dmb(DMB_Opt opt, Register reg) {
+     if (VM_Version::arm_arch() >= 7) {
+       emit_int32(0xF57FF050 | opt);
+-    } else {
++    } else if (VM_Version::arm_arch() == 6) {
+       bool preserve_tmp = (reg == noreg);
+       if(preserve_tmp) {
+         reg = Rtemp;
+@@ -1239,10 +1239,17 @@
+ 
+ // Imported code from glibc soft-fp bundle for
+ // calculation accuracy improvement. See CR 6757269.
+-extern double __aeabi_fadd_glibc(float, float);
+-extern double __aeabi_fsub_glibc(float, float);
+-extern double __aeabi_dadd_glibc(double, double);
+-extern double __aeabi_dsub_glibc(double, double);
++
++//extern double __aeabi_fadd_glibc(float, float);
++//extern double __aeabi_fsub_glibc(float, float);
++//extern double __aeabi_dadd_glibc(double, double);
++//extern double __aeabi_dsub_glibc(double, double);
++
++// We don't need very accurate floating point math.
++#define __aeabi_fadd_glibc __aeabi_fadd
++#define __aeabi_fsub_glibc __aeabi_fsub
++#define __aeabi_dadd_glibc __aeabi_dadd
++#define __aeabi_dsub_glibc __aeabi_dsub
+ };
+ #endif // __SOFTFP__
+ 
+diff -r b09e56145e11 src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp
+--- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Thu Mar 08 04:23:31 2018 +0000
++++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Wed Mar 28 01:46:33 2018 +0200
+@@ -71,7 +71,7 @@
+      __asm__ volatile (
+      ".word 0xF57FF050 | 0xf" : : : "memory");
+ #endif
+-   } else {
++   } else if (VM_Version::arm_arch() == 6) {
+      intptr_t zero = 0;
+      __asm__ volatile (
+        "mcr p15, 0, %0, c7, c10, 5"
+@@ -95,7 +95,7 @@
+      __asm__ volatile (
+      ".word 0xF57FF050 | 0xe" : : : "memory");
+ #endif
+-   } else {
++   } else if (VM_Version::arm_arch() == 6) {
+      intptr_t zero = 0;
+      __asm__ volatile (
+        "mcr p15, 0, %0, c7, c10, 5"
