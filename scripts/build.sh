@@ -18,7 +18,7 @@ bash "$AUTOGEN_PATH"
 # Disable GUI:                 --enable-headless-only
 # Help to find freetype:       --with-freetype-lib=/usr/lib/arm-linux-gnueabi
 #                              --with-freetype-include=/usr/include
-# Build only the Client VM:    --with-jvm-variants=client
+# Build only the right VM:     --with-jvm-variants=client
 # Add extra build flags:       --with-extra-cflags="-w -Wno-error -D__SOFTFP__"
 #                              --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__"
 #   - Fix the build on new GCC: -w -Wno-error
@@ -36,7 +36,7 @@ bash ./configure --with-boot-jdk="$HOSTJDK" \
                  --enable-headless-only \
                  --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
                  --with-freetype-include=/usr/include \
-                 --with-jvm-variants=client \
+                 --with-jvm-variants="$HOTSPOT_VARIANT" \
                  --with-extra-cflags="-w -Wno-error -D__SOFTFP__" \
                  --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
                  --with-version-string="$JAVA_VERSION" \
