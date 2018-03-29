@@ -1,8 +1,12 @@
 #!/bin/sh
-DIR=`dirname "$0"`
-DIR=`eval "cd \"$DIR\" && pwd"`
-SYSDIR="$DIR/../sysroot"
-SYSDIR=`eval "cd \"$SYSDIR\" && pwd"`
 
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$SYSDIR/lib:$SYSDIR/lib/arm-linux-gnueabi:$SYSDIR/usr/lib:$SYSDIR/usr/lib/arm-linux-gnueabi:$SYSDIR/usr/lib/arm-linux-gnueabi/gconv"
-exec "$SYSDIR/lib/ld-linux.so.3" "$DIR/$0.real" "$@"
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/.."
+NAME="$(basename "$0")"
+
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ROOT/sysroot/lib"
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ROOT/sysroot/lib/arm-linux-gnueabi"
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ROOT/sysroot/usr/lib"
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ROOT/sysroot/usr/lib/arm-linux-gnueabi"
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ROOT/sysroot/usr/lib/arm-linux-gnueabi/gconv"
+export LD_LIBRARY_PATH
+exec "$ROOT/sysroot/lib/ld-linux.so.3" --inhibit-cache "$ROOT/bin/$NAME.real" "$@"
