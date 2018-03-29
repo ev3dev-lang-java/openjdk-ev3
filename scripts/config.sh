@@ -10,6 +10,8 @@ JDKDIR="/build/jdk"
 IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
 # lejos temp directory
 LEJOSDIR="/build/lejos"
+# lejos suffix
+LEJOSEND="-final"
 
 ##
 ## Version-specific configuration

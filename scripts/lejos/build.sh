@@ -8,7 +8,7 @@ SCRIPTDIR="$SCRIPTDIR/.."
 pushd "$JDKDIR" >/dev/null
 JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')"
 popd
-LEJOS_NAME="ejre-openjdk-$JAVA_VERSION"
+LEJOS_NAME="ejre-openjdk-$JAVA_VERSION$LEJOSEND"
 
 # temp directory
 rm -rf "$LEJOSDIR"
