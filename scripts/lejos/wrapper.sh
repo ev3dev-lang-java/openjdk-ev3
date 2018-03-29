@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/.."
+ROOT="$(CDPATH= cd "$(dirname "$0")" && pwd)/.."
 NAME="$(basename "$0")"
 
 LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ROOT/sysroot/lib"
