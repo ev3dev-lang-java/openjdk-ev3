@@ -39,7 +39,12 @@ for exe in `ls`; do
   ln -s "wrapper.sh" "$exe"
 done
 
-cp "$SCRIPTDIR/lejos/wrapper.sh" .
+cd "$LEJOSDIR/jri/lib/"
+mv "jexec" "jexec.real"
+ln -s "wrapper.sh" "jexec"
+
+cp "$SCRIPTDIR/lejos/wrapper.sh" "$LEJOSDIR/jri/bin"
+cp "$SCRIPTDIR/lejos/wrapper.sh" "$LEJOSDIR/jri/lib"
 
 echo "cleanup"
 rm -rf "$LEJOSDIR/deb"
