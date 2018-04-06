@@ -2,8 +2,7 @@ FROM ev3dev-lang-java:jdk-stretch
 
 # copy build patches & scripts
 COPY *.patch *.sh /opt/jdkcross/
-COPY lejos/       /opt/jdkcross/lejos/
-RUN chmod +x /opt/jdkcross/*.sh /opt/jdkcross/lejos/*.sh
+RUN chmod +x /opt/jdkcross/*.sh
 
 # this directory should be mounted
 VOLUME /build
