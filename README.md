@@ -26,10 +26,12 @@ otherwise the build would get discarded. The final build needs at least 6.5 GB o
 ```
 sudo docker run --rm -it -v <path on host, where the sources should be stored>:/build ev3dev-lang-java:jdk-build
 ```
-4. Select the OpenJDK version you want to cross-compile:
+4. Select the OpenJDK version you want to cross-compile (select only one):
 ```
-export JDKVER=9
-export JDKVER=10
+export JDKVER=9      # OpenJDK 9 with ARM32 JIT
+export JDKVER=9zero  # OpenJDK 9 with Zero interpreter
+export JDKVER=10     # OpenJDK 10 with ARM32 JIT
+export JDKVER=10zero # OpenJDK 10 with Zero interpreter
 ```
 5. Before we can start the build process, Boot JDK must be downloaded:
 ```
