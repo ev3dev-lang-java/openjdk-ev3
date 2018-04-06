@@ -53,11 +53,11 @@ LEJOSEND="-final"
 #LEJOS_NAME=openjdk9-jri
 
 # OpenJDK 9
-if [ "$JDKVER" -eq "9" ] || [ "$JDKVER" -eq "9zero" ]; then
+if [ "$JDKVER" == "9" ] || [ "$JDKVER" == "9zero" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk9u/"
   PATCHVER="jdk9"
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
-  if [ "$JDKVER" -eq "9zero" ]; then
+  if [ "$JDKVER" == "9zero" ]; then
     HOTSPOT_VARIANT=zero
   else
     HOTSPOT_VARIANT=client
@@ -67,11 +67,11 @@ if [ "$JDKVER" -eq "9" ] || [ "$JDKVER" -eq "9zero" ]; then
   HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
 
 # OpenJDK 10
-elif [ "$JDKVER" -eq "10" ] || [ "$JDKVER" -eq "10zero" ]; then
+elif [ "$JDKVER" == "10" ] || [ "$JDKVER" == "10zero" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk10u/"
   PATCHVER="jdk10"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
-  if [ "$JDKVER" -eq "10zero" ]; then
+  if [ "$JDKVER" == "10zero" ]; then
     HOTSPOT_VARIANT=zero
   else
     HOTSPOT_VARIANT=client
@@ -85,6 +85,8 @@ else
   echo "Error! Please specify JDK version to compile via the JDKVER environment variable." >&2
   echo "Acceptable values:" >&2
   echo "JDKVER=9" >&2
+  echo "JDKVER=9zero" >&2
   echo "JDKVER=10" >&2
+  echo "JDKVER=10zero" >&2
   exit 1
 fi
