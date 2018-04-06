@@ -32,6 +32,7 @@ otherwise the build would get discarded. The final build needs at least 6.5 GB o
 sudo docker run --rm -it -v $BUILD_DIRECTORY:/build ev3dev-lang-java:jdk-build
 ```
 Please change the `$BUILD_DIRECTORY` to a valid path.
+
 5. Select the OpenJDK version you want to cross-compile (select only one):
 ```
 export JDKVER=9      # OpenJDK 9 with ARM32 JIT
@@ -69,9 +70,16 @@ otherwise the build would get discarded. The final build needs at least 6.5 GB o
 sudo docker run --rm -it -v $BUILD_DIRECTORY:/build -e JDKVER='X' ev3dev-lang-java:jdk-autobuild
 ```
 `X` can be one of `9`, `9zero`, `10` and `10zero`. Please change the `$BUILD_DIRECTORY` to a valid path.
+
 5. If the build was successful, JDK packages were created in `$BUILD_DIRECTORY/jri-ev3.tar.gz`, `$BUILD_DIRECTORY/jdk-ev3.tar.gz` and `$BUILD_DIRECTORY/jmods.tar.gz`.
 
 
 ## ~~JShell on the EV3~~
 
 No longer supported. JShell backend on the EV3 is a huge overkill.
+
+
+## ~~OpenJDK for leJOS~~
+
+LeJOS has probably reached its EOL. It is not a priority anymore to support it.
+[linux-devkit](https://github.com/mindboards/ev3sources/tree/master/extra/linux-devkit) + CodeSourcery GCC could be used for cross-compilation of it.
