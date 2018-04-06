@@ -1,7 +1,0 @@
-gcc-6-base:armel
-libasound2-data
-libasound2:armel
-libc6:armel
-libgcc1:armel
-libpng16-16:armel
-zlib1g:armel
