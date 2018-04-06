@@ -18,7 +18,7 @@ rm -rf ./jri-ev3
    --strip-debug \
    --no-header-files \
    --no-man-pages \
-   --add-modules java.se,jdk.jdwp.agent \
+   --add-modules java.se,jdk.jdwp.agent,jdk.unsupported \
    --output ./jri-ev3
 
 # create zip files
