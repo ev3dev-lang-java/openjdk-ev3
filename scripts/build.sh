@@ -11,7 +11,11 @@ echo "[BUILD] Java version string: $JAVA_VERSION"
 
 # refresh patched build system
 echo "[BUILD] Regenerating autoconf"
-bash "$AUTOGEN_PATH"
+if   [ "$AUTOGEN_STYLE" == "v1" ]; then
+  bash "$AUTOGEN_PATH"
+elif [ "$AUTOGEN_STYLE" == "v2" ]; then
+  bash ./configure autogen
+fi
 
 ## Description ##
 # Use the downloaded JDK:      --with-boot-jdk=/opt/jdkcross/jdk-10

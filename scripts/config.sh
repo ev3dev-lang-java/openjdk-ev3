@@ -50,6 +50,7 @@ JDKDIR="/build/jdk"
 if [ "$JDKVER" == "9" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk9u/"
   PATCHVER="jdk9"
+  AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
   HOSTJDK="$BUILDDIR/jdk-9.0.4"
   HOSTJDK_FILE="$BUILDDIR/openjdk-9.0.4_linux-x64_bin.tar.gz"
@@ -59,6 +60,7 @@ if [ "$JDKVER" == "9" ]; then
 elif [ "$JDKVER" == "10" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk10u/"
   PATCHVER="jdk10"
+  AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
   HOSTJDK="$BUILDDIR/jdk-10"
   HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
@@ -68,7 +70,7 @@ elif [ "$JDKVER" == "10" ]; then
 elif [ "$JDKVER" == "dev" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk/jdk/"
   PATCHVER="jdkdev"
-  AUTOGEN_PATH="./make/autoconf/autogen.sh"
+  AUTOGEN_STYLE="v2"
   HOSTJDK="$BUILDDIR/jdk-10"
   HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
