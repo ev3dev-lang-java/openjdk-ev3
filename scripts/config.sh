@@ -6,10 +6,6 @@ SCRIPTDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BUILDDIR="/build"
 # jdk repository directory
 JDKDIR="/build/jdk"
-# lejos temp directory
-LEJOSDIR="/build/lejos"
-# lejos suffix
-LEJOSEND="-final"
 
 ##
 ## Version-specific configuration
@@ -49,9 +45,6 @@ LEJOSEND="-final"
 
 # Download URL
 #HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
-
-# leJOS JRI name
-#LEJOS_NAME=openjdk9-jri
 
 # OpenJDK 9
 if [ "$JDKVER" == "9" ] || [ "$JDKVER" == "9zero" ]; then
