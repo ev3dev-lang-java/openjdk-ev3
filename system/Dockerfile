@@ -33,6 +33,7 @@ RUN dpkg --add-architecture armel && \
         libxrender-dev:armel \
         libxtst-dev:armel \
         libxt-dev:armel \
+        libffi-dev:armel \
         curl \
         make \
         m4 \
