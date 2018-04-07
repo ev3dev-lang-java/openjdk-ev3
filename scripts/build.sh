@@ -7,8 +7,10 @@ source config.sh
 cd "$JDKDIR"
 
 JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')-ev3"
+echo "[BUILD] Java version string: $JAVA_VERSION"
 
 # refresh patched build system
+echo "[BUILD] Regenerating autoconf"
 bash "$AUTOGEN_PATH"
 
 ## Description ##
@@ -30,6 +32,7 @@ bash "$AUTOGEN_PATH"
 #                              BUILD_NM="gcc-nm"
 
 # configure the build
+echo "[BUILD] Configuring Java"
 bash ./configure --with-boot-jdk="$HOSTJDK" \
                  --openjdk-target=arm-linux-gnueabi \
                  --with-abi-profile=arm-ev3 \
@@ -46,4 +49,5 @@ bash ./configure --with-boot-jdk="$HOSTJDK" \
                  BUILD_NM="gcc-nm"
 
 # start the build
+echo "[BUILD] Building Java"
 make clean images

@@ -8,9 +8,11 @@ source config.sh
 cd "$IMAGEDIR"
 
 # clean destinations
+echo "[ZIP] Cleaning JRI images"
 rm -rf ./jri-ev3
 
 # build ev3 runtime image
+echo "[ZIP] Building JRI"
 "$HOSTJDK/bin/jlink" \
    --module-path ./jmods/ \
    --endian little \
@@ -22,6 +24,9 @@ rm -rf ./jri-ev3
    --output ./jri-ev3
 
 # create zip files
+echo "[ZIP] Creating JRI archive"
 tar -cf - jri-ev3 | pigz -9 > "$BUILDDIR/jri-ev3.tar.gz"
+echo "[ZIP] Creating JDK archive"
 tar -cf - jdk     | pigz -9 > "$BUILDDIR/jdk-ev3.tar.gz"
+echo "[ZIP] Cleaning jmods archive"
 tar -cf - jmods   | pigz -9 > "$BUILDDIR/jmods.tar.gz"
