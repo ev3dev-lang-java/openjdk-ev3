@@ -1,6 +1,6 @@
 diff -r b09e56145e11 make/autoconf/flags.m4
 --- a/make/autoconf/flags.m4	Thu Mar 08 04:23:31 2018 +0000
-+++ b/make/autoconf/flags.m4	Fri Apr 06 22:21:26 2018 +0200
++++ b/make/autoconf/flags.m4	Sat Apr 07 12:29:32 2018 +0200
 @@ -30,7 +30,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
@@ -31,7 +31,7 @@ diff -r b09e56145e11 make/autoconf/flags.m4
      $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -x assembler-with-cpp -mno-omit-leaf-frame-pointer -mstack-alignment=16"
 diff -r b09e56145e11 src/hotspot/cpu/arm/assembler_arm_32.hpp
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Fri Apr 06 22:21:26 2018 +0200
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Sat Apr 07 12:29:32 2018 +0200
 @@ -498,7 +498,7 @@
    void dmb(DMB_Opt opt, Register reg) {
      if (VM_Version::arm_arch() >= 7) {
@@ -65,7 +65,7 @@ diff -r b09e56145e11 src/hotspot/cpu/arm/assembler_arm_32.hpp
  
 diff -r b09e56145e11 src/hotspot/cpu/arm/vm_version_arm_32.cpp
 --- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Fri Apr 06 22:21:26 2018 +0200
++++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Sat Apr 07 12:29:32 2018 +0200
 @@ -298,6 +298,15 @@
      FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
    }
@@ -74,17 +74,17 @@ diff -r b09e56145e11 src/hotspot/cpu/arm/vm_version_arm_32.cpp
 +  if (arm_arch() == 5) {
 +    if (FLAG_IS_DEFAULT(AssumeMP)) {
 +      FLAG_SET_DEFAULT(AssumeMP, false);
-+    else if (AssumeMP) {
++    } else if (AssumeMP) {
 +      warning("AssumeMP can not be true for ARMv5 as there is only uniprocessor support");
 +      FLAG_SET_DEFAULT(AssumeMP, false);
 +    }
-+ }
++  }
    _is_initialized = true;
  }
  
 diff -r b09e56145e11 src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp
 --- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Fri Apr 06 22:21:26 2018 +0200
++++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Sat Apr 07 12:29:32 2018 +0200
 @@ -71,7 +71,7 @@
       __asm__ volatile (
       ".word 0xF57FF050 | 0xf" : : : "memory");
@@ -105,7 +105,7 @@ diff -r b09e56145e11 src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.h
         "mcr p15, 0, %0, c7, c10, 5"
 diff -r b09e56145e11 src/hotspot/share/runtime/globals.hpp
 --- a/src/hotspot/share/runtime/globals.hpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/share/runtime/globals.hpp	Fri Apr 06 22:21:26 2018 +0200
++++ b/src/hotspot/share/runtime/globals.hpp	Sat Apr 07 12:29:32 2018 +0200
 @@ -586,7 +586,7 @@
            range(8, 256)                                                     \
            constraint(ObjectAlignmentInBytesConstraintFunc,AtParse)          \
