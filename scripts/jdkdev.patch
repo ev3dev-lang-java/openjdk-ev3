@@ -1,0 +1,123 @@
+diff -r 5556e9c1e681 make/autoconf/flags-other.m4
+--- a/make/autoconf/flags-other.m4	Fri Apr 06 08:58:22 2018 -0700
++++ b/make/autoconf/flags-other.m4	Sat Apr 07 18:54:39 2018 +0200
+@@ -120,6 +120,11 @@
+ [
+   # Misuse EXTRA_CFLAGS to mimic old behavior
+   $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS ${$2EXTRA_CFLAGS}"
++  
++  if test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
++    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS -mcpu=arm926ej-s"
++  fi
++
+ 
+   AC_SUBST($2JVM_ASFLAGS)
+ ])
+diff -r 5556e9c1e681 make/autoconf/flags.m4
+--- a/make/autoconf/flags.m4	Fri Apr 06 08:58:22 2018 -0700
++++ b/make/autoconf/flags.m4	Sat Apr 07 18:54:39 2018 +0200
+@@ -34,7 +34,7 @@
+ AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
+ [
+   AC_ARG_WITH(abi-profile, [AS_HELP_STRING([--with-abi-profile],
+-      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt, armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
++      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt,arm-ev3,armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
+ 
+   if test "x$with_abi_profile" != x; then
+     if test "x$OPENJDK_TARGET_CPU" != xarm && \
+@@ -55,6 +55,9 @@
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
+       ARM_FLOAT_TYPE=sflt
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
++      ARM_FLOAT_TYPE=sflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=arm926ej-s -marm'
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
+       ARM_FLOAT_TYPE=vfp-sflt
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
+diff -r 5556e9c1e681 src/hotspot/cpu/arm/assembler_arm_32.hpp
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	Fri Apr 06 08:58:22 2018 -0700
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Sat Apr 07 18:54:39 2018 +0200
+@@ -498,7 +498,7 @@
+   void dmb(DMB_Opt opt, Register reg) {
+     if (VM_Version::arm_arch() >= 7) {
+       emit_int32(0xF57FF050 | opt);
+-    } else {
++    } else if (VM_Version::arm_arch() == 6) {
+       bool preserve_tmp = (reg == noreg);
+       if(preserve_tmp) {
+         reg = Rtemp;
+@@ -1239,10 +1239,17 @@
+ 
+ // Imported code from glibc soft-fp bundle for
+ // calculation accuracy improvement. See CR 6757269.
+-extern double __aeabi_fadd_glibc(float, float);
+-extern double __aeabi_fsub_glibc(float, float);
+-extern double __aeabi_dadd_glibc(double, double);
+-extern double __aeabi_dsub_glibc(double, double);
++
++//extern double __aeabi_fadd_glibc(float, float);
++//extern double __aeabi_fsub_glibc(float, float);
++//extern double __aeabi_dadd_glibc(double, double);
++//extern double __aeabi_dsub_glibc(double, double);
++
++// We don't need very accurate floating point math.
++#define __aeabi_fadd_glibc __aeabi_fadd
++#define __aeabi_fsub_glibc __aeabi_fsub
++#define __aeabi_dadd_glibc __aeabi_dadd
++#define __aeabi_dsub_glibc __aeabi_dsub
+ };
+ #endif // __SOFTFP__
+ 
+diff -r 5556e9c1e681 src/hotspot/cpu/arm/vm_version_arm_32.cpp
+--- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Fri Apr 06 08:58:22 2018 -0700
++++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Sat Apr 07 18:54:39 2018 +0200
+@@ -298,6 +298,15 @@
+     FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
+   }
+ 
++  // ARMv5 MP workaround
++  if (arm_arch() == 5) {
++    if (FLAG_IS_DEFAULT(AssumeMP)) {
++      FLAG_SET_DEFAULT(AssumeMP, false);
++    } else if (AssumeMP) {
++      warning("AssumeMP can not be true for ARMv5 as there is only uniprocessor support");
++      FLAG_SET_DEFAULT(AssumeMP, false);
++    }
++  }
+   _is_initialized = true;
+ }
+ 
+diff -r 5556e9c1e681 src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp
+--- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Fri Apr 06 08:58:22 2018 -0700
++++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Sat Apr 07 18:54:39 2018 +0200
+@@ -71,7 +71,7 @@
+      __asm__ volatile (
+      ".word 0xF57FF050 | 0xf" : : : "memory");
+ #endif
+-   } else {
++   } else if (VM_Version::arm_arch() == 6) {
+      intptr_t zero = 0;
+      __asm__ volatile (
+        "mcr p15, 0, %0, c7, c10, 5"
+@@ -95,7 +95,7 @@
+      __asm__ volatile (
+      ".word 0xF57FF050 | 0xe" : : : "memory");
+ #endif
+-   } else {
++   } else if (VM_Version::arm_arch() == 6) {
+      intptr_t zero = 0;
+      __asm__ volatile (
+        "mcr p15, 0, %0, c7, c10, 5"
+diff -r 5556e9c1e681 src/hotspot/share/runtime/globals.hpp
+--- a/src/hotspot/share/runtime/globals.hpp	Fri Apr 06 08:58:22 2018 -0700
++++ b/src/hotspot/share/runtime/globals.hpp	Sat Apr 07 18:54:39 2018 +0200
+@@ -589,7 +589,7 @@
+           range(8, 256)                                                     \
+           constraint(ObjectAlignmentInBytesConstraintFunc,AtParse)          \
+                                                                             \
+-  product(bool, AssumeMP, true,                                             \
++  product(bool, AssumeMP, false,                                            \
+           "(Deprecated) Instruct the VM to assume multiple processors are available")\
+                                                                             \
+   /* UseMembar is theoretically a temp flag used for memory barrier      */ \
