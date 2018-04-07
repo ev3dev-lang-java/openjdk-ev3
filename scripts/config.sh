@@ -6,8 +6,6 @@ SCRIPTDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BUILDDIR="/build"
 # jdk repository directory
 JDKDIR="/build/jdk"
-# output images directory
-IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
 # lejos temp directory
 LEJOSDIR="/build/lejos"
 # lejos suffix
@@ -16,6 +14,9 @@ LEJOSEND="-final"
 ##
 ## Version-specific configuration
 ##
+
+# output images directory
+#IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
 
 # mercurial repository
 #JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdkXu/"
@@ -59,8 +60,10 @@ if [ "$JDKVER" == "9" ] || [ "$JDKVER" == "9zero" ]; then
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
   if [ "$JDKVER" == "9zero" ]; then
     HOTSPOT_VARIANT=zero
+    IMAGEDIR="/build/jdk/build/linux-arm-normal-zero-release/images"
   else
     HOTSPOT_VARIANT=client
+    IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
   fi
   HOSTJDK="$BUILDDIR/jdk-9.0.4"
   HOSTJDK_FILE="$BUILDDIR/openjdk-9.0.4_linux-x64_bin.tar.gz"
@@ -73,8 +76,10 @@ elif [ "$JDKVER" == "10" ] || [ "$JDKVER" == "10zero" ]; then
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
   if [ "$JDKVER" == "10zero" ]; then
     HOTSPOT_VARIANT=zero
+    IMAGEDIR="/build/jdk/build/linux-arm-normal-zero-release/images"
   else
     HOTSPOT_VARIANT=client
+    IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
   fi
   HOSTJDK="$BUILDDIR/jdk-10"
   HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
