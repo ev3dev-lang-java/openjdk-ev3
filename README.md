@@ -37,6 +37,7 @@ Please change the `$BUILD_DIRECTORY` to a valid path.
 ```
 export JDKVER=9      # OpenJDK 9
 export JDKVER=10     # OpenJDK 10
+export JDKVER=dev    # OpenJDK Master+dev (to-be OpenJDK 11 at the time of writing)
 export JDKVM=zero    # Use Zero interpreter
 export JDKVM=client  # Use ARM32 JIT
 ```

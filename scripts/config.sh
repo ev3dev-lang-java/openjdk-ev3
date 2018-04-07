@@ -64,12 +64,23 @@ elif [ "$JDKVER" == "10" ]; then
   HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
 
+# OpenJDK Master+dev
+elif [ "$JDKVER" == "dev" ]; then
+  JAVA_REPO="http://hg.openjdk.java.net/jdk/jdk/"
+  PATCHVER="jdkdev"
+  AUTOGEN_PATH="./make/autoconf/autogen.sh"
+  HOSTJDK="$BUILDDIR/jdk-10"
+  HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
+  HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
+
+
 # invalid or unset version
 else
   echo "Error! Please specify JDK version to compile via the JDKVER environment variable." >&2
   echo "Acceptable values:" >&2
   echo "JDKVER=9" >&2
   echo "JDKVER=10" >&2
+  echo "JDKVER=dev" >&2
   exit 1
 fi
 
