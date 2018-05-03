@@ -4,7 +4,7 @@ FROM debian:8.9
 
 # setup repositories and install required packages
 COPY apt.sources.list.debian /etc/apt/sources.list
-COPY ev3dev-archive-keyring.gpg /etc/apt/trusted.gpg.d/
+COPY ev3dev-archive-keyring.gpg emdebian.gpg /etc/apt/trusted.gpg.d/
 RUN dpkg --add-architecture armel && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
