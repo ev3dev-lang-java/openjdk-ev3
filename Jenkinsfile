@@ -12,6 +12,6 @@ node {
         sh "docker build -t ev3dev-lang-java:jdk-autobuild -f scripts/Dockerfile.autorun scripts "
     }
     stage("Build") {
-        sh "sudo docker run --rm -it -v /Users/jenkins/workspace/openjdk-10-ev3-pipeline/jdk:/build -e JDKVER='10' -e JDKVM='client' ev3dev-lang-java:jdk-autobuild"
+        sh "sudo docker run --rm -it -v $PWD/build:/build -e JDKVER='10' -e JDKVM='client' ev3dev-lang-java:jdk-autobuild"
     }
 }
