@@ -64,7 +64,7 @@ If you have mounted `/build`, you can access the files from the host.
 4. Run the newly prepared container. You have to mount a host directory to the the `/build` directory in the container,
 otherwise the build would get discarded. The final build needs at least 6.5 GB of free space (in the build directory).
 ```
-sudo docker run --rm -it -v $BUILD_DIRECTORY:/build -e JDKVER='X' -e JDKVM='Y' -e AUTOBUILD='yes' ev3dev-lang-java:jdk-build
+sudo docker run --rm -i -v $BUILD_DIRECTORY:/build -e JDKVER='X' -e JDKVM='Y' -e AUTOBUILD='yes' ev3dev-lang-java:jdk-build
 ```
 `X` can be one of `9` and `10`. `Y` can be one of `zero` and `client`, see above. Please change the `$BUILD_DIRECTORY` to a valid path.
 
