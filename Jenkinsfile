@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'build && ( linux || sw.os.linux ) && ( x86_64 || x64 )'
+        label 'build && ( mac ) && ( x86_64 || x64 )'
     }
     stages {
         stage('checkout') {
