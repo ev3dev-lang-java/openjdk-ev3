@@ -10,17 +10,17 @@ pipeline {
         }
         stage('Build cross-compilation OS') {
             steps {
-                sh "sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile system "
+                sh "docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile system "
             }
         }
         stage("Build cross-compilation environment") {
             steps {
-                sh "sudo docker build -t ev3dev-lang-java:jdk-autobuild -f scripts/Dockerfile.autorun scripts "
+                sh "docker build -t ev3dev-lang-java:jdk-autobuild -f scripts/Dockerfile.autorun scripts "
             }
         }
         stage("Build") {
             steps {
-                sh "sudo sudo docker run --rm -it -v $PWD/build:/build -e JDKVER='10' -e JDKVM='client' ev3dev-lang-java:jdk-autobuild"
+                sh "docker run --rm -it -v $PWD/build:/build -e JDKVER='10' -e JDKVM='client' ev3dev-lang-java:jdk-autobuild"
             }
         }
     }
