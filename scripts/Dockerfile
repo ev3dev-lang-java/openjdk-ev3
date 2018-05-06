@@ -9,4 +9,4 @@ VOLUME /build
 
 USER compiler
 WORKDIR /opt/jdkcross
-CMD ["/bin/bash"] ["--login"]
+CMD ["/opt/jdkcross/autorun.sh"]
