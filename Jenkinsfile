@@ -1,4 +1,7 @@
 node {
+    agent {
+        label 'build && ( linux || sw.os.linux ) && ( x86_64 || x64 )'
+    }
     stage('checkout') {
         checkout scm
     }
