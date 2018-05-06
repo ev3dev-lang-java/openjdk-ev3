@@ -15,7 +15,7 @@ pipeline {
         }
         stage("Build cross-compilation environment") {
             steps {
-                sh "docker build -t ev3dev-lang-java:jdk-build -f scripts/Dockerfile.autorun scripts "
+                sh "docker build -t ev3dev-lang-java:jdk-build -f scripts/Dockerfile scripts "
             }
         }
         stage("Build") {
