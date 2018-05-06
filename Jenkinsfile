@@ -20,6 +20,7 @@ pipeline {
         }
         stage("Build") {
             steps {
+                sh "chmod -R 777 $PWD/build"
                 sh "docker run --rm -v $PWD/build:/build -e JDKVER='10' -e JDKVM='client' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
             }
         }
