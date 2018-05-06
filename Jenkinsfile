@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'build && ( linux || sw.os.linux ) && ( x64 || x86_64 || x86 ) && docker'
+        label '( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( docker || sw.tool.docker ) && !test'
     }
     stages {
         stage('checkout') {
