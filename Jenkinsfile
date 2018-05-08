@@ -20,10 +20,10 @@ pipeline {
         }
         stage("Build") {
             steps {
-                sh "rm -rf    /tmp/ev3dev-lang-java"
-                sh "mkdir -p  /tmp/ev3dev-lang-java"
-                sh "chmod 777 /tmp/ev3dev-lang-java"
-                sh "docker run --rm -v /tmp/ev3dev-lang-java:/build -e JDKVER='10' -e JDKVM='client' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
+                //sh "rm -rf    /tmp/ev3dev-lang-java"
+                //sh "mkdir -p  /tmp/ev3dev-lang-java"
+                //sh "chmod 777 /tmp/ev3dev-lang-java"
+                //sh "docker run --rm -v /tmp/ev3dev-lang-java:/build -e JDKVER='10' -e JDKVM='client' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
             }
         }
     }
