@@ -24,6 +24,9 @@ pipeline {
                 sh "mkdir -p  /home/jenkins/workspace/openjdk-10-ev3-pipeline/build"
                 sh "chmod 777 /home/jenkins/workspace/openjdk-10-ev3-pipeline/build"
                 sh "docker run --rm -v /home/jenkins/workspace/openjdk-10-ev3-pipeline/build:/build -e JDKVER='10' -e JDKVM='client' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
+                archiveArtifacts artifacts: 'build/jri-ev3.tar.gz', fingerprint: true
+                archiveArtifacts artifacts: 'build/jdk-ev3.tar.gz', fingerprint: true
+                archiveArtifacts artifacts: 'build/jmods.tar.gz', fingerprint: true
             }
         }
     }
