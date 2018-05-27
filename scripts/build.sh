@@ -14,7 +14,7 @@ echo "[BUILD] Regenerating autoconf"
 if   [ "$AUTOGEN_STYLE" == "v1" ]; then
   bash "$AUTOGEN_PATH"
 elif [ "$AUTOGEN_STYLE" == "v2" ]; then
-  bash ./configure autogen
+  bash ./configure autogen || true
 fi
 
 ## Description ##
