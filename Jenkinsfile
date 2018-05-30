@@ -34,10 +34,10 @@ pipeline {
         always {
             script {
                 try {
-                    sh "docker rmi ev3dev-lang-java:jdk-build"
+                    sh "docker rmi ev3dev-lang-java:jdk-build 2>/dev/null"
                 } catch (err) {}
                 try {
-                    sh "docker rmi ev3dev-lang-java:jdk-stretch"
+                    sh "docker rmi ev3dev-lang-java:jdk-stretch 2>/dev/null"
                 } catch (err) {}
                 try {
                     sh "rm -rf /home/jenkins/workspace/" + JOB_NAME + "/build"
