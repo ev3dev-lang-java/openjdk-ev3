@@ -40,7 +40,7 @@ pipeline {
                     sh "docker rmi ev3dev-lang-java:jdk-stretch 2>/dev/null"
                 } catch (err) {}
                 try {
-                    sh "rm -rf /home/jenkins/workspace/" + JOB_NAME + "/build"
+                    sh "rm -rf /home/jenkins/workspace/" + JOB_NAME + "/build/jdk"
                 } catch (err) {}
             }
         }
