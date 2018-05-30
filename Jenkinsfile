@@ -30,4 +30,19 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            script {
+                try {
+                    sh "docker rmi ev3dev-lang-java:jdk-build"
+                } catch (err) {}
+                try {
+                    sh "docker rmi ev3dev-lang-java:jdk-stretch"
+                } catch (err) {}
+                try {
+                    sh "rm -rf /home/jenkins/workspace/" + JOB_NAME + "/build"
+                } catch (err) {}
+            }
+        }
+    }
 }
