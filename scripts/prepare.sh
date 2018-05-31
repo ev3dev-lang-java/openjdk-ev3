@@ -7,7 +7,7 @@ source config.sh
 if [ ! -d "$HOSTJDK" ]; then
   if [ ! -e "$HOSTJDK_FILE" ]; then
     echo "[PREPARE] Downloading host JDK"
-    wget "$HOSTJDK_URL" -O "$HOSTJDK_FILE"
+    wget -nv "$HOSTJDK_URL" -O "$HOSTJDK_FILE"
   else
     echo "[PREPARE] Using cached host JDK archive"
   fi
