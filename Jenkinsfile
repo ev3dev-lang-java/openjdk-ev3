@@ -10,6 +10,11 @@ pipeline {
         }
         stage('Build cross-compilation OS') {
             steps {
+                script {
+                    try {
+                        sh "docker logout"
+                    } catch (err) {}
+                }
                 sh "docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile system "
             }
         }
