@@ -49,6 +49,7 @@ RUN dpkg --add-architecture armel && \
         automake \
         autotools-dev \
         mercurial \
+        git \
         zlib1g-dev
 
 # prepare a nonroot user
