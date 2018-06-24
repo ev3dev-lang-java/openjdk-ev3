@@ -28,10 +28,10 @@ pipeline {
                 sh "rm -rf    /home/jenkins/workspace/" + JOB_NAME + "/build"
                 sh "mkdir -p  /home/jenkins/workspace/" + JOB_NAME + "/build"
                 sh "chmod 777 /home/jenkins/workspace/" + JOB_NAME + "/build"
-                sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='client' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
-                archiveArtifacts artifacts: 'build/jri-ev3.tar.gz', fingerprint: true
-                archiveArtifacts artifacts: 'build/jdk-ev3.tar.gz', fingerprint: true
-                archiveArtifacts artifacts: 'build/jmods.tar.gz', fingerprint: true
+                sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
+                archiveArtifacts artifacts: 'build/jri-'   + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
+                archiveArtifacts artifacts: 'build/jdk-'   + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
+                archiveArtifacts artifacts: 'build/jmods-' + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
             }
         }
     }
