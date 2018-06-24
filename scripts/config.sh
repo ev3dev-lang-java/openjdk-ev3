@@ -6,6 +6,14 @@ SCRIPTDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BUILDDIR="/build"
 # jdk repository directory
 JDKDIR="/build/jdk"
+# softfloat repository directory
+SFLTDIR="/build/sflt"
+# softfloat repository
+SFLTREPO="https://github.com/ev3dev-lang-java/softfloat-openjdk.git"
+# softfloat build directory
+SFLTBUILD="$SFLTDIR/build/Linux-ARM-VFPv2-GCC-OpenJDK"
+# softfloat static library
+SFLTLIB="$SFLTBUILD/softfloat.a"
 
 ##
 ## Version-specific configuration
@@ -85,6 +93,35 @@ else
   echo "JDKVER=dev" >&2
   exit 1
 fi
+
+
+# EV3
+if [ "$JDKPLATFORM" == "ev3" ]; then
+  SFLT_NEEDED=true
+
+# Raspberry Pi 1
+elif [ "$JDKPLATFORM" == "rpi1" ]; then
+  SFLT_NEEDED=false
+
+# Raspberry Pi 2
+elif [ "$JDKPLATFORM" == "rpi2" ]; then
+  SFLT_NEEDED=false
+
+# Raspberry Pi 3
+elif [ "$JDKPLATFORM" == "rpi3" ]; then
+  SFLT_NEEDED=false
+
+# invalid or unset platform
+else
+  echo "Error! Please specify JDK platform to compile via the JDKPLATFORM environment variable." >&2
+  echo "Acceptable values:" >&2
+  echo "JDKPLATFORM=ev3" >&2
+  echo "JDKPLATFORM=rpi1" >&2
+  echo "JDKPLATFORM=rpi2" >&2
+  echo "JDKPLATFORM=rpi3" >&2
+  exit 1
+fi
+
 
 
 # invalid or unset VM

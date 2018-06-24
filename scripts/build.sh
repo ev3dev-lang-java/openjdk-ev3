@@ -4,6 +4,12 @@ set -e
 cd "$(dirname ${BASH_SOURCE[0]})"
 source config.sh
 
+if [ "$SFLT_NEEDED" == "true" ]; then
+  echo "[BUILD] Building softfloat support"
+  cd "$SFLTBUILD"
+  make
+fi
+
 cd "$JDKDIR"
 
 JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')-ev3"
@@ -36,21 +42,46 @@ fi
 #                              BUILD_NM="gcc-nm"
 
 # configure the build
-echo "[BUILD] Configuring Java"
-bash ./configure --with-boot-jdk="$HOSTJDK" \
-                 --openjdk-target=arm-linux-gnueabi \
-                 --with-abi-profile=arm-ev3 \
-                 --enable-headless-only \
-                 --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
-                 --with-freetype-include=/usr/include \
-                 --with-jvm-variants="$HOTSPOT_VARIANT" \
-                 --with-extra-cflags="-w -Wno-error -D__SOFTFP__" \
-                 --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
-                 --with-version-string="$JAVA_VERSION" \
-                 AR="arm-linux-gnueabi-gcc-ar" \
-                 NM="arm-linux-gnueabi-gcc-nm" \
-                 BUILD_AR="gcc-ar" \
-                 BUILD_NM="gcc-nm"
+echo "[BUILD] Configuring Java for target '$JDKPLATFORM'"
+
+
+if [ "$JDKPLATFORM" == "ev3" ]; then
+  bash ./configure --with-boot-jdk="$HOSTJDK" \
+                   --openjdk-target=arm-linux-gnueabi \
+                   --with-abi-profile=arm-ev3 \
+                   --enable-headless-only \
+                   --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
+                   --with-freetype-include=/usr/include \
+                   --with-jvm-variants="$HOTSPOT_VARIANT" \
+                   --with-extra-cflags="-w -Wno-error -D__SOFTFP__" \
+                   --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
+                   --with-version-string="$JAVA_VERSION" \
+                   --with-softfloat="$SFLTLIB" \
+                   AR="arm-linux-gnueabi-gcc-ar" \
+                   NM="arm-linux-gnueabi-gcc-nm" \
+                   BUILD_AR="gcc-ar" \
+                   BUILD_NM="gcc-nm"
+
+# Raspberry Pis
+elif [ "$JDKPLATFORM" == "rpi1" ] ||
+     [ "$JDKPLATFORM" == "rpi2" ] ||
+     [ "$JDKPLATFORM" == "rpi3" ]; then
+  bash ./configure --with-boot-jdk="$HOSTJDK" \
+                   --openjdk-target=arm-linux-gnueabihf \
+                   --with-abi-profile="arm-$JDKPLATFORM" \
+                   --enable-headless-only \
+                   --with-freetype-lib=/usr/lib/arm-linux-gnueabihf \
+                   --with-freetype-include=/usr/include \
+                   --with-jvm-variants="$HOTSPOT_VARIANT" \
+                   --with-extra-cflags="-w -Wno-error" \
+                   --with-extra-cxxflags="-w -Wno-error" \
+                   --with-version-string="$JAVA_VERSION" \
+                   --without-softfloat
+                   AR="arm-linux-gnueabi-gcc-ar" \
+                   NM="arm-linux-gnueabi-gcc-nm" \
+                   BUILD_AR="gcc-ar" \
+                   BUILD_NM="gcc-nm"
+fi
 
 # start the build
 echo "[BUILD] Building Java"

@@ -9,7 +9,7 @@ cd "$IMAGEDIR"
 
 # clean destinations
 echo "[ZIP] Cleaning JRI images"
-rm -rf ./jri-ev3
+rm -rf ./jri
 
 # build ev3 runtime image
 echo "[ZIP] Building JRI"
@@ -21,12 +21,12 @@ echo "[ZIP] Building JRI"
    --no-header-files \
    --no-man-pages \
    --add-modules java.se,jdk.jdwp.agent,jdk.unsupported \
-   --output ./jri-ev3
+   --output ./jri
 
 # create zip files
 echo "[ZIP] Creating JRI archive"
-tar -cf - jri-ev3 | pigz -9 > "$BUILDDIR/jri-ev3.tar.gz"
+tar -cf - jri   | pigz -9 > "$BUILDDIR/jri-$JDKPLATFORM.tar.gz"
 echo "[ZIP] Creating JDK archive"
-tar -cf - jdk     | pigz -9 > "$BUILDDIR/jdk-ev3.tar.gz"
+tar -cf - jdk   | pigz -9 > "$BUILDDIR/jdk-$JDKPLATFORM.tar.gz"
 echo "[ZIP] Cleaning jmods archive"
-tar -cf - jmods   | pigz -9 > "$BUILDDIR/jmods.tar.gz"
+tar -cf - jmods | pigz -9 > "$BUILDDIR/jmods-$JDKPLATFORM.tar.gz"
