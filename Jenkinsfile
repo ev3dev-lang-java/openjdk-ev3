@@ -8,7 +8,7 @@ pipeline {
                 checkout scm
             }
         }
-        stage('checkout') {
+        stage('killall hg') {
             steps {
                 sh "killall hg"
             }
