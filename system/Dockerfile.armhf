@@ -5,14 +5,14 @@ FROM debian:stretch
 # setup repositories and install required packages
 COPY apt.sources.list.debian /etc/apt/sources.list
 COPY ev3dev-archive-keyring.gpg /etc/apt/trusted.gpg.d/
-RUN dpkg --add-architecture armel && dpkg --add-architecture armhf && \
+RUN dpkg --add-architecture armhf && \
     apt-get -q update && \
     DEBIAN_FRONTEND=noninteractive apt-get -q install --yes --no-install-recommends \
         bash-completion \
         ca-certificates \
         cmake \
         build-essential \
-        crossbuild-essential-armel crossbuild-essential-armhf \
+        crossbuild-essential-armhf \
         gdb-multiarch \
         less \
         man-db \
@@ -24,16 +24,16 @@ RUN dpkg --add-architecture armel && dpkg --add-architecture armhf && \
         vim \
         wget \
         xz-utils \
-        libcups2-dev:armel       libcups2-dev:armhf       \
-        libfreetype6-dev:armel   libfreetype6-dev:armhf   \
-        libfontconfig1-dev:armel libfontconfig1-dev:armhf \
-        libasound2-dev:armel     libasound2-dev:armhf     \
-        libx11-dev:armel         libx11-dev:armhf         \
-        libxext-dev:armel        libxext-dev:armhf        \
-        libxrender-dev:armel     libxrender-dev:armhf     \
-        libxtst-dev:armel        libxtst-dev:armhf        \
-        libxt-dev:armel          libxt-dev:armhf          \
-        libffi-dev:armel         libffi-dev:armhf         \
+        libcups2-dev:armhf       \
+        libfreetype6-dev:armhf   \
+        libfontconfig1-dev:armhf \
+        libasound2-dev:armhf     \
+        libx11-dev:armhf         \
+        libxext-dev:armhf        \
+        libxrender-dev:armhf     \
+        libxtst-dev:armhf        \
+        libxt-dev:armhf          \
+        libffi-dev:armhf         \
         curl \
         make \
         m4 \

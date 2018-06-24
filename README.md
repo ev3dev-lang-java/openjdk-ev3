@@ -25,9 +25,9 @@ The output consists of these parts:
 1. Install [Docker](https://docs.docker.com/engine/installation/) for your operating system.
 2. Build the jdk cross-compilation OS:
 ```sh
-sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile  system
+sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile.armel  system # ONLY FOR EV3
+sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile.armhf  system # ONLY FOR RPI1. RPI2 & RPI3
 ```
-
 3. Build the jdk cross-compilation environment:
 ```sh
 sudo docker build -t ev3dev-lang-java:jdk-build   -f scripts/Dockerfile scripts

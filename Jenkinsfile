@@ -15,7 +15,7 @@ pipeline {
                         sh "docker logout"
                     } catch (err) {}
                 }
-                sh "docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile system "
+                sh "docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile." + DOCKER_ARCH + " system "
             }
         }
         stage("Build cross-compilation environment") {
