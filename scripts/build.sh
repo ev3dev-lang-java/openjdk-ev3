@@ -12,9 +12,6 @@ fi
 
 cd "$JDKDIR"
 
-JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')-ev3"
-echo "[BUILD] Java version string: $JAVA_VERSION"
-
 # refresh patched build system
 echo "[BUILD] Regenerating autoconf"
 if   [ "$AUTOGEN_STYLE" == "v1" ]; then

@@ -57,6 +57,7 @@ SFLTLIB="$SFLTBUILD/softfloat.a"
 # OpenJDK 9
 if [ "$JDKVER" == "9" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk9u/"
+  JAVA_SCM="hg"
   PATCHVER="jdk9"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
@@ -66,7 +67,8 @@ if [ "$JDKVER" == "9" ]; then
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
-  JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk10u/"
+  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk10u.git"
+  JAVA_SCM="git"
   PATCHVER="jdk10"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
@@ -77,6 +79,7 @@ elif [ "$JDKVER" == "10" ]; then
 # OpenJDK Master+dev
 elif [ "$JDKVER" == "dev" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk/jdk/"
+  JAVA_SCM="hg"
   PATCHVER="jdkdev"
   AUTOGEN_STYLE="v2"
   HOSTJDK="$BUILDDIR/jdk-10"
