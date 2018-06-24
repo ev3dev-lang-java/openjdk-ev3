@@ -8,6 +8,11 @@ pipeline {
                 checkout scm
             }
         }
+        stage('checkout') {
+            steps {
+                sh "killall hg"
+            }
+        }
         stage('Build cross-compilation OS') {
             steps {
                 script {
