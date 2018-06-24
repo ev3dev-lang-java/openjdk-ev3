@@ -35,11 +35,15 @@ Please change the `$BUILD_DIRECTORY` to a valid path.
 
 5. Select the OpenJDK version and VM you want to cross-compile (select only one for each variable):
 ```
-export JDKVER=9      # OpenJDK 9
-export JDKVER=10     # OpenJDK 10
-export JDKVER=dev    # OpenJDK Master+dev (to-be OpenJDK 11 at the time of writing)
-export JDKVM=zero    # Use Zero interpreter
-export JDKVM=client  # Use ARM32 JIT
+export JDKVER=9         # OpenJDK 9
+export JDKVER=10        # OpenJDK 10
+export JDKVER=dev       # OpenJDK Master+dev (to-be OpenJDK 11 at the time of writing)
+export JDKVM=zero       # Use Zero interpreter
+export JDKVM=client     # Use ARM32 JIT
+export JDKPLATFORM=ev3  # Use EV3  build flags
+export JDKPLATFORM=rpi1 # Use RPi1 build flags
+export JDKPLATFORM=rpi2 # Use RPi2 build flags
+export JDKPLATFORM=rpi3 # Use RPi3 build flags
 ```
 6. Before we can start the build process, Boot JDK must be downloaded:
 ```
@@ -64,9 +68,9 @@ If you have mounted `/build`, you can access the files from the host.
 4. Run the newly prepared container. You have to mount a host directory to the the `/build` directory in the container,
 otherwise the build would get discarded. The final build needs at least 6.5 GB of free space (in the build directory).
 ```
-sudo docker run --rm -v $BUILD_DIRECTORY:/build -e JDKVER='X' -e JDKVM='Y' -e AUTOBUILD='yes' ev3dev-lang-java:jdk-build
+sudo docker run --rm -v $BUILD_DIRECTORY:/build -e JDKVER='X' -e JDKVM='Y' -e JDKPLATFORM='Z' -e AUTOBUILD='yes' ev3dev-lang-java:jdk-build
 ```
-`X` can be one of `9` and `10`. `Y` can be one of `zero` and `client`, see above. Please change the `$BUILD_DIRECTORY` to a valid path.
+For values of `X`, `Y` and `Z` see above. Please change the `$BUILD_DIRECTORY` to a valid path.
 
 5. If the build was successful, JDK packages were created in `$BUILD_DIRECTORY/jri-ev3.tar.gz`, `$BUILD_DIRECTORY/jdk-ev3.tar.gz` and `$BUILD_DIRECTORY/jmods.tar.gz`.
 
