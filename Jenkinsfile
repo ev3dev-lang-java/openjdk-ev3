@@ -8,11 +8,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('killall hg') {
-            steps {
-                sh "killall python python2 python3"
-            }
-        }
         stage('Build cross-compilation OS') {
             steps {
                 script {
