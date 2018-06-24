@@ -1,14 +1,21 @@
-# OpenJDK for EV3
-A custom build of OpenJDK 9 & 10 for EV3, a Lego Mindstorms programmable brick featuring a ARM926EJ-S CPU.
+# OpenJDK for ev3dev-labg.hava
+A custom build of OpenJDK 9 & 10 for LEGO Mindstorms compatible bricks supported by ev3dev:
+
+* EV3, featuring a ARM926EJ-S CPU
+* Raspberry Pi 1, featuring a ARM1176JZF-S CPU
+* Raspberry Pi 2, featuring a Cortex-A7 CPU
+* Raspberry Pi 3, featuring a Cortex-A53 CPU
+
+Builds for older boards should work on newer boards, the performance might just be a bit lower.
 
 ## Components
 The output consists of these parts:
-* JRI running on the EV3 - `jri-ev3.zip`
+* JRI for the brick - `jri-*.zip`
   * Stripped down version of Java -- a Java Runtime Image
   * Intended for normal users.
-* Full JDK running on the EV3 - `jdk-ev3.zip`
+* Full JDK running on the brick - `jdk-*.zip`
   * Intended for Linux power users.
-* EV3 jmods
+* Brick jmods - `jmods-*.zip`
   * They can be used for creating custom JRIs.
   * Intended for advanced users wanting to add additional OpenJDK modules.
 
