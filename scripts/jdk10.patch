@@ -1,37 +1,107 @@
 diff -r b09e56145e11 make/autoconf/flags.m4
 --- a/make/autoconf/flags.m4	Thu Mar 08 04:23:31 2018 +0000
-+++ b/make/autoconf/flags.m4	Sat Apr 07 12:29:32 2018 +0200
++++ b/make/autoconf/flags.m4	Sun Jun 24 22:29:14 2018 +0200
 @@ -30,7 +30,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
    AC_ARG_WITH(abi-profile, [AS_HELP_STRING([--with-abi-profile],
 -      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt, armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
-+      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt,arm-ev3,armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
++      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt,arm-ev3,arm-rpi1,arm-rpi2,arm-rpi3,armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
  
    if test "x$with_abi_profile" != x; then
      if test "x$OPENJDK_TARGET_CPU" != xarm && \
-@@ -51,6 +51,9 @@
+@@ -51,6 +51,18 @@
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
        ARM_FLOAT_TYPE=sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 +    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
 +      ARM_FLOAT_TYPE=sflt
 +      ARM_ARCH_TYPE_FLAGS='-mcpu=arm926ej-s -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi1; then
++      ARM_FLOAT_TYPE=vfp-hflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=arm1176jzf-s -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi2; then
++      ARM_FLOAT_TYPE=vfp-hflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=cortex-a7 -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi3; then
++      ARM_FLOAT_TYPE=vfp-hflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=cortex-a53 -marm'
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
        ARM_FLOAT_TYPE=vfp-sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
-@@ -1378,6 +1381,8 @@
+@@ -1378,6 +1390,14 @@
    if test "x$OPENJDK_$1_OS" = xlinux; then
      if test "x$OPENJDK_$1_CPU" = xx86; then
        $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -march=i586"
 +    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
 +      $2JVM_ASFLAGS="-mcpu=arm926ej-s"
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi1; then
++      $2JVM_ASFLAGS="-mcpu=arm1176jzf-s"
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi2; then
++      $2JVM_ASFLAGS="-mcpu=cortex-a7"
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi3; then
++      $2JVM_ASFLAGS="-mcpu=cortex-a53"
      fi
    elif test "x$OPENJDK_$1_OS" = xmacosx; then
      $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -x assembler-with-cpp -mno-omit-leaf-frame-pointer -mstack-alignment=16"
+diff -r b09e56145e11 make/autoconf/libraries.m4
+--- a/make/autoconf/libraries.m4	Thu Mar 08 04:23:31 2018 +0000
++++ b/make/autoconf/libraries.m4	Sun Jun 24 22:29:14 2018 +0200
+@@ -32,6 +32,7 @@
+ m4_include([lib-std.m4])
+ m4_include([lib-x11.m4])
+ m4_include([lib-fontconfig.m4])
++m4_include([lib-softfloat.m4])
+ 
+ ################################################################################
+ # Determine which libraries are needed for this configuration
+@@ -78,6 +79,13 @@
+     NEEDS_LIB_ALSA=false
+   fi
+ 
++  if (test "x$OPENJDK_TARGET_CPU" == xarm &&
++      test "x$ARM_FLOAT_TYPE" = xsflt); then
++    NEEDS_LIB_SOFTFLOAT=true
++  else
++    NEEDS_LIB_SOFTFLOAT=false
++  fi
++
+   # Check if ffi is needed
+   if HOTSPOT_CHECK_JVM_VARIANT(zero); then
+     NEEDS_LIB_FFI=true
+@@ -97,6 +105,7 @@
+   LIB_SETUP_FONTCONFIG
+   LIB_SETUP_FREETYPE
+   LIB_SETUP_ALSA
++  LIB_SETUP_SOFTFLOAT
+   LIB_SETUP_LIBFFI
+   LIB_SETUP_BUNDLED_LIBS
+   LIB_SETUP_MISC_LIBS
+diff -r b09e56145e11 make/autoconf/spec.gmk.in
+--- a/make/autoconf/spec.gmk.in	Thu Mar 08 04:23:31 2018 +0000
++++ b/make/autoconf/spec.gmk.in	Sun Jun 24 22:29:14 2018 +0200
+@@ -331,6 +331,7 @@
+ CUPS_CFLAGS:=@CUPS_CFLAGS@
+ ALSA_LIBS:=@ALSA_LIBS@
+ ALSA_CFLAGS:=@ALSA_CFLAGS@
++SOFTFLOAT_LIBS:=@SOFTFLOAT_LIBS@
+ LIBFFI_LIBS:=@LIBFFI_LIBS@
+ LIBFFI_CFLAGS:=@LIBFFI_CFLAGS@
+ ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
+diff -r b09e56145e11 make/hotspot/lib/CompileJvm.gmk
+--- a/make/hotspot/lib/CompileJvm.gmk	Thu Mar 08 04:23:31 2018 +0000
++++ b/make/hotspot/lib/CompileJvm.gmk	Sun Jun 24 22:29:14 2018 +0200
+@@ -112,6 +112,7 @@
+ 
+ JVM_LIBS += \
+     $(JVM_LIBS_FEATURES) \
++    $(SOFTFLOAT_LIBS) \
+     #
+ 
+ # These files and directories are always excluded
 diff -r b09e56145e11 src/hotspot/cpu/arm/assembler_arm_32.hpp
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Sat Apr 07 12:29:32 2018 +0200
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Sun Jun 24 22:29:14 2018 +0200
 @@ -498,7 +498,7 @@
    void dmb(DMB_Opt opt, Register reg) {
      if (VM_Version::arm_arch() >= 7) {
@@ -41,31 +111,23 @@ diff -r b09e56145e11 src/hotspot/cpu/arm/assembler_arm_32.hpp
        bool preserve_tmp = (reg == noreg);
        if(preserve_tmp) {
          reg = Rtemp;
-@@ -1239,10 +1239,17 @@
+@@ -1239,10 +1239,11 @@
  
  // Imported code from glibc soft-fp bundle for
  // calculation accuracy improvement. See CR 6757269.
 -extern double __aeabi_fadd_glibc(float, float);
 -extern double __aeabi_fsub_glibc(float, float);
--extern double __aeabi_dadd_glibc(double, double);
--extern double __aeabi_dsub_glibc(double, double);
++extern float  __aeabi_fadd_glibc(float, float);
++extern float  __aeabi_fsub_glibc(float, float);
+ extern double __aeabi_dadd_glibc(double, double);
+ extern double __aeabi_dsub_glibc(double, double);
 +
-+//extern double __aeabi_fadd_glibc(float, float);
-+//extern double __aeabi_fsub_glibc(float, float);
-+//extern double __aeabi_dadd_glibc(double, double);
-+//extern double __aeabi_dsub_glibc(double, double);
-+
-+// We don't need very accurate floating point math.
-+#define __aeabi_fadd_glibc __aeabi_fadd
-+#define __aeabi_fsub_glibc __aeabi_fsub
-+#define __aeabi_dadd_glibc __aeabi_dadd
-+#define __aeabi_dsub_glibc __aeabi_dsub
  };
  #endif // __SOFTFP__
  
 diff -r b09e56145e11 src/hotspot/cpu/arm/vm_version_arm_32.cpp
 --- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Sat Apr 07 12:29:32 2018 +0200
++++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp	Sun Jun 24 22:29:14 2018 +0200
 @@ -298,6 +298,15 @@
      FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
    }
@@ -84,7 +146,7 @@ diff -r b09e56145e11 src/hotspot/cpu/arm/vm_version_arm_32.cpp
  
 diff -r b09e56145e11 src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp
 --- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Sat Apr 07 12:29:32 2018 +0200
++++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.hpp	Sun Jun 24 22:29:14 2018 +0200
 @@ -71,7 +71,7 @@
       __asm__ volatile (
       ".word 0xF57FF050 | 0xf" : : : "memory");
@@ -103,15 +165,3 @@ diff -r b09e56145e11 src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.inline.h
       intptr_t zero = 0;
       __asm__ volatile (
         "mcr p15, 0, %0, c7, c10, 5"
-diff -r b09e56145e11 src/hotspot/share/runtime/globals.hpp
---- a/src/hotspot/share/runtime/globals.hpp	Thu Mar 08 04:23:31 2018 +0000
-+++ b/src/hotspot/share/runtime/globals.hpp	Sat Apr 07 12:29:32 2018 +0200
-@@ -586,7 +586,7 @@
-           range(8, 256)                                                     \
-           constraint(ObjectAlignmentInBytesConstraintFunc,AtParse)          \
-                                                                             \
--  product(bool, AssumeMP, true,                                             \
-+  product(bool, AssumeMP, false,                                            \
-           "(Deprecated) Instruct the VM to assume multiple processors are available")\
-                                                                             \
-   /* UseMembar is theoretically a temp flag used for memory barrier      */ \
