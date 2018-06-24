@@ -10,7 +10,7 @@ pipeline {
         }
         stage('killall hg') {
             steps {
-                sh "killall hg"
+                sh "killall python python2 python3"
             }
         }
         stage('Build cross-compilation OS') {
