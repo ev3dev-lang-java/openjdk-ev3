@@ -72,9 +72,9 @@ elif [ "$JDKVER" == "10" ]; then
   PATCHVER="jdk10"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
-  HOSTJDK="$BUILDDIR/jdk-9.0.4"
-  HOSTJDK_FILE="$BUILDDIR/openjdk-9.0.4_linux-x64_bin.tar.gz"
-  HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
+  HOSTJDK="$BUILDDIR/jdk-10"
+  HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
+  HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
 
 # OpenJDK Master+dev
 elif [ "$JDKVER" == "dev" ]; then
