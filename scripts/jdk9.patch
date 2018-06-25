@@ -1,6 +1,6 @@
 diff -r 1b1226687b89 common/autoconf/flags.m4
 --- a/common/autoconf/flags.m4	Wed Feb 14 06:54:58 2018 -0800
-+++ b/common/autoconf/flags.m4	Sun Jun 24 22:41:06 2018 +0200
++++ b/common/autoconf/flags.m4	Mon Jun 25 10:57:33 2018 +0200
 @@ -30,7 +30,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
@@ -44,9 +44,70 @@ diff -r 1b1226687b89 common/autoconf/flags.m4
      fi
    elif test "x$OPENJDK_$1_OS" = xmacosx; then
      $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -x assembler-with-cpp -mno-omit-leaf-frame-pointer -mstack-alignment=16"
+diff -r 1b1226687b89 common/autoconf/lib-softfloat.m4
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/common/autoconf/lib-softfloat.m4	Mon Jun 25 10:57:33 2018 +0200
+@@ -0,0 +1,57 @@
++#
++# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
++# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++#
++# This code is free software; you can redistribute it and/or modify it
++# under the terms of the GNU General Public License version 2 only, as
++# published by the Free Software Foundation.  Oracle designates this
++# particular file as subject to the "Classpath" exception as provided
++# by Oracle in the LICENSE file that accompanied this code.
++#
++# This code is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++# version 2 for more details (a copy is included in the LICENSE file that
++# accompanied this code).
++#
++# You should have received a copy of the GNU General Public License version
++# 2 along with this work; if not, write to the Free Software Foundation,
++# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
++# or visit www.oracle.com if you need additional information or have any
++# questions.
++#
++
++################################################################################
++# Setup softfloat helper
++################################################################################
++AC_DEFUN_ONCE([LIB_SETUP_SOFTFLOAT],
++[
++  AC_ARG_WITH(softfloat, [AS_HELP_STRING([--with-softfloat],
++      [specify path to patched softfloat.a])])
++
++  if test "x$NEEDS_LIB_SOFTFLOAT" = xfalse; then
++    if (test "x${with_softfloat}" != x && test "x${with_softfloat}" != xno); then
++      AC_MSG_WARN([[softfloat not used, so --with-softfloat is ignored]])
++    fi
++    SOFTFLOAT_LIBS=
++  else
++    SOFTFLOAT_FOUND=no
++
++    if test "x${with_softfloat}" = xno; then
++      AC_MSG_ERROR([It is not possible to disable the use of softfloat. Remove the --without-softfloat option.])
++    fi
++
++    if test "x${with_softfloat}" != x; then
++      SOFTFLOAT_LIBS="${with_softfloat}"
++      SOFTFLOAT_FOUND=yes
++    fi
++    if test "x$SOFTFLOAT_FOUND" = xno; then
++      HELP_MSG_MISSING_DEPENDENCY([softfloat])
++      AC_MSG_ERROR([Could not find softfloat! $HELP_MSG])
++    fi
++  fi
++
++  AC_SUBST(SOFTFLOAT_LIBS)
++])
 diff -r 1b1226687b89 common/autoconf/libraries.m4
 --- a/common/autoconf/libraries.m4	Wed Feb 14 06:54:58 2018 -0800
-+++ b/common/autoconf/libraries.m4	Sun Jun 24 22:41:06 2018 +0200
++++ b/common/autoconf/libraries.m4	Mon Jun 25 10:57:33 2018 +0200
 @@ -68,6 +68,13 @@
      NEEDS_LIB_ALSA=false
    fi
@@ -71,7 +132,7 @@ diff -r 1b1226687b89 common/autoconf/libraries.m4
    LIB_SETUP_BUNDLED_LIBS
 diff -r 1b1226687b89 common/autoconf/spec.gmk.in
 --- a/common/autoconf/spec.gmk.in	Wed Feb 14 06:54:58 2018 -0800
-+++ b/common/autoconf/spec.gmk.in	Sun Jun 24 22:41:06 2018 +0200
++++ b/common/autoconf/spec.gmk.in	Mon Jun 25 10:57:33 2018 +0200
 @@ -316,6 +316,7 @@
  CUPS_CFLAGS:=@CUPS_CFLAGS@
  ALSA_LIBS:=@ALSA_LIBS@
@@ -82,7 +143,7 @@ diff -r 1b1226687b89 common/autoconf/spec.gmk.in
  ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
 diff -r 22d7a88dbe78 hotspot/make/lib/CompileJvm.gmk
 --- a/hotspot/make/lib/CompileJvm.gmk	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/make/lib/CompileJvm.gmk	Sun Jun 24 22:41:11 2018 +0200
++++ b/hotspot/make/lib/CompileJvm.gmk	Mon Jun 25 10:57:42 2018 +0200
 @@ -107,6 +107,7 @@
  
  JVM_LIBS += \
@@ -93,7 +154,7 @@ diff -r 22d7a88dbe78 hotspot/make/lib/CompileJvm.gmk
  # These files and directories are always excluded
 diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
 --- a/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp	Sun Jun 24 22:41:11 2018 +0200
++++ b/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp	Mon Jun 25 10:57:42 2018 +0200
 @@ -498,7 +498,7 @@
    void dmb(DMB_Opt opt, Register reg) {
      if (VM_Version::arm_arch() >= 7) {
@@ -119,7 +180,7 @@ diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
  
 diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp
 --- a/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp	Sun Jun 24 22:41:11 2018 +0200
++++ b/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp	Mon Jun 25 10:57:42 2018 +0200
 @@ -295,6 +295,15 @@
      FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
    }
@@ -138,7 +199,7 @@ diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp
  
 diff -r 22d7a88dbe78 hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp
 --- a/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp	Sun Jun 24 22:41:11 2018 +0200
++++ b/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp	Mon Jun 25 10:57:42 2018 +0200
 @@ -72,7 +72,7 @@
       __asm__ volatile (
       ".word 0xF57FF050 | 0xf" : : : "memory");
