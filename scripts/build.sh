@@ -3,7 +3,7 @@ set -e
 
 cd "$(dirname ${BASH_SOURCE[0]})"
 source config.sh
-source jver.sh
+source /tmp/jver.sh
 
 if [ "$SFLT_NEEDED" == "true" ]; then
   echo "[BUILD] Building softfloat support"
