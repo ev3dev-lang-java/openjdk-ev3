@@ -5,15 +5,21 @@ SCRIPTDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 # output directory
 BUILDDIR="/build"
 # jdk repository directory
-JDKDIR="/build/jdk"
+JDKDIR="$BUILDDIR/jdk"
 # softfloat repository directory
-SFLTDIR="/build/sflt"
+SFLTDIR="$BUILDDIR/sflt"
 # softfloat repository
 SFLTREPO="https://github.com/ev3dev-lang-java/softfloat-openjdk.git"
 # softfloat build directory
 SFLTBUILD="$SFLTDIR/build/Linux-ARM-VFPv2-GCC-OpenJDK"
 # softfloat static library
 SFLTLIB="$SFLTBUILD/softfloat.a"
+# openjdk-build repo dir
+ABLDDIR="$BUILDDIR/openjdk-build"
+# openjdk-build repo
+ABLDREPO="https://github.com/AdoptOpenJDK/openjdk-build.git"
+# cacertfile
+CACERTFILE="$ABLDDIR/security/cacerts"
 
 ##
 ## Version-specific configuration

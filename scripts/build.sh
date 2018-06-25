@@ -55,6 +55,8 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
                    --with-version-string="$JAVA_VERSION" \
                    --with-softfloat="$SFLTLIB" \
+                   --with-cacerts-file="$CACERTFILE" \
+                   --with-debug-level=release \
                    AR="arm-linux-gnueabi-gcc-ar" \
                    NM="arm-linux-gnueabi-gcc-nm" \
                    BUILD_AR="gcc-ar" \
@@ -75,6 +77,8 @@ elif [ "$JDKPLATFORM" == "rpi1" ] ||
                    --with-extra-cxxflags="-w -Wno-error" \
                    --with-version-string="$JAVA_VERSION" \
                    --without-softfloat
+                   --with-cacerts-file="$CACERTFILE" \
+                   --with-debug-level=release \
                    AR="arm-linux-gnueabi-gcc-ar" \
                    NM="arm-linux-gnueabi-gcc-nm" \
                    BUILD_AR="gcc-ar" \
