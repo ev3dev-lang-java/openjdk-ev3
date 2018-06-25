@@ -35,6 +35,7 @@ if [ ! -d "$JDKDIR" ]; then
   fi
 
   echo "[FETCH] Java version string: $JAVA_VERSION"
+  echo -e "#!/bin/bash\nJAVA_VERSION=\"$JAVA_VERSION\"" >"$SCRIPTDIR/jver.sh"
 
   # apply the EV3-specific patches
   echo "[FETCH] Patching the source tree"
