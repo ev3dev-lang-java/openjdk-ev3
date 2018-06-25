@@ -13,7 +13,6 @@ pipeline {
                 sh "rm -rf    /home/jenkins/workspace/" + JOB_NAME + "/build"
                 sh "mkdir -p  /home/jenkins/workspace/" + JOB_NAME + "/build"
                 sh "chmod 777 /home/jenkins/workspace/" + JOB_NAME + "/build"
-                sh "rm /home/jenkins/workspace/" + JOB_NAME + "/openjdk-9.0.4_linux-x64_bin.tar.gz"
                 sh "cd /home/jenkins/workspace/" + JOB_NAME + " && wget -nv -N https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
                 sh "cp /home/jenkins/workspace/" + JOB_NAME + "/openjdk-9.0.4_linux-x64_bin.tar.gz /home/jenkins/workspace/" + JOB_NAME + "/build/"
             }
