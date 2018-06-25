@@ -1,4 +1,4 @@
-# OpenJDK for ev3dev-labg.hava
+# OpenJDK for ev3dev-lang-java
 A custom build of OpenJDK 9 & 10 for LEGO Mindstorms compatible bricks supported by ev3dev:
 
 * EV3, featuring a ARM926EJ-S CPU
