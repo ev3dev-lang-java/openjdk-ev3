@@ -8,6 +8,15 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Prepare environment') {
+            steps {
+                sh "rm -rf    /home/jenkins/workspace/" + JOB_NAME + "/build"
+                sh "mkdir -p  /home/jenkins/workspace/" + JOB_NAME + "/build"
+                sh "chmod 777 /home/jenkins/workspace/" + JOB_NAME + "/build"
+                sh "cd /home/jenkins/workspace/" + JOB_NAME + " && wget -N https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
+                sh "cp /home/jenkins/workspace/" + JOB_NAME + "/openjdk-9.0.4_linux-x64_bin.tar.gz /home/jenkins/workspace/" + JOB_NAME + "/build/"
+            }
+        }
         stage('Build cross-compilation OS') {
             steps {
                 script {
@@ -25,9 +34,6 @@ pipeline {
         }
         stage("Build") {
             steps {
-                sh "rm -rf    /home/jenkins/workspace/" + JOB_NAME + "/build"
-                sh "mkdir -p  /home/jenkins/workspace/" + JOB_NAME + "/build"
-                sh "chmod 777 /home/jenkins/workspace/" + JOB_NAME + "/build"
                 sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
                 archiveArtifacts artifacts: 'build/jri-'   + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
                 archiveArtifacts artifacts: 'build/jdk-'   + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
