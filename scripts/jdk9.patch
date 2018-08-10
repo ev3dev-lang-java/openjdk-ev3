@@ -1,6 +1,7 @@
-diff -r 1b1226687b89 common/autoconf/flags.m4
---- a/common/autoconf/flags.m4	Wed Feb 14 06:54:58 2018 -0800
-+++ b/common/autoconf/flags.m4	Mon Jun 25 10:57:33 2018 +0200
+diff --git a/common/autoconf/flags.m4 b/common/autoconf/flags.m4
+index a96b74be7..aaa3de469 100644
+--- a/common/autoconf/flags.m4
++++ b/common/autoconf/flags.m4
 @@ -30,7 +30,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
@@ -10,7 +11,7 @@ diff -r 1b1226687b89 common/autoconf/flags.m4
  
    if test "x$with_abi_profile" != x; then
      if test "x$OPENJDK_TARGET_CPU" != xarm && \
-@@ -51,6 +51,18 @@
+@@ -51,6 +51,18 @@ AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
        ARM_FLOAT_TYPE=sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
@@ -29,7 +30,7 @@ diff -r 1b1226687b89 common/autoconf/flags.m4
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
        ARM_FLOAT_TYPE=vfp-sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
-@@ -1305,6 +1317,14 @@
+@@ -1305,6 +1317,14 @@ $2LDFLAGS_JDKLIB="${$2LDFLAGS_JDKLIB} ${$2JAVA_BASE_LDFLAGS}"
    if test "x$OPENJDK_$1_OS" = xlinux; then
      if test "x$OPENJDK_$1_CPU" = xx86; then
        $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -march=i586"
@@ -44,9 +45,11 @@ diff -r 1b1226687b89 common/autoconf/flags.m4
      fi
    elif test "x$OPENJDK_$1_OS" = xmacosx; then
      $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -x assembler-with-cpp -mno-omit-leaf-frame-pointer -mstack-alignment=16"
-diff -r 1b1226687b89 common/autoconf/lib-softfloat.m4
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/common/autoconf/lib-softfloat.m4	Mon Jun 25 10:57:33 2018 +0200
+diff --git a/common/autoconf/lib-softfloat.m4 b/common/autoconf/lib-softfloat.m4
+new file mode 100644
+index 000000000..7fa1ed1ac
+--- /dev/null
++++ b/common/autoconf/lib-softfloat.m4
 @@ -0,0 +1,57 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
@@ -105,10 +108,19 @@ diff -r 1b1226687b89 common/autoconf/lib-softfloat.m4
 +
 +  AC_SUBST(SOFTFLOAT_LIBS)
 +])
-diff -r 1b1226687b89 common/autoconf/libraries.m4
---- a/common/autoconf/libraries.m4	Wed Feb 14 06:54:58 2018 -0800
-+++ b/common/autoconf/libraries.m4	Mon Jun 25 10:57:33 2018 +0200
-@@ -68,6 +68,13 @@
+diff --git a/common/autoconf/libraries.m4 b/common/autoconf/libraries.m4
+index bd5a40a7e..59157bb05 100644
+--- a/common/autoconf/libraries.m4
++++ b/common/autoconf/libraries.m4
+@@ -32,6 +32,7 @@ m4_include([lib-freetype.m4])
+ m4_include([lib-std.m4])
+ m4_include([lib-x11.m4])
+ m4_include([lib-elf.m4])
++m4_include([lib-softfloat.m4])
+ 
+ ################################################################################
+ # Determine which libraries are needed for this configuration
+@@ -68,6 +69,13 @@ AC_DEFUN_ONCE([LIB_DETERMINE_DEPENDENCIES],
      NEEDS_LIB_ALSA=false
    fi
  
@@ -122,7 +134,7 @@ diff -r 1b1226687b89 common/autoconf/libraries.m4
    # Check if ffi is needed
    if HOTSPOT_CHECK_JVM_VARIANT(zero) || HOTSPOT_CHECK_JVM_VARIANT(zeroshark); then
      NEEDS_LIB_FFI=true
-@@ -86,6 +93,7 @@
+@@ -86,6 +94,7 @@ AC_DEFUN_ONCE([LIB_SETUP_LIBRARIES],
    LIB_SETUP_CUPS
    LIB_SETUP_FREETYPE
    LIB_SETUP_ALSA
@@ -130,10 +142,11 @@ diff -r 1b1226687b89 common/autoconf/libraries.m4
    LIB_SETUP_LIBFFI
    LIB_SETUP_LLVM
    LIB_SETUP_BUNDLED_LIBS
-diff -r 1b1226687b89 common/autoconf/spec.gmk.in
---- a/common/autoconf/spec.gmk.in	Wed Feb 14 06:54:58 2018 -0800
-+++ b/common/autoconf/spec.gmk.in	Mon Jun 25 10:57:33 2018 +0200
-@@ -316,6 +316,7 @@
+diff --git a/common/autoconf/spec.gmk.in b/common/autoconf/spec.gmk.in
+index aa86532e2..3911a8a6d 100644
+--- a/common/autoconf/spec.gmk.in
++++ b/common/autoconf/spec.gmk.in
+@@ -316,6 +316,7 @@ FREETYPE_LICENSE=@FREETYPE_LICENSE@
  CUPS_CFLAGS:=@CUPS_CFLAGS@
  ALSA_LIBS:=@ALSA_LIBS@
  ALSA_CFLAGS:=@ALSA_CFLAGS@
@@ -141,10 +154,11 @@ diff -r 1b1226687b89 common/autoconf/spec.gmk.in
  LIBFFI_LIBS:=@LIBFFI_LIBS@
  LIBFFI_CFLAGS:=@LIBFFI_CFLAGS@
  ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
-diff -r 22d7a88dbe78 hotspot/make/lib/CompileJvm.gmk
---- a/hotspot/make/lib/CompileJvm.gmk	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/make/lib/CompileJvm.gmk	Mon Jun 25 10:57:42 2018 +0200
-@@ -107,6 +107,7 @@
+diff --git a/hotspot/make/lib/CompileJvm.gmk b/hotspot/make/lib/CompileJvm.gmk
+index 4eb2cbc10..27640cdf9 100644
+--- a/hotspot/make/lib/CompileJvm.gmk
++++ b/hotspot/make/lib/CompileJvm.gmk
+@@ -107,6 +107,7 @@ JVM_LDFLAGS += \
  
  JVM_LIBS += \
      $(JVM_LIBS_FEATURES) \
@@ -152,10 +166,11 @@ diff -r 22d7a88dbe78 hotspot/make/lib/CompileJvm.gmk
      #
  
  # These files and directories are always excluded
-diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
---- a/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp	Mon Jun 25 10:57:42 2018 +0200
-@@ -498,7 +498,7 @@
+diff --git a/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp b/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
+index e32f6a98f..12c7d25e4 100644
+--- a/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
++++ b/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
+@@ -498,7 +498,7 @@ class Assembler : public AbstractAssembler  {
    void dmb(DMB_Opt opt, Register reg) {
      if (VM_Version::arm_arch() >= 7) {
        emit_int32(0xF57FF050 | opt);
@@ -164,7 +179,7 @@ diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
        bool preserve_tmp = (reg == noreg);
        if(preserve_tmp) {
          reg = Rtemp;
-@@ -1234,10 +1234,11 @@
+@@ -1234,10 +1234,11 @@ extern int  __aeabi_dcmpgt(double, double);
  
  // Imported code from glibc soft-fp bundle for
  // calculation accuracy improvement. See CR 6757269.
@@ -178,10 +193,11 @@ diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
  };
  #endif // __SOFTFP__
  
-diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp
---- a/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp	Mon Jun 25 10:57:42 2018 +0200
-@@ -295,6 +295,15 @@
+diff --git a/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp b/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp
+index 10a240877..53223087e 100644
+--- a/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp
++++ b/hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp
+@@ -295,6 +295,15 @@ void VM_Version::initialize() {
      FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
    }
  
@@ -197,10 +213,11 @@ diff -r 22d7a88dbe78 hotspot/src/cpu/arm/vm/vm_version_arm_32.cpp
    _is_initialized = true;
  }
  
-diff -r 22d7a88dbe78 hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp
---- a/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp	Wed Feb 14 06:56:02 2018 -0800
-+++ b/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp	Mon Jun 25 10:57:42 2018 +0200
-@@ -72,7 +72,7 @@
+diff --git a/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp b/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp
+index 67e32a834..3627c8ea6 100644
+--- a/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp
++++ b/hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inline.hpp
+@@ -72,7 +72,7 @@ inline static void dmb_sy() {
       __asm__ volatile (
       ".word 0xF57FF050 | 0xf" : : : "memory");
  #endif
@@ -209,7 +226,7 @@ diff -r 22d7a88dbe78 hotspot/src/os_cpu/linux_arm/vm/orderAccess_linux_arm.inlin
       intptr_t zero = 0;
       __asm__ volatile (
         "mcr p15, 0, %0, c7, c10, 5"
-@@ -96,7 +96,7 @@
+@@ -96,7 +96,7 @@ inline static void dmb_st() {
       __asm__ volatile (
       ".word 0xF57FF050 | 0xe" : : : "memory");
  #endif
