@@ -83,7 +83,7 @@ elif [ "$JDKVER" == "10" ]; then
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
 
 # OpenJDK 11
-elif [ "$JDKVER" == "dev" ]; then
+elif [ "$JDKVER" == "11" ]; then
   JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk11.git"
   JAVA_SCM="git"
   PATCHVER="jdk11"
