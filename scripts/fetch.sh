@@ -53,8 +53,10 @@ if [ ! -d "$SFLTDIR" ] && [ "$SFLT_NEEDED" == "true" ]; then
 fi
 
 
-if [ ! -d "$ABLDDIR" ]; then
-  # clone the root project
-  echo "[FETCH] Cloning openjdk-build repo"
-  git clone --depth 1 "$ABLDREPO" "$ABLDDIR"
+if [ -d "$ABLDDIR" ]; then
+  rm -rf "$ABLDDIR"
 fi
+
+# clone the root project
+echo "[FETCH] Cloning openjdk-build repo"
+git clone --depth 1 "$ABLDREPO" "$ABLDDIR"
