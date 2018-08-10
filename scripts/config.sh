@@ -62,8 +62,8 @@ CACERTFILE="$ABLDDIR/security/cacerts"
 
 # OpenJDK 9
 if [ "$JDKVER" == "9" ]; then
-  JAVA_REPO="http://hg.openjdk.java.net/jdk-updates/jdk9u/"
-  JAVA_SCM="hg"
+  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk9u.git"
+  JAVA_SCM="git"
   PATCHVER="jdk9"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
@@ -78,6 +78,16 @@ elif [ "$JDKVER" == "10" ]; then
   PATCHVER="jdk10"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
+  HOSTJDK="$BUILDDIR/jdk-10"
+  HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
+  HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
+
+# OpenJDK 11
+elif [ "$JDKVER" == "dev" ]; then
+  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk11.git"
+  JAVA_SCM="git"
+  PATCHVER="jdk11"
+  AUTOGEN_STYLE="v2"
   HOSTJDK="$BUILDDIR/jdk-10"
   HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
@@ -99,6 +109,7 @@ else
   echo "Acceptable values:" >&2
   echo "JDKVER=9" >&2
   echo "JDKVER=10" >&2
+  echo "JDKVER=11" >&2
   echo "JDKVER=dev" >&2
   exit 1
 fi
