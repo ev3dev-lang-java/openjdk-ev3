@@ -76,11 +76,11 @@ elif [ "$JDKPLATFORM" == "rpi1" ] ||
                    --with-extra-cflags="-w -Wno-error" \
                    --with-extra-cxxflags="-w -Wno-error" \
                    --with-version-string="$JAVA_VERSION" \
-                   --without-softfloat
+                   --without-softfloat \
                    --with-cacerts-file="$CACERTFILE" \
                    --with-debug-level=release \
-                   AR="arm-linux-gnueabi-gcc-ar" \
-                   NM="arm-linux-gnueabi-gcc-nm" \
+                   AR="arm-linux-gnueabihf-gcc-ar" \
+                   NM="arm-linux-gnueabihf-gcc-nm" \
                    BUILD_AR="gcc-ar" \
                    BUILD_NM="gcc-nm"
 fi
