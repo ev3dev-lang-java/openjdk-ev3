@@ -37,9 +37,33 @@ pipeline {
                 sh "docker build -t ev3dev-lang-java:jdk-build -f scripts/Dockerfile scripts "
             }
         }
-        stage("Build") {
+        stage("InDocker Prepare") {
             steps {
-                sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' ev3dev-lang-java:jdk-build"
+                sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
+                    -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
+                    ev3dev-lang-java:jdk-build /opt/jdkcross/prepare.sh"
+            }
+        }
+        stage("InDocker Download") {
+            steps {
+                sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
+                    -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
+                    ev3dev-lang-java:jdk-build /opt/jdkcross/fetch.sh"
+            }
+        }
+        stage("InDocker Build") {
+            steps {
+                sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
+                    -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
+                    ev3dev-lang-java:jdk-build /opt/jdkcross/build.sh"
+            }
+        }
+        stage("InDocker Package") {
+            steps {
+                sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
+                    -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
+                    ev3dev-lang-java:jdk-build /opt/jdkcross/zip.sh"
+
                 archiveArtifacts artifacts: 'build/jri-'   + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
                 archiveArtifacts artifacts: 'build/jdk-'   + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
                 archiveArtifacts artifacts: 'build/jmods-' + JDKPLATFORM_VALUE + '.tar.gz', fingerprint: true
