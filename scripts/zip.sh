@@ -13,7 +13,15 @@ rm -rf ./jri
 
 # build ev3 runtime image
 echo "[ZIP] Building JRI"
-"$HOSTJDK/bin/jlink" \
+if [ -f "../buildjdk/jdk/bin/jlink" ]; then
+   echo "[ZIP]  using bundled jlink"
+  JLINK_EXE="../buildjdk/jdk/bin/jlink"
+else
+   echo "[ZIP]  using external jlink"
+  JLINK_EXE="$HOSTJDK/bin/jlink"
+fi
+
+"$JLINK_EXE" \
    --module-path ./jmods/ \
    --endian little \
    --compress 0 \
