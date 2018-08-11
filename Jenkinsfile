@@ -3,26 +3,15 @@ pipeline {
         label '( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( docker || sw.tool.docker ) && !test'
     }
     stages {
-        stage('checkout') {
-            steps {
-                checkout scm
-            }
-        }
         stage('Prepare environment') {
             steps {
+                checkout scm
                 sh "rm -rf    /home/jenkins/workspace/" + JOB_NAME + "/build"
                 sh "mkdir -p  /home/jenkins/workspace/" + JOB_NAME + "/build"
                 sh "chmod 777 /home/jenkins/workspace/" + JOB_NAME + "/build"
-                // do not cache to save space
-                //sh "rm /home/jenkins/workspace/" + JOB_NAME + "/openjdk-9.0.4_linux-x64_bin.tar.gz"
-                //sh "rm /home/jenkins/workspace/" + JOB_NAME + "/openjdk-10_linux-x64_bin.tar.gz"
-                //sh "cd /home/jenkins/workspace/" + JOB_NAME + " && wget -nv -N https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
-                //sh "cd /home/jenkins/workspace/" + JOB_NAME + " && wget -nv -N https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
-                //sh "cp /home/jenkins/workspace/" + JOB_NAME + "/openjdk-9.0.4_linux-x64_bin.tar.gz /home/jenkins/workspace/" + JOB_NAME + "/build/"
-                //sh "cp /home/jenkins/workspace/" + JOB_NAME + "/openjdk-10_linux-x64_bin.tar.gz /home/jenkins/workspace/" + JOB_NAME + "/build/"
             }
         }
-        stage('Build cross-compilation OS') {
+        stage('Build cross image') {
             steps {
                 script {
                     try {
@@ -30,35 +19,27 @@ pipeline {
                     } catch (err) {}
                 }
                 sh "docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile." + DOCKER_ARCH + " system "
-            }
-        }
-        stage("Build cross-compilation environment") {
-            steps {
                 sh "docker build -t ev3dev-lang-java:jdk-build -f scripts/Dockerfile scripts "
             }
         }
-        stage("InDocker Prepare") {
+        stage("JDK download") {
             steps {
                 sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
                     -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
                     ev3dev-lang-java:jdk-build /opt/jdkcross/prepare.sh"
-            }
-        }
-        stage("InDocker Download") {
-            steps {
                 sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
                     -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
                     ev3dev-lang-java:jdk-build /opt/jdkcross/fetch.sh"
             }
         }
-        stage("InDocker Build") {
+        stage("JDK build") {
             steps {
                 sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
                     -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
                     ev3dev-lang-java:jdk-build /opt/jdkcross/build.sh"
             }
         }
-        stage("InDocker Package") {
+        stage("JDK packaging") {
             steps {
                 sh "docker run --rm -v /home/jenkins/workspace/" + JOB_NAME + "/build:/build \
                     -e JDKVER='" + JDKVER_VALUE + "' -e JDKVM='" + JDKVM_VALUE + "' -e JDKPLATFORM='" + JDKPLATFORM_VALUE + "' -e AUTOBUILD='1' \
