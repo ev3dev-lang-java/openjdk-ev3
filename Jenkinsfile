@@ -40,9 +40,9 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             bldImage.inside("${mountParams} ${envParams}") {
                 sh "/opt/jdkcross/zip.sh"
             }
-            archiveArtifacts artifacts: "${env.WORKSPACE}/build/jri-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
-            archiveArtifacts artifacts: "${env.WORKSPACE}/build/jdk-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
-            archiveArtifacts artifacts: "${env.WORKSPACE}/build/jmods-${params.JDKPLATFORM_VALUE}.tar.gz", fingerprint: true
+            archiveArtifacts artifacts: "build/jri-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
+            archiveArtifacts artifacts: "build/jdk-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
+            archiveArtifacts artifacts: "build/jmods-${params.JDKPLATFORM_VALUE}.tar.gz", fingerprint: true
         }
     } finally {
         stage ('Cleanup') {
