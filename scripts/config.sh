@@ -78,9 +78,9 @@ elif [ "$JDKVER" == "10" ]; then
   PATCHVER="jdk10"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
-  HOSTJDK="$BUILDDIR/jdk-10"
-  HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
-  HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
+  HOSTJDK="$BUILDDIR/jdk-10.0.2"
+  HOSTJDK_FILE="$BUILDDIR/openjdk-10.0.2_linux-x64_bin.tar.gz"
+  HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10.0.2/19aef61b38124481863b1413dce1855f/13/openjdk-10.0.2_linux-x64_bin.tar.gz"
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
@@ -88,19 +88,19 @@ elif [ "$JDKVER" == "11" ]; then
   JAVA_SCM="git"
   PATCHVER="jdk11"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-10"
-  HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
-  HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
+  HOSTJDK="$BUILDDIR/jdk-11.0.1"
+  HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
+  HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
 
 # OpenJDK Master+dev
-elif [ "$JDKVER" == "dev" ]; then
+elif [ "$JDKVER" == "12" ]; then
   JAVA_REPO="http://hg.openjdk.java.net/jdk/jdk/"
   JAVA_SCM="hg"
-  PATCHVER="jdkdev"
+  PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-10"
-  HOSTJDK_FILE="$BUILDDIR/openjdk-10_linux-x64_bin.tar.gz"
-  HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10/binaries/openjdk-10_linux-x64_bin.tar.gz"
+  HOSTJDK="$BUILDDIR/jdk-11.0.1"
+  HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
+  HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
 
 
 # invalid or unset version
@@ -110,7 +110,7 @@ else
   echo "JDKVER=9" >&2
   echo "JDKVER=10" >&2
   echo "JDKVER=11" >&2
-  echo "JDKVER=dev" >&2
+  echo "JDKVER=12" >&2
   exit 1
 fi
 
