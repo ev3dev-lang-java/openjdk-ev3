@@ -33,7 +33,9 @@ The build process produces these files:
 | JDK   | `jdk-ev3.zip`   | Full JDK          | Brick         | ev3dev power user | Compiling Java programs directly on the brick.  |
 | JMODs | `jmods-ev3.zip` | Runtime precursor | Developer PC  | both              | Creating runtime images with more Java modules. |
 
-_JRI stands for "Java Runtime Image". The term itself is not specific to this project, it is equivalent to [Modular Run-Time Image](https://openjdk.java.net/jeps/220)._
+_JRI stands for "Java Runtime Image". The term itself is not specific to this project,
+it is equivalent to [Modular Run-Time Image](https://openjdk.java.net/jeps/220).
+To see which modules are included in our case, take a look at the jlink commandline in `scripts/zip.sh`._
 
 ## Building
 
