@@ -25,6 +25,17 @@ CACERTFILE="$ABLDDIR/security/cacerts"
 ## Version-specific configuration
 ##
 
+# invalid or unset VM
+if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ]; then
+  echo "Error! Please specify JDK VM to compile via the JDKVM environment variable." >&2
+  echo "Acceptable values:" >&2
+  echo "JDKVM=client" >&2
+  echo "JDKVM=zero" >&2
+  exit 1
+fi
+
+HOTSPOT_VARIANT="$JDKVM"
+
 # output images directory
 #IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
 
@@ -70,6 +81,7 @@ if [ "$JDKVER" == "9" ]; then
   HOSTJDK="$BUILDDIR/jdk-9.0.4"
   HOSTJDK_FILE="$BUILDDIR/openjdk-9.0.4_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
+  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
@@ -81,6 +93,7 @@ elif [ "$JDKVER" == "10" ]; then
   HOSTJDK="$BUILDDIR/jdk-10.0.2"
   HOSTJDK_FILE="$BUILDDIR/openjdk-10.0.2_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10.0.2/19aef61b38124481863b1413dce1855f/13/openjdk-10.0.2_linux-x64_bin.tar.gz"
+  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
@@ -91,6 +104,7 @@ elif [ "$JDKVER" == "11" ]; then
   HOSTJDK="$BUILDDIR/jdk-11.0.1"
   HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
+  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
 
 # OpenJDK Master+dev
 elif [ "$JDKVER" == "12" ]; then
@@ -103,7 +117,7 @@ elif [ "$JDKVER" == "12" ]; then
   HOSTJDK="$BUILDDIR/jdk-11.0.1"
   HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
-
+  IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-release/images"
 
 # invalid or unset version
 else
@@ -144,16 +158,3 @@ else
   exit 1
 fi
 
-
-
-# invalid or unset VM
-if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ]; then
-  echo "Error! Please specify JDK VM to compile via the JDKVM environment variable." >&2
-  echo "Acceptable values:" >&2
-  echo "JDKVM=client" >&2
-  echo "JDKVM=zero" >&2
-  exit 1
-fi
-
-HOTSPOT_VARIANT="$JDKVM"
-IMAGEDIR="/build/jdk/build/linux-arm-normal-${JDKVM}-release/images"
