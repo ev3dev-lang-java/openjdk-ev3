@@ -94,8 +94,10 @@ elif [ "$JDKVER" == "11" ]; then
 
 # OpenJDK Master+dev
 elif [ "$JDKVER" == "12" ]; then
-  JAVA_REPO="http://hg.openjdk.java.net/jdk/jdk/"
-  JAVA_SCM="hg"
+  JAVA_REPO="http://hg.openjdk.java.net/jdk/jdk/archive/tip.tar.bz2"
+  JAVA_SCM="hg_zip"
+  JAVA_BZ2="$BUILDDIR/tip.tar.bz2"
+  JAVA_TMP="$BUILDDIR/jdk_tmp"
   PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
   HOSTJDK="$BUILDDIR/jdk-11.0.1"

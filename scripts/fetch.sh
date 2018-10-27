@@ -22,6 +22,36 @@ if [ ! -d "$JDKDIR" ]; then
 
     JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')-ev3"
 
+  elif [ "$JAVA_SCM" == "hg_zip" ]; then
+    cd "$BUILDDIR"
+
+    # download bz2
+    echo "[FETCH] Downloading Java tarball from Mercurial"
+    wget -nv -N "$JAVA_REPO"
+
+    # extract
+    echo "[FETCH] Extracting tarball"
+    mkdir "$JAVA_TMP"
+    tar -C "$JAVA_TMP" -xf "$JAVA_BZ2"
+
+    # move to the right place
+    # https://unix.stackexchange.com/a/156287
+    pattern="$JAVA_TMP/*"
+    files=( $pattern )
+    mv "${files[0]}" "$JDKDIR"
+    rmdir "$JAVA_TMP"
+
+    # enter the jdk repo
+    cd "$JDKDIR"
+
+    # clone the rest of the tree, if needed
+    if [ -f "./get_source.sh" ]; then
+      echo "[FETCH] Downloading Java components"
+      bash ./get_source.sh
+    fi
+
+    JAVA_VERSION="$(cat ./.hg_archival.txt | grep "latesttag:" | sed -E 's/^.*jdk-//')-ev3"
+
   elif [ "$JAVA_SCM" == "git" ]; then
     latestTag="$($SCRIPTDIR/latest.awk "$JAVA_REPO")"
     JAVA_VERSION="$(echo "$latestTag" | sed 's/jdk-//')-ev3"
