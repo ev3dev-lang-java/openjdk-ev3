@@ -45,7 +45,7 @@ echo "[BUILD] Configuring Java for target '$JDKPLATFORM'"
 if [ "$JDKPLATFORM" == "ev3" ]; then
   bash ./configure --with-boot-jdk="$HOSTJDK" \
                    --openjdk-target=arm-linux-gnueabi \
-                   --with-abi-profile=arm-ev3 \
+                   --with-abi-profile=arm926ejs \
                    --enable-headless-only \
                    --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
                    --with-freetype-include=/usr/include \
