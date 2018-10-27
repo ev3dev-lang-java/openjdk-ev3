@@ -1,0 +1,53 @@
+diff --git a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
+index e10e589..c72b939 100644
+--- a/make/autoconf/flags-other.m4
++++ b/make/autoconf/flags-other.m4
+@@ -121,6 +121,16 @@ AC_DEFUN([FLAGS_SETUP_ASFLAGS_CPU_DEP],
+   # Misuse EXTRA_CFLAGS to mimic old behavior
+   $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS ${$2EXTRA_CFLAGS}"
+ 
++  if test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
++    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS -mcpu=arm926ej-s"
++  elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi1; then
++    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS -mcpu=arm1176jzf-s"
++  elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi2; then
++    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS -mcpu=cortex-a7"
++  elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi3; then
++    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS -mcpu=cortex-a53"
++  fi
++
+   AC_SUBST($2JVM_ASFLAGS)
+ ])
+ 
+diff --git a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
+index 472e7a6..45445f2 100644
+--- a/make/autoconf/flags.m4
++++ b/make/autoconf/flags.m4
+@@ -34,7 +34,7 @@ m4_include([flags-other.m4])
+ AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
+ [
+   AC_ARG_WITH(abi-profile, [AS_HELP_STRING([--with-abi-profile],
+-      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt, armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
++      [specify ABI profile for ARM builds (arm-vfp-sflt,arm-vfp-hflt,arm-sflt,arm-ev3,arm-rpi1,arm-rpi2,arm-rpi3,armv5-vfp-sflt,armv6-vfp-hflt,arm64,aarch64) @<:@toolchain dependent@:>@ ])])
+ 
+   if test "x$with_abi_profile" != x; then
+     if test "x$OPENJDK_TARGET_CPU" != xarm && \
+@@ -55,6 +55,18 @@ AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
+       ARM_FLOAT_TYPE=sflt
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-ev3; then
++      ARM_FLOAT_TYPE=sflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=arm926ej-s -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi1; then
++      ARM_FLOAT_TYPE=vfp-hflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=arm1176jzf-s -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi2; then
++      ARM_FLOAT_TYPE=vfp-hflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=cortex-a7 -marm'
++    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-rpi3; then
++      ARM_FLOAT_TYPE=vfp-hflt
++      ARM_ARCH_TYPE_FLAGS='-mcpu=cortex-a53 -marm'
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
+       ARM_FLOAT_TYPE=vfp-sflt
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
