@@ -25,28 +25,29 @@ Builds for older boards should work on newer boards, the performance might just 
 
 
 ## Components
-The output consists of these parts:
-* JRI for the brick - `jri-*.zip`
-  * Stripped down version of Java -- a Java Runtime Image
-  * Intended for normal users.
-* Full JDK running on the brick - `jdk-*.zip`
-  * Intended for Linux power users.
-* Brick jmods - `jmods-*.zip`
-  * They can be used for creating custom JRIs.
-  * Intended for advanced users wanting to add additional OpenJDK modules.
+The build process produces these files:
+
+| Name  | File name       | Summary           | Where it runs | Who is it for     | What is it useful for                           |
+|-------|-----------------|-------------------|---------------|-------------------|-------------------------------------------------|
+| JRI   | `jri-ev3.zip`   | Minimal runtime   | Brick         | Java developer    | Running Java programs on ev3dev.                |
+| JDK   | `jdk-ev3.zip`   | Full JDK          | Brick         | ev3dev power user | Compiling Java programs directly on the brick.  |
+| JMODs | `jmods-ev3.zip` | Runtime precursor | Developer PC  | both              | Creating runtime images with more Java modules. |
+_JRI stands for "Java Runtime Image". The term itself is not specific to this project, it is equivalent to [Modular Run-Time Image](https://openjdk.java.net/jeps/220)._
 
 ## Building
 
-0. Clone/download this repo to your computer.
+0. Clone this repository.
 1. Install [Docker](https://docs.docker.com/engine/installation/) for your operating system.
-2. Build the jdk cross-compilation OS:
+2. Build the base cross-compilation image:
 ```sh
 sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile.armel system
 ```
-3. Build the jdk cross-compilation environment:
+3. Build the image with OpenJDK cross-compilation scripts:
 ```sh
 sudo docker build -t ev3dev-lang-java:jdk-build   -f scripts/Dockerfile scripts
 ```
+Next steps depend on whether you want to navigate the build yourself, or if you want the build to run automatically.
+
 ### Semi-manual build
 4. Run the newly prepared container. You have to mount a host directory to the the `/build` directory in the container,
 otherwise the build would get discarded. The final build needs at least 6.5 GB of free space (in the build directory).
