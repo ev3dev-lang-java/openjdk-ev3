@@ -8,6 +8,25 @@ A custom build of OpenJDK 9 & 10 for LEGO Mindstorms compatible bricks supported
 
 Builds for older boards should work on newer boards, the performance might just be a bit lower.
 
+## Build Status
+
+| OpenJDK version  | Platform | Status    |
+|------------------|----------|-----------|
+| OpenJDK 9        | EV3      | [![openjdk9_build_ev3_linux][1]][2] |
+| OpenJDK 10       | EV3      | [![openjdk10_build_ev3_linux][3]][4] |
+| OpenJDK 11       | EV3      | [![openjdk11_build_ev3_linux][5]][6] |
+| OpenJDK 12 (dev) | EV3      | [![openjdk12_build_ev3_linux][7]][8] |
+
+[1]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk9_build_ev3_linux/badge/icon
+[2]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk9_build_ev3_linux/
+[3]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk10_build_ev3_linux/badge/icon
+[4]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk10_build_ev3_linux/
+[5]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk11_build_ev3_linux/badge/icon
+[6]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk11_build_ev3_linux/
+[7]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux/badge/icon
+[8]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux/
+
+
 ## Components
 The output consists of these parts:
 * JRI for the brick - `jri-*.zip`
