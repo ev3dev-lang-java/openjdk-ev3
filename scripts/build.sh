@@ -42,7 +42,6 @@ fi
 # configure the build
 echo "[BUILD] Configuring Java for target '$JDKPLATFORM'"
 
-
 if [ "$JDKPLATFORM" == "ev3" ]; then
   bash ./configure --with-boot-jdk="$HOSTJDK" \
                    --openjdk-target=arm-linux-gnueabi \
@@ -59,28 +58,6 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-debug-level=release \
                    AR="arm-linux-gnueabi-gcc-ar" \
                    NM="arm-linux-gnueabi-gcc-nm" \
-                   BUILD_AR="gcc-ar" \
-                   BUILD_NM="gcc-nm"
-
-# Raspberry Pis
-elif [ "$JDKPLATFORM" == "rpi1" ] ||
-     [ "$JDKPLATFORM" == "rpi2" ] ||
-     [ "$JDKPLATFORM" == "rpi3" ]; then
-  bash ./configure --with-boot-jdk="$HOSTJDK" \
-                   --openjdk-target=arm-linux-gnueabihf \
-                   --with-abi-profile="arm-$JDKPLATFORM" \
-                   --enable-headless-only \
-                   --with-freetype-lib=/usr/lib/arm-linux-gnueabihf \
-                   --with-freetype-include=/usr/include \
-                   --with-jvm-variants="$HOTSPOT_VARIANT" \
-                   --with-extra-cflags="-w -Wno-error" \
-                   --with-extra-cxxflags="-w -Wno-error" \
-                   --with-version-string="$JAVA_VERSION" \
-                   --without-softfloat \
-                   --with-cacerts-file="$CACERTFILE" \
-                   --with-debug-level=release \
-                   AR="arm-linux-gnueabihf-gcc-ar" \
-                   NM="arm-linux-gnueabihf-gcc-nm" \
                    BUILD_AR="gcc-ar" \
                    BUILD_NM="gcc-nm"
 fi

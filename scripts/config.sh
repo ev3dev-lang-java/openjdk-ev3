@@ -135,26 +135,11 @@ fi
 if [ "$JDKPLATFORM" == "ev3" ]; then
   SFLT_NEEDED=true
 
-# Raspberry Pi 1
-elif [ "$JDKPLATFORM" == "rpi1" ]; then
-  SFLT_NEEDED=false
-
-# Raspberry Pi 2
-elif [ "$JDKPLATFORM" == "rpi2" ]; then
-  SFLT_NEEDED=false
-
-# Raspberry Pi 3
-elif [ "$JDKPLATFORM" == "rpi3" ]; then
-  SFLT_NEEDED=false
-
 # invalid or unset platform
 else
   echo "Error! Please specify JDK platform to compile via the JDKPLATFORM environment variable." >&2
   echo "Acceptable values:" >&2
   echo "JDKPLATFORM=ev3" >&2
-  echo "JDKPLATFORM=rpi1" >&2
-  echo "JDKPLATFORM=rpi2" >&2
-  echo "JDKPLATFORM=rpi3" >&2
   exit 1
 fi
 

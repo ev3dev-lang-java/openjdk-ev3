@@ -1,10 +1,7 @@
 # OpenJDK for ev3dev-lang-java
-A custom build of OpenJDK 9 & 10 for LEGO Mindstorms compatible bricks supported by ev3dev:
+Custom build of OpenJDK providing Java support for ev3dev on the following devices:
 
-* EV3, featuring a ARM926EJ-S CPU
-* Raspberry Pi 1, featuring a ARM1176JZF-S CPU
-* Raspberry Pi 2, featuring a Cortex-A7 CPU
-* Raspberry Pi 3, featuring a Cortex-A53 CPU
+* LEGO Mindstorms EV3, featuring a ARM926EJ-S CPU
 
 Builds for older boards should work on newer boards, the performance might just be a bit lower.
 
@@ -44,8 +41,7 @@ The output consists of these parts:
 1. Install [Docker](https://docs.docker.com/engine/installation/) for your operating system.
 2. Build the jdk cross-compilation OS:
 ```sh
-sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile.armel  system # ONLY FOR EV3
-sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile.armhf  system # ONLY FOR RPI1. RPI2 & RPI3
+sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile.armel system
 ```
 3. Build the jdk cross-compilation environment:
 ```sh
@@ -63,13 +59,11 @@ Please change the `$BUILD_DIRECTORY` to a valid path.
 ```
 export JDKVER=9         # OpenJDK 9
 export JDKVER=10        # OpenJDK 10
-export JDKVER=dev       # OpenJDK Master+dev (to-be OpenJDK 11 at the time of writing)
+export JDKVER=11        # OpenJDK 11
+export JDKVER=12        # OpenJDK 12
 export JDKVM=zero       # Use Zero interpreter
 export JDKVM=client     # Use ARM32 JIT
 export JDKPLATFORM=ev3  # Use EV3  build flags
-export JDKPLATFORM=rpi1 # Use RPi1 build flags
-export JDKPLATFORM=rpi2 # Use RPi2 build flags
-export JDKPLATFORM=rpi3 # Use RPi3 build flags
 ```
 6. Before we can start the build process, Boot JDK must be downloaded:
 ```
