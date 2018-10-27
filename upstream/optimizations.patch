@@ -1,8 +1,7 @@
-diff --git a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
-index e10e589..c72b939 100644
---- a/make/autoconf/flags-other.m4
-+++ b/make/autoconf/flags-other.m4
-@@ -121,6 +121,16 @@ AC_DEFUN([FLAGS_SETUP_ASFLAGS_CPU_DEP],
+diff -Naur a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
+--- a/make/autoconf/flags-other.m4	2018-10-27 00:13:12.000000000 +0200
++++ b/make/autoconf/flags-other.m4	2018-10-27 20:20:42.790765675 +0200
+@@ -119,6 +119,16 @@
    # Misuse EXTRA_CFLAGS to mimic old behavior
    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS ${$2EXTRA_CFLAGS}"
  
@@ -19,11 +18,10 @@ index e10e589..c72b939 100644
    AC_SUBST($2JVM_ASFLAGS)
  ])
  
-diff --git a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
-index 472e7a6..45445f2 100644
---- a/make/autoconf/flags.m4
-+++ b/make/autoconf/flags.m4
-@@ -34,7 +34,7 @@ m4_include([flags-other.m4])
+diff -Naur a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
+--- a/make/autoconf/flags.m4	2018-10-27 00:13:12.000000000 +0200
++++ b/make/autoconf/flags.m4	2018-10-27 20:20:42.790765675 +0200
+@@ -34,7 +34,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
    AC_ARG_WITH(abi-profile, [AS_HELP_STRING([--with-abi-profile],
@@ -32,7 +30,7 @@ index 472e7a6..45445f2 100644
  
    if test "x$with_abi_profile" != x; then
      if test "x$OPENJDK_TARGET_CPU" != xarm && \
-@@ -55,6 +55,18 @@ AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
+@@ -55,6 +55,18 @@
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
        ARM_FLOAT_TYPE=sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'

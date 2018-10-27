@@ -1,8 +1,6 @@
-diff --git a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
-new file mode 100644
-index 0000000..7fa1ed1
---- /dev/null
-+++ b/make/autoconf/lib-softfloat.m4
+diff -Naur a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
+--- a/make/autoconf/lib-softfloat.m4	1970-01-01 01:00:00.000000000 +0100
++++ b/make/autoconf/lib-softfloat.m4	2018-10-27 20:20:42.790765675 +0200
 @@ -0,0 +1,57 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
@@ -61,19 +59,18 @@ index 0000000..7fa1ed1
 +
 +  AC_SUBST(SOFTFLOAT_LIBS)
 +])
-diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
-index 5bf8569..eec4be6 100644
---- a/make/autoconf/libraries.m4
-+++ b/make/autoconf/libraries.m4
-@@ -32,6 +32,7 @@ m4_include([lib-freetype.m4])
- m4_include([lib-std.m4])
+diff -Naur a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
+--- a/make/autoconf/libraries.m4	2018-10-27 00:13:12.000000000 +0200
++++ b/make/autoconf/libraries.m4	2018-10-27 20:20:42.790765675 +0200
+@@ -33,6 +33,7 @@
  m4_include([lib-x11.m4])
  m4_include([lib-fontconfig.m4])
+ m4_include([lib-tests.m4])
 +m4_include([lib-softfloat.m4])
  
  ################################################################################
  # Determine which libraries are needed for this configuration
-@@ -78,6 +79,13 @@ AC_DEFUN_ONCE([LIB_DETERMINE_DEPENDENCIES],
+@@ -79,6 +80,13 @@
      NEEDS_LIB_ALSA=false
    fi
  
@@ -87,7 +84,7 @@ index 5bf8569..eec4be6 100644
    # Check if ffi is needed
    if HOTSPOT_CHECK_JVM_VARIANT(zero); then
      NEEDS_LIB_FFI=true
-@@ -97,6 +105,7 @@ AC_DEFUN_ONCE([LIB_SETUP_LIBRARIES],
+@@ -98,6 +106,7 @@
    LIB_SETUP_FONTCONFIG
    LIB_SETUP_FREETYPE
    LIB_SETUP_ALSA
@@ -95,11 +92,10 @@ index 5bf8569..eec4be6 100644
    LIB_SETUP_LIBFFI
    LIB_SETUP_BUNDLED_LIBS
    LIB_SETUP_MISC_LIBS
-diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
-index ec45949..f3b222e 100644
---- a/make/autoconf/spec.gmk.in
-+++ b/make/autoconf/spec.gmk.in
-@@ -343,6 +343,7 @@ FONTCONFIG_CFLAGS:=@FONTCONFIG_CFLAGS@
+diff -Naur a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
+--- a/make/autoconf/spec.gmk.in	2018-10-27 00:13:12.000000000 +0200
++++ b/make/autoconf/spec.gmk.in	2018-10-27 20:20:42.794765749 +0200
+@@ -349,6 +349,7 @@
  CUPS_CFLAGS:=@CUPS_CFLAGS@
  ALSA_LIBS:=@ALSA_LIBS@
  ALSA_CFLAGS:=@ALSA_CFLAGS@
@@ -107,11 +103,10 @@ index ec45949..f3b222e 100644
  LIBFFI_LIBS:=@LIBFFI_LIBS@
  LIBFFI_CFLAGS:=@LIBFFI_CFLAGS@
  ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
-diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
-index a4b67f0..15f8ae6 100644
---- a/make/hotspot/lib/CompileJvm.gmk
-+++ b/make/hotspot/lib/CompileJvm.gmk
-@@ -49,6 +49,7 @@ JVM_LDFLAGS += \
+diff -Naur a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
+--- a/make/hotspot/lib/CompileJvm.gmk	2018-10-27 00:13:12.000000000 +0200
++++ b/make/hotspot/lib/CompileJvm.gmk	2018-10-27 20:20:42.794765749 +0200
+@@ -49,6 +49,7 @@
  
  JVM_LIBS += \
      $(JVM_LIBS_FEATURES) \
@@ -119,11 +114,10 @@ index a4b67f0..15f8ae6 100644
      #
  
  # These files and directories are always excluded
-diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-index 53d6d17..c949c63 100644
---- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-@@ -1239,10 +1239,11 @@ extern int  __aeabi_dcmpgt(double, double);
+diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-10-27 00:13:12.000000000 +0200
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-10-27 20:20:42.794765749 +0200
+@@ -1242,10 +1242,11 @@
  
  // Imported code from glibc soft-fp bundle for
  // calculation accuracy improvement. See CR 6757269.

@@ -1,28 +1,7 @@
-diff --git a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-index df0fb2e..f15dabd 100644
---- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-+++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-@@ -303,6 +303,15 @@ void VM_Version::initialize() {
-     FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
-   }
- 
-+  // ARMv5 MP workaround
-+  if (arm_arch() == 5) {
-+    if (FLAG_IS_DEFAULT(AssumeMP)) {
-+      FLAG_SET_DEFAULT(AssumeMP, false);
-+    } else if (AssumeMP) {
-+      warning("AssumeMP can not be true for ARMv5 as there is only uniprocessor support");
-+      FLAG_SET_DEFAULT(AssumeMP, false);
-+    }
-+  }
-   _is_initialized = true;
- }
- 
-diff --git a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
-index 9e6bda2..01a4ade 100644
---- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
-+++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
-@@ -72,7 +72,7 @@ inline static void dmb_sy() {
+diff -Naur a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
+--- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp	2018-10-27 00:13:12.000000000 +0200
++++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp	2018-10-27 20:20:42.794765749 +0200
+@@ -67,7 +67,7 @@
       __asm__ volatile (
       ".word 0xF57FF050 | 0xf" : : : "memory");
  #endif
@@ -31,7 +10,7 @@ index 9e6bda2..01a4ade 100644
       intptr_t zero = 0;
       __asm__ volatile (
         "mcr p15, 0, %0, c7, c10, 5"
-@@ -96,7 +96,7 @@ inline static void dmb_st() {
+@@ -88,7 +88,7 @@
       __asm__ volatile (
       ".word 0xF57FF050 | 0xe" : : : "memory");
  #endif
@@ -40,11 +19,10 @@ index 9e6bda2..01a4ade 100644
       intptr_t zero = 0;
       __asm__ volatile (
         "mcr p15, 0, %0, c7, c10, 5"
-diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-index 53d6d17..c949c63 100644
---- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-@@ -498,7 +498,7 @@ class Assembler : public AbstractAssembler  {
+diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-10-27 00:13:12.000000000 +0200
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-10-27 20:20:42.794765749 +0200
+@@ -498,7 +498,7 @@
    void dmb(DMB_Opt opt, Register reg) {
      if (VM_Version::arm_arch() >= 7) {
        emit_int32(0xF57FF050 | opt);
