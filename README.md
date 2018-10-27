@@ -95,12 +95,8 @@ For values of `X`, `Y` and `Z` see above. Please change the `$BUILD_DIRECTORY` t
 5. If the build was successful, JDK packages were created in `$BUILD_DIRECTORY/jri-ev3.tar.gz`, `$BUILD_DIRECTORY/jdk-ev3.tar.gz` and `$BUILD_DIRECTORY/jmods.tar.gz`.
 
 
-## ~~JShell on the EV3~~
+## LeJOS support
 
-No longer supported. JShell backend on the EV3 is a huge overkill.
-
-
-## ~~OpenJDK for leJOS~~
-
-LeJOS has probably reached its EOL. It is not a priority anymore to support it.
-[linux-devkit](https://github.com/mindboards/ev3sources/tree/master/extra/linux-devkit) + CodeSourcery GCC could be used for cross-compilation of it.
+LeJOS is not supported. To create a build, it is needed to build Java dependencies
+for the old LEGO-provided rootfs. Also, the rootfs build compiler is needed for building OpenJDK itself.
+[linux-devkit](https://github.com/mindboards/ev3sources/tree/master/extra/linux-devkit) + CodeSourcery GCC could be used for the cross-compilation.
