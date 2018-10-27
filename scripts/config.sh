@@ -134,6 +134,7 @@ fi
 # EV3
 if [ "$JDKPLATFORM" == "ev3" ]; then
   SFLT_NEEDED=true
+  eval "$(dpkg-architecture -s -a armel -A armel)"
 
 # invalid or unset platform
 else
