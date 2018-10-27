@@ -199,26 +199,6 @@ index 53d6d17de..c949c6363 100644
  };
  #endif // __SOFTFP__
  
-diff --git a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-index df0fb2ecf..f15dabd45 100644
---- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-+++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-@@ -303,6 +303,15 @@ void VM_Version::initialize() {
-     FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
-   }
- 
-+  // ARMv5 MP workaround
-+  if (arm_arch() == 5) {
-+    if (FLAG_IS_DEFAULT(AssumeMP)) {
-+      FLAG_SET_DEFAULT(AssumeMP, false);
-+    } else if (AssumeMP) {
-+      warning("AssumeMP can not be true for ARMv5 as there is only uniprocessor support");
-+      FLAG_SET_DEFAULT(AssumeMP, false);
-+    }
-+  }
-   _is_initialized = true;
- }
- 
 diff --git a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
 index 9e6bda265..01a4adebf 100644
 --- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
