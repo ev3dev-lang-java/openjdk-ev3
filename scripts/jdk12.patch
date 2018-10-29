@@ -1,6 +1,6 @@
 diff -Naur a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
 --- a/make/autoconf/flags.m4	2018-10-27 00:13:12.000000000 +0200
-+++ b/make/autoconf/flags.m4	2018-10-27 20:20:42.790765675 +0200
++++ b/make/autoconf/flags.m4	2018-10-29 02:23:24.476291208 +0100
 @@ -34,7 +34,7 @@
  AC_DEFUN([FLAGS_SETUP_ABI_PROFILE],
  [
@@ -10,7 +10,7 @@ diff -Naur a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
  
    if test "x$with_abi_profile" != x; then
      if test "x$OPENJDK_TARGET_CPU" != xarm && \
-@@ -55,6 +55,18 @@
+@@ -55,6 +55,9 @@
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
        ARM_FLOAT_TYPE=sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
@@ -22,8 +22,8 @@ diff -Naur a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 diff -Naur a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
 --- a/make/autoconf/flags-other.m4	2018-10-27 00:13:12.000000000 +0200
-+++ b/make/autoconf/flags-other.m4	2018-10-27 20:20:42.790765675 +0200
-@@ -119,6 +119,16 @@
++++ b/make/autoconf/flags-other.m4	2018-10-29 02:24:07.845540291 +0100
+@@ -119,6 +119,10 @@
    # Misuse EXTRA_CFLAGS to mimic old behavior
    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS ${$2EXTRA_CFLAGS}"
  
@@ -36,7 +36,7 @@ diff -Naur a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
  
 diff -Naur a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
 --- a/make/autoconf/libraries.m4	2018-10-27 00:13:12.000000000 +0200
-+++ b/make/autoconf/libraries.m4	2018-10-27 20:20:42.790765675 +0200
++++ b/make/autoconf/libraries.m4	2018-10-29 02:24:40.818484993 +0100
 @@ -33,6 +33,7 @@
  m4_include([lib-x11.m4])
  m4_include([lib-fontconfig.m4])
@@ -69,7 +69,7 @@ diff -Naur a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
    LIB_SETUP_MISC_LIBS
 diff -Naur a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
 --- a/make/autoconf/lib-softfloat.m4	1970-01-01 01:00:00.000000000 +0100
-+++ b/make/autoconf/lib-softfloat.m4	2018-10-27 20:20:42.790765675 +0200
++++ b/make/autoconf/lib-softfloat.m4	2018-10-29 02:24:40.822485107 +0100
 @@ -0,0 +1,57 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
@@ -130,7 +130,7 @@ diff -Naur a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
 +])
 diff -Naur a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
 --- a/make/autoconf/spec.gmk.in	2018-10-27 00:13:12.000000000 +0200
-+++ b/make/autoconf/spec.gmk.in	2018-10-27 20:20:42.794765749 +0200
++++ b/make/autoconf/spec.gmk.in	2018-10-29 02:24:40.822485107 +0100
 @@ -349,6 +349,7 @@
  CUPS_CFLAGS:=@CUPS_CFLAGS@
  ALSA_LIBS:=@ALSA_LIBS@
@@ -141,7 +141,7 @@ diff -Naur a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
  ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
 diff -Naur a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
 --- a/make/hotspot/lib/CompileJvm.gmk	2018-10-27 00:13:12.000000000 +0200
-+++ b/make/hotspot/lib/CompileJvm.gmk	2018-10-27 20:20:42.794765749 +0200
++++ b/make/hotspot/lib/CompileJvm.gmk	2018-10-29 02:24:40.822485107 +0100
 @@ -49,6 +49,7 @@
  
  JVM_LIBS += \
@@ -152,7 +152,7 @@ diff -Naur a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
  # These files and directories are always excluded
 diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-10-27 00:13:12.000000000 +0200
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-10-27 20:20:42.794765749 +0200
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-10-29 02:24:40.826485221 +0100
 @@ -498,7 +498,7 @@
    void dmb(DMB_Opt opt, Register reg) {
      if (VM_Version::arm_arch() >= 7) {
@@ -178,7 +178,7 @@ diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/asse
  
 diff -Naur a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
 --- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp	2018-10-27 00:13:12.000000000 +0200
-+++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp	2018-10-27 20:20:42.794765749 +0200
++++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp	2018-10-29 02:24:40.830485336 +0100
 @@ -67,7 +67,7 @@
       __asm__ volatile (
       ".word 0xF57FF050 | 0xf" : : : "memory");
