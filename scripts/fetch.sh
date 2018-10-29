@@ -27,7 +27,22 @@ if [ ! -d "$JDKDIR" ]; then
 
     # download bz2
     echo "[FETCH] Downloading Java tarball from Mercurial"
+
     wget -nv -N "$JAVA_REPO"
+    status=$?
+    tries=1
+    while [[ "$status" -ne "0" ]]; do
+
+      if [[ "$tries" -gt "$TARBALL_MAX_DOWNLOADS" ]]; then
+        echo "$TARBALL_MAX_DOWNLOADS download failed, giving up." 1>&2
+        exit 1
+      fi
+
+      wget -nv -N "$JAVA_REPO"
+      status=$?
+      tries=$(($tries+1))
+    done
+
 
     # extract
     echo "[FETCH] Extracting tarball"

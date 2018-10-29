@@ -23,6 +23,7 @@ CACERTFILE="$ABLDDIR/security/cacerts"
 # hg tarball
 JAVA_BZ2="$BUILDDIR/tip.tar.bz2"
 JAVA_TMP="$BUILDDIR/jdk_tmp"
+TARBALL_MAX_DOWNLOADS=10
 
 ##
 ## Version-specific configuration
