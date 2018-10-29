@@ -20,6 +20,9 @@ ABLDDIR="$BUILDDIR/openjdk-build"
 ABLDREPO="https://github.com/AdoptOpenJDK/openjdk-build.git"
 # cacertfile
 CACERTFILE="$ABLDDIR/security/cacerts"
+# hg tarball
+JAVA_BZ2="$BUILDDIR/tip.tar.bz2"
+JAVA_TMP="$BUILDDIR/jdk_tmp"
 
 ##
 ## Version-specific configuration
@@ -73,8 +76,8 @@ HOTSPOT_VARIANT="$JDKVM"
 
 # OpenJDK 9
 if [ "$JDKVER" == "9" ]; then
-  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk9u.git"
-  JAVA_SCM="git"
+  JAVA_REPO="https://hg.openjdk.java.net/jdk-updates/jdk9u/archive/tip.tar.bz2"
+  JAVA_SCM="hg_zip"
   PATCHVER="jdk9"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
@@ -85,8 +88,8 @@ if [ "$JDKVER" == "9" ]; then
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
-  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk10u.git"
-  JAVA_SCM="git"
+  JAVA_REPO="https://hg.openjdk.java.net/jdk-updates/jdk10u/archive/tip.tar.bz2"
+  JAVA_SCM="hg_zip"
   PATCHVER="jdk10"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
@@ -97,8 +100,8 @@ elif [ "$JDKVER" == "10" ]; then
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
-  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk11.git"
-  JAVA_SCM="git"
+  JAVA_REPO="https://hg.openjdk.java.net/jdk-updates/jdk11u/archive/tip.tar.bz2"
+  JAVA_SCM="hg_zip"
   PATCHVER="jdk11"
   AUTOGEN_STYLE="v2"
   HOSTJDK="$BUILDDIR/jdk-11.0.1"
@@ -108,10 +111,8 @@ elif [ "$JDKVER" == "11" ]; then
 
 # OpenJDK Master+dev
 elif [ "$JDKVER" == "12" ]; then
-  JAVA_REPO="http://hg.openjdk.java.net/jdk/jdk/archive/tip.tar.bz2"
+  JAVA_REPO="https://hg.openjdk.java.net/jdk/jdk/archive/tip.tar.bz2"
   JAVA_SCM="hg_zip"
-  JAVA_BZ2="$BUILDDIR/tip.tar.bz2"
-  JAVA_TMP="$BUILDDIR/jdk_tmp"
   PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
   HOSTJDK="$BUILDDIR/jdk-11.0.1"
