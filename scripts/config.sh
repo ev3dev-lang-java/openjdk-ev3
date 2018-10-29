@@ -77,8 +77,8 @@ HOTSPOT_VARIANT="$JDKVM"
 
 # OpenJDK 9
 if [ "$JDKVER" == "9" ]; then
-  JAVA_REPO="https://hg.openjdk.java.net/jdk-updates/jdk9u/archive/tip.tar.bz2"
-  JAVA_SCM="hg_zip"
+  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk9u.git"
+  JAVA_SCM="git"
   PATCHVER="jdk9"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
