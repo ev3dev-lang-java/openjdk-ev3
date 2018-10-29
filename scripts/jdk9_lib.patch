@@ -1,0 +1,32 @@
+diff -Naur a/hotspot/make/lib/CompileJvm.gmk b/hotspot/make/lib/CompileJvm.gmk
+--- a/hotspot/make/lib/CompileJvm.gmk	2018-10-29 02:12:47.004503606 +0100
++++ b/hotspot/make/lib/CompileJvm.gmk	2018-10-29 02:13:27.085866119 +0100
+@@ -187,6 +187,11 @@
+   endif
+ endif
+ 
++DEB_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || true)
++ifneq (,$(DEB_MULTIARCH))
++JVM_CFLAGS += -DDEB_MULTIARCH="\"$(DEB_MULTIARCH)\""
++endif
++
+ ifeq ($(OPENJDK_TARGET_OS), windows)
+   ifeq ($(OPENJDK_TARGET_CPU_BITS), 64)
+     RC_DESC := 64-Bit$(SPACE)
+diff -Naur a/hotspot/src/os/linux/vm/os_linux.cpp b/hotspot/src/os/linux/vm/os_linux.cpp
+--- a/hotspot/src/os/linux/vm/os_linux.cpp	2018-10-29 02:12:48.980571322 +0100
++++ b/hotspot/src/os/linux/vm/os_linux.cpp	2018-10-29 02:13:34.850127459 +0100
+@@ -288,10 +288,10 @@
+   //        1: ...
+   //        ...
+   //        7: The default directories, normally /lib and /usr/lib.
+-#if defined(AMD64) || (defined(_LP64) && defined(SPARC)) || defined(PPC64) || defined(S390)
+-  #define DEFAULT_LIBPATH "/usr/lib64:/lib64:/lib:/usr/lib"
++#ifdef DEB_MULTIARCH
++#define DEFAULT_LIBPATH	"/usr/lib/" DEB_MULTIARCH "/jni" ":/lib/" DEB_MULTIARCH ":/usr/lib/" DEB_MULTIARCH ":/usr/lib/jni:/lib:/usr/lib"
+ #else
+-  #define DEFAULT_LIBPATH "/lib:/usr/lib"
++  #define DEFAULT_LIBPATH "/usr/lib/jni:/lib:/usr/lib"
+ #endif
+ 
+ // Base path of extensions installed on the system.
