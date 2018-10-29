@@ -84,9 +84,9 @@ if [ ! -d "$JDKDIR" ]; then
 
   # apply the EV3-specific patches
   echo "[FETCH] Patching the source tree"
-  patch -p1 -i "$SCRIPTDIR/$PATCHVER.patch"
+  patch -p1 -i "$SCRIPTDIR/${PATCHVER}.patch"
   # debian library path
-  patch -p1 -i "$SCRIPTDIR/$PATCHVER_lib.patch"
+  patch -p1 -i "$SCRIPTDIR/${PATCHVER}_lib.patch"
 
 else
   echo "[FETCH] Directory for JDK repository exists, assuming everything has been done already." 2>&1
