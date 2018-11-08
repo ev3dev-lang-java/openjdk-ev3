@@ -43,6 +43,7 @@ fi
 echo "[BUILD] Configuring Java for target '$JDKPLATFORM'"
 
 if [ "$JDKPLATFORM" == "ev3" ]; then
+  LIBFFI_LIBS=-lffi_pic \
   bash ./configure --with-boot-jdk="$HOSTJDK" \
                    --openjdk-target=arm-linux-gnueabi \
                    --with-abi-profile=arm926ejs \
