@@ -1,7 +1,7 @@
 diff -Naur a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
---- a/make/hotspot/lib/CompileJvm.gmk	2018-10-27 00:13:12.000000000 +0200
-+++ b/make/hotspot/lib/CompileJvm.gmk	2018-10-29 02:00:54.643520553 +0100
-@@ -158,6 +158,11 @@
+--- a/make/hotspot/lib/CompileJvm.gmk	2018-11-08 20:45:13.000000000 +0100
++++ b/make/hotspot/lib/CompileJvm.gmk	2018-11-08 22:00:49.518983470 +0100
+@@ -152,6 +152,11 @@
    endif
  endif
  
@@ -14,8 +14,8 @@ diff -Naur a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
    ifeq ($(OPENJDK_TARGET_CPU_BITS), 64)
      RC_DESC := 64-Bit$(SPACE)
 diff -Naur a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
---- a/src/hotspot/os/linux/os_linux.cpp	2018-10-27 00:13:12.000000000 +0200
-+++ b/src/hotspot/os/linux/os_linux.cpp	2018-10-29 02:00:54.643520553 +0100
+--- a/src/hotspot/os/linux/os_linux.cpp	2018-11-08 20:45:13.000000000 +0100
++++ b/src/hotspot/os/linux/os_linux.cpp	2018-11-08 22:00:49.526983469 +0100
 @@ -323,10 +323,10 @@
    //        1: ...
    //        ...
