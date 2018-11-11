@@ -48,9 +48,7 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
         }
 
         stage("JDK debpkg") {
-            pkgImage.inside("${mountParams} ${envParams}") {
-                sh "/opt/jdkpkg/package.sh"
-            }
+            sh "docker run --rm ${mountParams} ev3dev-lang-java:jdk-package"
             archiveArtifacts artifacts: "build/debian.zip", fingerprint: false
         }
     } finally {
