@@ -1,0 +1,86 @@
+#!/bin/sh
+
+set -e
+
+multiarch="@@multiarch@@"
+priority="@@priority@@"
+basedir="/usr/lib/jvm/@@pkgname@@"
+jre_tools='@@jre-tools@@'
+
+case "$1" in
+configure)
+
+    [ -d /etc/.java ] || mkdir -m 755 /etc/.java
+    [ -d /etc/.java/.systemPrefs ] || mkdir -m 755 /etc/.java/.systemPrefs
+    if [ ! -f /etc/.java/.systemPrefs/.system.lock ]; then
+        touch /etc/.java/.systemPrefs/.system.lock
+        chmod 644 /etc/.java/.systemPrefs/.system.lock
+    fi
+    if [ ! -f /etc/.java/.systemPrefs/.systemRootModFile ]; then
+        touch /etc/.java/.systemPrefs/.systemRootModFile
+        chmod 644 /etc/.java/.systemPrefs/.systemRootModFile
+    fi
+
+    if [ -z "$2" ]; then
+        update_alternatives=y
+    fi
+    if [ -n "$multiarch" ] && [ -n "$2" ]; then
+        for i in $jre_tools; do
+            if [ -z "$(update-alternatives --list $i 2>/dev/null | grep ^$basedir/)" ]; then
+            update_alternatives=y
+            break
+            fi
+        done
+    fi
+    if [ "$update_alternatives" != y ] && [ $priority -gt @@old-priority@@ ]; then
+        for i in $jre_tools; do
+            oldp=$(update-alternatives --query java | awk -v b=$basedir '/^Alternative:/ && $2~b {p=1} /^Priority:/ && p {print $2; exit}')
+            if [ -n "$oldp" ] && [ "$oldp" -le @@old-priority@@ ]; then
+            update_alternatives=y
+            break
+            fi
+        done
+    fi
+
+    if [ "$update_alternatives" = y ]; then
+        if [ -n "$multiarch" ] && [ "$DPKG_MAINTSCRIPT_ARCH" != $(dpkg --print-architecture) ]; then
+            priority=$(expr $priority - 1)
+        fi
+        for i in $jre_tools; do
+            update-alternatives \
+                --install \
+                /usr/bin/$i \
+                $i \
+                $basedir/bin/$i \
+                $priority
+        done
+        update-alternatives \
+        --install /usr/bin/jexec jexec $basedir/lib/jexec $priority \
+        --slave \
+            /usr/share/binfmts/jar \
+            jexec-binfmt \
+            $basedir/lib/jar.binfmt
+    fi # update alternatives
+
+    # register binfmt; ignore errors, the alternative may already be
+    # registered by another JRE.
+    if which update-binfmts >/dev/null && [ -r /usr/share/binfmts/jar ]; then
+        update-binfmts --package @@binfmt-name@@ --import jar || true
+    fi
+
+    rm -f $basedir/lib/server/classes.jsa
+    log=$(tempfile)
+    if ! $basedir/bin/java -Xint -Xshare:dump > $log; then
+        cat >&2 $log
+        rm -f $log
+        # this may fail on some machines/configurations, just ignore it.
+        echo >&2 "ignoring dump failure"
+        #exit 1
+    fi
+    rm -f $log
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

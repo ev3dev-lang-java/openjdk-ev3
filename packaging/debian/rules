@@ -1,0 +1,132 @@
+#!/usr/bin/make -f
+
+version_major = ${DEB_JRI_MAJOR}
+version_minor = ${DEB_JRI_MINOR}
+version_patch = ${DEB_JRI_PATCH}
+version_build = ${DEB_JRI_BUILD}
+version_platform = ${DEB_JRI_PLATFORM}
+old_priority = ${DEB_JRI_OLD}
+
+basename = jri-$(version_major)
+binfmt_name = $(basename)
+jre_tools = java jrunscript keytool rmid rmiregistry
+multiarch = $(shell dpkg-architecture -q DEB_HOST_MULTIARCH)
+priority = $(version_major)$(version_minor)$(version_patch)
+pkgname = $(basename)-$(version_platform)
+
+dlopen_hl_depends = libcups2, liblcms2-2, libjpeg62-turbo, libfontconfig1, libnss3 (>= 2:3.17.1)
+dlopen_hl_recommends =
+
+control_vars  = '-Vdlopenhl:Depends=$(dlopen_hl_depends)'
+control_vars += '-Vdlopenhl:Recommends=$(dlopen_hl_recommends)'
+control_vars += '-Vcacert:Depends=ca-certificates-java'
+control_vars += '-Vmountpoint:Depends=util-linux (>= 2.26.2-4)'
+control_vars += '-Vjcommon:Depends=java-common (>= 0.28)'
+control_vars += '-Vdefaultvm:Provides='
+control_vars += '-Vjvm:Provides='
+
+binary-pre:
+	dh_testroot
+	dh_prep
+
+templates: binary-pre
+	for f in debian/*.in; do \
+	    case "$$f" in debian/control.in) continue; esac; \
+	    dst=$$(echo $$f | sed -E 's|^debian/||;s|\.in$$||;s|^|$(pkgname).|;s|^|debian/|'); \
+	    sed -e 's/@@basename@@/$(basename)/g' \
+	        -e 's/@@binfmt-name@@/$(binfmt_name)/g' \
+	        -e 's/@@jre-tools@@/$(jre_tools)/g' \
+	        -e 's/@@multiarch@@/$(multiarch)/g' \
+	        -e 's/@@priority@@/$(priority)/g' \
+	        -e 's/@@old-priority@@/$(old_priority)/g' \
+	        -e 's/@@pkgname@@/$(pkgname)/g' \
+	        $$f > $$dst; \
+	done
+
+mkdirs: binary-pre
+	# make directories
+	mkdir -p debian/$(pkgname)/usr/lib/jvm/$(pkgname) \
+	         debian/$(pkgname)/usr/share/binfmt \
+	         debian/$(pkgname)/etc/$(pkgname)/security/policy/unlimited \
+	         debian/$(pkgname)/etc/$(pkgname)/security/policy/limited
+
+copy_java: binary-pre mkdirs
+	cp -rf bin conf legal lib release debian/$(pkgname)/usr/lib/jvm/$(pkgname)/
+
+mkcustom: binary-pre mkdirs copy_java templates
+	# ca certificates
+	rm debian/$(pkgname)/usr/lib/jvm/$(pkgname)/lib/security/cacerts
+	ln -s /etc/ssl/certs/java/cacerts debian/$(pkgname)/usr/lib/jvm/$(pkgname)/lib/security/cacerts
+	# custom config
+	install -o root -g root -m 0644 debian/$(pkgname).jar.binfmt debian/$(pkgname)/usr/lib/jvm/$(pkgname)/lib/jar.binfmt
+	install -o root -g root -m 0644 debian/nss.cfg debian/$(pkgname)/etc/$(pkgname)/security/nss.cfg
+	install -o root -g root -m 0644 debian/jvm.cfg debian/$(pkgname)/etc/$(pkgname)/jvm.cfg
+	install -o root -g root -m 0644 debian/$(pkgname).jinfo debian/$(pkgname)/usr/lib/jvm/.$(pkgname).jinfo
+	# miscellaneous
+	for f in \
+	        conf/security/policy/unlimited/default_local.policy \
+	        conf/security/policy/unlimited/default_US_export.policy \
+	        conf/security/policy/limited/default_local.policy \
+	        conf/security/policy/limited/default_US_export.policy \
+	        conf/security/policy/limited/exempt_local.policy \
+	        conf/security/policy/README.txt \
+	        conf/security/java.policy \
+	        conf/security/java.security \
+	        conf/security/nss.cfg \
+	        conf/logging.properties \
+	        conf/net.properties \
+	        conf/sound.properties \
+	        lib/security/cacerts \
+	        lib/security/blacklisted.certs \
+	        lib/security/default.policy \
+	        lib/security/public_suffix_list.dat \
+	        lib/psfontj2d.properties \
+	        lib/psfont.properties.ja; do \
+	    src=$$(echo $$f | sed -E 's|^[^/]+||;s|^|/etc/$(pkgname)|'); \
+	    dst=$$(echo $$f | sed -E 's|^|debian/$(pkgname)/usr/lib/jvm/$(pkgname)/|'); \
+	    mv $$dst debian/$(pkgname)$$src; \
+	    ln -s $$src $$dst; \
+	done
+
+build-arch:
+	dh_testdir
+	touch debian/debhelper-build-stamp
+
+build-indep:
+	true
+
+binary-arch: binary-pre build-arch mkcustom
+	dh_installdocs
+	dh_installchangelogs
+	dh_installman
+	dh_lintian
+	dh_link
+	dh_strip_nondeterminism
+	dh_compress
+	dh_fixperms
+	dh_strip
+	dh_makeshlibs
+	dh_shlibdeps -l$(shell pwd)/lib:$(shell pwd)/lib/client:$(shell pwd)/lib/jli
+	dh_installdeb
+	dh_gencontrol -- $(control_vars)
+	dh_md5sums
+	dh_builddeb
+
+binary-indep: build-indep
+	true
+
+clean:
+	dh_testdir
+	dh_clean
+	for f in debian/*.in; do \
+	    case "$$f" in debian/control.in) continue; esac; \
+	    dst=$$(echo $$f | sed -E -e 's|^debian/||;s|\.in$$||;s|^|$(pkgname).|;s|^|debian/|'); \
+	    rm -f $$dst; \
+	done
+	rm -rf debian/$(pkgname)
+	rm -f debian/$(pkgname).substvars
+
+build: build-arch build-indep
+binary: binary-arch binary-indep
+
+

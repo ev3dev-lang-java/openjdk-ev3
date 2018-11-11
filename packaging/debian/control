@@ -1,0 +1,31 @@
+Source: jri-11-ev3
+Section: java
+Priority: optional
+Maintainer: Jakub Vaněk <linuxtardis@gmail.com>
+Uploaders: Jakub Vaněk <linuxtardis@gmail.com>
+Build-Depends: debhelper (>= 10), dpkg-dev, zip, unzip
+Standards-Version: 4.1.3
+Homepage: https://ev3dev-lang-java.github.io/
+Vcs-Git: https://github.com/ev3dev-lang-java/openjdk-ev3.git
+Vcs-Browser: https://github.com/ev3dev-lang-java/openjdk-ev3
+
+Package: jri-11-ev3
+Architecture: armel
+Multi-Arch: same
+Pre-Depends: ${dpkg:Depends}
+Depends: ${cacert:Depends},
+  ${jcommon:Depends}, ${dlopenhl:Depends},
+  ${mountpoint:Depends},
+  ${shlibs:Depends}, ${misc:Depends}
+Recommends: ${dlopenhl:Recommends}
+Suggests: libnss-mdns, fonts-dejavu-extra
+Provides: java-runtime-headless, java2-runtime-headless,
+  java5-runtime-headless, java6-runtime-headless,
+  java7-runtime-headless, java8-runtime-headless,
+  java9-runtime-headless, java10-runtime-headless,
+  java11-runtime-headless,
+  ${defaultvm:Provides}, ${jvm:Provides}
+Description: OpenJDK Java runtime image for EV3 (JRI) (headless)
+ Minimal Java runtime - needed for executing non GUI Java programs.
+ .
+ This package contains JRI built for the LEGO EV3 brick.

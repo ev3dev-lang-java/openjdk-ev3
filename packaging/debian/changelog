@@ -1,0 +1,5 @@
+@@package@@ (@@version@@) @@distro@@; urgency=medium
+
+  * Release version @@version@@.
+
+ -- Jakub Vaněk <linuxtardis@gmail.com>  @@date@@

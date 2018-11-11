@@ -1,0 +1,11 @@
+# empty directory by intent
+@@pkgname@@ binary: package-contains-empty-directory usr/share/binfmts/
+
+# Strip libjvm.so with --strip-debug instead of --strip-unneeded. LP: #574997.
+@@pkgname@@ binary: unstripped-binary-or-object
+
+# Ignore the mouse cursors
+@@pkgname@@ binary: image-file-in-usr-lib
+
+# yes, two empty directories
+@@pkgname@@ binary: debug-package-should-be-named-dbg

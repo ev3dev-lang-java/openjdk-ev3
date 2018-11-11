@@ -1,0 +1,11 @@
+name=@@pkgname@@
+alias=@@pkgname@@
+priority=@@priority@@
+section=main
+
+hl java /usr/lib/jvm/@@pkgname@@/bin/java
+hl jrunscript /usr/lib/jvm/@@pkgname@@/bin/jrunscript
+hl keytool /usr/lib/jvm/@@pkgname@@/bin/keytool
+hl rmid /usr/lib/jvm/@@pkgname@@/bin/rmid
+hl rmiregistry /usr/lib/jvm/@@pkgname@@/bin/rmiregistry
+hl jexec /usr/lib/jvm/@@pkgname@@/lib/jexec
