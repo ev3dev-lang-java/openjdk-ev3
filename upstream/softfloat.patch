@@ -1,8 +1,16 @@
-diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
---- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-11-08 20:45:13.000000000 +0100
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-11-08 21:55:24.439756634 +0100
-@@ -1242,10 +1242,11 @@
+# HG changeset patch
+# User Jakub Vaněk <linuxtardis@gmail.com>
+# Date 1542067026 -3600
+#      Tue Nov 13 00:57:06 2018 +0100
+# Node ID 7863d8fe25d9d4e703d6650aedb223968c115e64
+# Parent  a609d549992a4d094a514a6c0f5b79443192d8bf
+Remove external softfloat library requirement for sflt builds
 
+diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
+@@ -1242,10 +1242,11 @@
+ 
  // Imported code from glibc soft-fp bundle for
  // calculation accuracy improvement. See CR 6757269.
 -extern double __aeabi_fadd_glibc(float, float);
@@ -16,4 +24,4 @@ diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/asse
 +
  };
  #endif // __SOFTFP__
-
+ 
