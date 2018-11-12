@@ -93,14 +93,6 @@ else
   echo "[FETCH] Directory for JDK repository exists, assuming everything has been done already." 2>&1
 fi
 
-
-if [ ! -d "$SFLTDIR" ] && [ "$SFLT_NEEDED" == "true" ]; then
-  # clone the root project
-  echo "[FETCH] Cloning SoftFloat repo"
-  git clone --depth 1 "$SFLTREPO" "$SFLTDIR"
-fi
-
-
 if [ -d "$ABLDDIR" ]; then
   rm -rf "$ABLDDIR"
 fi

@@ -31,12 +31,6 @@ fi
    --add-modules java.se,jdk.jdwp.agent,jdk.unsupported \
    --output ./jri
 
-if [ "$SFLT_NEEDED" == "true" ]; then
-   cp "$SFLTDIR/COPYING.txt" "jri/legal/SoftFloat.txt"
-   cp "$SFLTDIR/COPYING.txt" "jdk/legal/SoftFloat.txt"
-   cp "$SFLTDIR/COPYING.txt" "jmods/SoftFloat.txt"
-fi
-
 # create zip files
 echo "[ZIP] Creating JRI archive"
 tar -cf - jri   | pigz -9 > "$BUILDDIR/jri-$JDKPLATFORM.tar.gz"
