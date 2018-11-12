@@ -29,122 +29,6 @@ diff -Naur a/common/autoconf/flags.m4 b/common/autoconf/flags.m4
      fi
    elif test "x$OPENJDK_$1_OS" = xmacosx; then
      $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -x assembler-with-cpp -mno-omit-leaf-frame-pointer -mstack-alignment=16"
-diff -Naur a/common/autoconf/libraries.m4 b/common/autoconf/libraries.m4
---- a/common/autoconf/libraries.m4	2018-10-29 02:35:18.200195363 +0100
-+++ b/common/autoconf/libraries.m4	2018-10-29 02:35:40.068791113 +0100
-@@ -32,6 +32,7 @@
- m4_include([lib-std.m4])
- m4_include([lib-x11.m4])
- m4_include([lib-elf.m4])
-+m4_include([lib-softfloat.m4])
- 
- ################################################################################
- # Determine which libraries are needed for this configuration
-@@ -68,6 +69,13 @@
-     NEEDS_LIB_ALSA=false
-   fi
- 
-+  if (test "x$OPENJDK_TARGET_CPU" == xarm &&
-+      test "x$ARM_FLOAT_TYPE" = xsflt); then
-+    NEEDS_LIB_SOFTFLOAT=true
-+  else
-+    NEEDS_LIB_SOFTFLOAT=false
-+  fi
-+
-   # Check if ffi is needed
-   if HOTSPOT_CHECK_JVM_VARIANT(zero) || HOTSPOT_CHECK_JVM_VARIANT(zeroshark); then
-     NEEDS_LIB_FFI=true
-@@ -86,6 +94,7 @@
-   LIB_SETUP_CUPS
-   LIB_SETUP_FREETYPE
-   LIB_SETUP_ALSA
-+  LIB_SETUP_SOFTFLOAT
-   LIB_SETUP_LIBFFI
-   LIB_SETUP_LLVM
-   LIB_SETUP_BUNDLED_LIBS
-diff -Naur a/common/autoconf/lib-softfloat.m4 b/common/autoconf/lib-softfloat.m4
---- a/common/autoconf/lib-softfloat.m4	1970-01-01 01:00:00.000000000 +0100
-+++ b/common/autoconf/lib-softfloat.m4	2018-10-29 02:35:40.068791113 +0100
-@@ -0,0 +1,57 @@
-+#
-+# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
-+# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-+#
-+# This code is free software; you can redistribute it and/or modify it
-+# under the terms of the GNU General Public License version 2 only, as
-+# published by the Free Software Foundation.  Oracle designates this
-+# particular file as subject to the "Classpath" exception as provided
-+# by Oracle in the LICENSE file that accompanied this code.
-+#
-+# This code is distributed in the hope that it will be useful, but WITHOUT
-+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-+# version 2 for more details (a copy is included in the LICENSE file that
-+# accompanied this code).
-+#
-+# You should have received a copy of the GNU General Public License version
-+# 2 along with this work; if not, write to the Free Software Foundation,
-+# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
-+# or visit www.oracle.com if you need additional information or have any
-+# questions.
-+#
-+
-+################################################################################
-+# Setup softfloat helper
-+################################################################################
-+AC_DEFUN_ONCE([LIB_SETUP_SOFTFLOAT],
-+[
-+  AC_ARG_WITH(softfloat, [AS_HELP_STRING([--with-softfloat],
-+      [specify path to patched softfloat.a])])
-+
-+  if test "x$NEEDS_LIB_SOFTFLOAT" = xfalse; then
-+    if (test "x${with_softfloat}" != x && test "x${with_softfloat}" != xno); then
-+      AC_MSG_WARN([[softfloat not used, so --with-softfloat is ignored]])
-+    fi
-+    SOFTFLOAT_LIBS=
-+  else
-+    SOFTFLOAT_FOUND=no
-+
-+    if test "x${with_softfloat}" = xno; then
-+      AC_MSG_ERROR([It is not possible to disable the use of softfloat. Remove the --without-softfloat option.])
-+    fi
-+
-+    if test "x${with_softfloat}" != x; then
-+      SOFTFLOAT_LIBS="${with_softfloat}"
-+      SOFTFLOAT_FOUND=yes
-+    fi
-+    if test "x$SOFTFLOAT_FOUND" = xno; then
-+      HELP_MSG_MISSING_DEPENDENCY([softfloat])
-+      AC_MSG_ERROR([Could not find softfloat! $HELP_MSG])
-+    fi
-+  fi
-+
-+  AC_SUBST(SOFTFLOAT_LIBS)
-+])
-diff -Naur a/common/autoconf/spec.gmk.in b/common/autoconf/spec.gmk.in
---- a/common/autoconf/spec.gmk.in	2018-10-29 02:35:18.200195363 +0100
-+++ b/common/autoconf/spec.gmk.in	2018-10-29 02:35:40.068791113 +0100
-@@ -316,6 +316,7 @@
- CUPS_CFLAGS:=@CUPS_CFLAGS@
- ALSA_LIBS:=@ALSA_LIBS@
- ALSA_CFLAGS:=@ALSA_CFLAGS@
-+SOFTFLOAT_LIBS:=@SOFTFLOAT_LIBS@
- LIBFFI_LIBS:=@LIBFFI_LIBS@
- LIBFFI_CFLAGS:=@LIBFFI_CFLAGS@
- ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
-diff -Naur a/hotspot/make/lib/CompileJvm.gmk b/hotspot/make/lib/CompileJvm.gmk
---- a/hotspot/make/lib/CompileJvm.gmk	2018-10-29 02:12:47.004503606 +0100
-+++ b/hotspot/make/lib/CompileJvm.gmk	2018-10-29 02:40:13.140195368 +0100
-@@ -107,6 +107,7 @@
- 
- JVM_LIBS += \
-     $(JVM_LIBS_FEATURES) \
-+    $(SOFTFLOAT_LIBS) \
-     #
- 
- # These files and directories are always excluded
 diff -Naur a/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp b/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp
 --- a/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp	2018-10-29 02:12:47.084506348 +0100
 +++ b/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp	2018-10-29 02:35:40.100791984 +0100
@@ -163,10 +47,12 @@ diff -Naur a/hotspot/src/cpu/arm/vm/assembler_arm_32.hpp b/hotspot/src/cpu/arm/v
  // calculation accuracy improvement. See CR 6757269.
 -extern double __aeabi_fadd_glibc(float, float);
 -extern double __aeabi_fsub_glibc(float, float);
-+extern float  __aeabi_fadd_glibc(float, float);
-+extern float  __aeabi_fsub_glibc(float, float);
- extern double __aeabi_dadd_glibc(double, double);
- extern double __aeabi_dsub_glibc(double, double);
+-extern double __aeabi_dadd_glibc(double, double);
+-extern double __aeabi_dsub_glibc(double, double);
++#define __aeabi_fadd_glibc __aeabi_fadd
++#define __aeabi_fsub_glibc __aeabi_fsub
++#define __aeabi_dadd_glibc __aeabi_dadd
++#define __aeabi_dsub_glibc __aeabi_dsub
 +
  };
  #endif // __SOFTFP__
