@@ -1,0 +1,19 @@
+diff -Naur a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+--- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2018-10-27 19:33:58.000000000 +0200
++++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2018-10-29 02:28:40.393243701 +0100
+@@ -303,6 +303,15 @@
+     FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
+   }
+
++  // ARMv5 MP workaround
++  if (arm_arch() == 5) {
++    if (FLAG_IS_DEFAULT(AssumeMP)) {
++      FLAG_SET_DEFAULT(AssumeMP, false);
++    } else if (AssumeMP) {
++      warning("AssumeMP can not be true for ARMv5 as there is only uniprocessor support");
++      FLAG_SET_DEFAULT(AssumeMP, false);
++    }
++  }
+   _is_initialized = true;
+ }
+
