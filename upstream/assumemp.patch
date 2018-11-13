@@ -1,10 +1,18 @@
-diff -Naur a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
---- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2018-10-27 19:33:58.000000000 +0200
-+++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2018-10-29 02:28:40.393243701 +0100
+# HG changeset patch
+# User Jakub Vaněk <linuxtardis@gmail.com>
+# Date 1542121020 -3600
+#      Tue Nov 13 15:57:00 2018 +0100
+# Node ID 23b63207df9382c5a606572bb22206bb4560f88f
+# Parent  407fc2d5752fa25cee3df3089a7fb29358a8a32a
+Disable AssumeMP by default on ARMv5
+
+diff --git a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+--- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp
++++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
 @@ -303,6 +303,15 @@
      FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
    }
-
+ 
 +  // ARMv5 MP workaround
 +  if (arm_arch() == 5) {
 +    if (FLAG_IS_DEFAULT(AssumeMP)) {
@@ -16,4 +24,4 @@ diff -Naur a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_
 +  }
    _is_initialized = true;
  }
-
+ 
