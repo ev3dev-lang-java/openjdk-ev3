@@ -1,4 +1,4 @@
-Source: jri-11-ev3
+Source: @@package@@
 Section: java
 Priority: optional
 Maintainer: Jakub Vaněk <linuxtardis@gmail.com>
@@ -9,7 +9,7 @@ Homepage: https://ev3dev-lang-java.github.io/
 Vcs-Git: https://github.com/ev3dev-lang-java/openjdk-ev3.git
 Vcs-Browser: https://github.com/ev3dev-lang-java/openjdk-ev3
 
-Package: jri-11-ev3
+Package: @@package@@
 Architecture: armel
 Multi-Arch: same
 Pre-Depends: ${dpkg:Depends}
