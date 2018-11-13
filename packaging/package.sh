@@ -43,7 +43,7 @@ cd "$PKGDIR"
 sed -i -e "s/@@package@@/$PKG/g;s/@@version@@/$PKGVER-1/g;s/@@distro@@/$DISTRO/g;s/@@date@@/$DATE/g" "$PKGDIR/debian/changelog"
 sed -i -e "s/@@package@@/$PKG/g;s/@@version@@/$PKGVER-1/g;s/@@distro@@/$DISTRO/g;s/@@date@@/$DATE/g" "$PKGDIR/debian/control"
 cd "$PKGDIR"
-debuild -us -uc --no-sign
+debuild -b -us -uc --no-sign
 cd /build
 rm -rf "$PKGDIR"
 zip -r debian.zip pkg
