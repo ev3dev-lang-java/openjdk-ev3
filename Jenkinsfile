@@ -8,6 +8,10 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
     def bldImage
     def pkgImage
 
+    // prepare run parameters
+    String mountParams = "-v ${env.WORKSPACE}/build:/build"
+    String envParams = "-e JDKVER=${params.JDKVER_VALUE} -e JDKVM=${params.JDKVM_VALUE} -e JDKPLATFORM=${params.JDKPLATFORM_VALUE} -e AUTOBUILD=1"
+
     try {
         // clean and prepare
         cleanWs()
@@ -20,11 +24,6 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             bldImage = docker.build("ev3dev-lang-java:jdk-build",   "-f scripts/Dockerfile                      ./scripts")
             pkgImage = docker.build("ev3dev-lang-java:jdk-package", "-f packaging/Dockerfile                    ./packaging")
         }
-
-        // prepare run parameters
-        String mountParams = "-v ${env.WORKSPACE}/build:/build"
-        String envParams = "-e JDKVER=${params.JDKVER_VALUE} -e JDKVM=${params.JDKVM_VALUE} -e JDKPLATFORM=${params.JDKPLATFORM_VALUE} -e AUTOBUILD=1"
-
         stage("JDK download") {
             bldImage.inside("${mountParams} ${envParams}") {
                 sh "/opt/jdkcross/prepare.sh"
