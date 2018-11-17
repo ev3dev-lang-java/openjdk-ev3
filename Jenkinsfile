@@ -54,10 +54,10 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
         stage ('Cleanup') {
             // clean up workspace
             pkgImage.inside("${mountParams}") {
-                try { sh "rm -rf /build/*" } catch(err) {}
+                try { sh "sudo rm -rf /build/*" } catch(err) {}
             }
             bldImage.inside("${mountParams}") {
-                try { sh "rm -rf /build/*" } catch(err) {}
+                try { sh "sudo rm -rf /build/*" } catch(err) {}
             }
             try { sh "rm -rf ${env.WORKSPACE}/build" } catch(err) {}
 
