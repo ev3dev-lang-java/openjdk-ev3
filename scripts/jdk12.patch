@@ -36,15 +36,6 @@ diff -Naur a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
 diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-11-08 20:45:13.000000000 +0100
 +++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	2018-11-08 21:55:24.439756634 +0100
-@@ -498,7 +498,7 @@
-   void dmb(DMB_Opt opt, Register reg) {
-     if (VM_Version::arm_arch() >= 7) {
-       emit_int32(0xF57FF050 | opt);
--    } else {
-+    } else if (VM_Version::arm_arch() == 6) {
-       bool preserve_tmp = (reg == noreg);
-       if(preserve_tmp) {
-         reg = Rtemp;
 @@ -1242,10 +1242,11 @@
  
  // Imported code from glibc soft-fp bundle for
@@ -61,24 +52,3 @@ diff -Naur a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/asse
  };
  #endif // __SOFTFP__
  
-diff -Naur a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp
---- a/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp	2018-11-08 20:45:13.000000000 +0100
-+++ b/src/hotspot/os_cpu/linux_arm/orderAccess_linux_arm.hpp	2018-11-08 21:55:24.439756634 +0100
-@@ -63,7 +63,7 @@
-      __asm__ volatile (
-      ".word 0xF57FF050 | 0xf" : : : "memory");
- #endif
--   } else {
-+   } else if (VM_Version::arm_arch() == 6) {
-      intptr_t zero = 0;
-      __asm__ volatile (
-        "mcr p15, 0, %0, c7, c10, 5"
-@@ -80,7 +80,7 @@
-      __asm__ volatile (
-      ".word 0xF57FF050 | 0xe" : : : "memory");
- #endif
--   } else {
-+   } else if (VM_Version::arm_arch() == 6) {
-      intptr_t zero = 0;
-      __asm__ volatile (
-        "mcr p15, 0, %0, c7, c10, 5"
