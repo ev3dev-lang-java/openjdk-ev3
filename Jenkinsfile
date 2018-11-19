@@ -1,7 +1,7 @@
 // OpenJDK Jenkins build pipeline
 
 // docker linux build machine
-node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( docker || sw.tool.docker ) && !test') {
+node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( docker || sw.tool.docker ) && !( test || ci.role.test )') {
 
     // our docker images
     def osImage
