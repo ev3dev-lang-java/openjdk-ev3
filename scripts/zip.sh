@@ -24,7 +24,7 @@ fi
 "$JLINK_EXE" \
    --module-path ./jmods/ \
    --endian little \
-   --compress 0 \
+   --compress 2 \
    --strip-debug \
    --no-header-files \
    --no-man-pages \
