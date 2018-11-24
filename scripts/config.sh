@@ -17,6 +17,18 @@ JAVA_BZ2="$BUILDDIR/tip.tar.bz2"
 JAVA_TMP="$BUILDDIR/jdk_tmp"
 TARBALL_MAX_DOWNLOADS=10
 
+# EV3
+if [ "$JDKPLATFORM" == "ev3" ]; then
+  eval "$(dpkg-architecture -s -a armel -A armel)"
+
+# invalid or unset platform
+else
+  echo "Error! Please specify JDK platform to compile via the JDKPLATFORM environment variable." >&2
+  echo "Acceptable values:" >&2
+  echo "JDKPLATFORM=ev3" >&2
+  exit 1
+fi
+
 ##
 ## Version-specific configuration
 ##
@@ -132,17 +144,3 @@ else
   echo "JDKVER=12" >&2
   exit 1
 fi
-
-
-# EV3
-if [ "$JDKPLATFORM" == "ev3" ]; then
-  eval "$(dpkg-architecture -s -a armel -A armel)"
-
-# invalid or unset platform
-else
-  echo "Error! Please specify JDK platform to compile via the JDKPLATFORM environment variable." >&2
-  echo "Acceptable values:" >&2
-  echo "JDKPLATFORM=ev3" >&2
-  exit 1
-fi
-
