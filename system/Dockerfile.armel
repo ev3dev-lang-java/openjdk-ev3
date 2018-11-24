@@ -6,8 +6,8 @@ FROM debian:stretch
 COPY apt.sources.list.debian /etc/apt/sources.list
 COPY ev3dev-archive-keyring.gpg /etc/apt/trusted.gpg.d/
 RUN dpkg --add-architecture armel && \
-    apt-get -q update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -q install --yes --no-install-recommends \
+    apt-get -qq update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
         bash-completion \
         ca-certificates \
         cmake \
