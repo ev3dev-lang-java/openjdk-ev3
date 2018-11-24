@@ -1,0 +1,149 @@
+# HG changeset patch
+# User Jakub Vaněk <linuxtardis@gmail.com>
+# Date 1543089715 -3600
+#      Sat Nov 24 21:01:55 2018 +0100
+# Node ID 2fbd203937c0a42439a48c9c5b505f239a8832af
+# Parent  30a02b4e6c06e874ec8735dedb7e894844b1d627
+Add support for overriding default JNI library search path
+
+diff --git a/doc/building.html b/doc/building.html
+--- a/doc/building.html
++++ b/doc/building.html
+@@ -463,6 +463,7 @@
+ <li><code>--with-jvm-variants=&lt;variant&gt;[,&lt;variant&gt;...]</code> - Build the specified variant (or variants) of Hotspot. Valid variants are: <code>server</code>, <code>client</code>, <code>minimal</code>, <code>core</code>, <code>zero</code>, <code>custom</code>. Note that not all variants are possible to combine in a single build.</li>
+ <li><code>--with-jvm-features=&lt;feature&gt;[,&lt;feature&gt;...]</code> - Use the specified JVM features when building Hotspot. The list of features will be enabled on top of the default list. For the <code>custom</code> JVM variant, this default list is empty. A complete list of available JVM features can be found using <code>bash configure --help</code>.</li>
+ <li><code>--with-target-bits=&lt;bits&gt;</code> - Create a target binary suitable for running on a <code>&lt;bits&gt;</code> platform. Use this to create 32-bit output on a 64-bit build platform, instead of doing a full cross-compile. (This is known as a <em>reduced</em> build.)</li>
++<li><code>--with-hotspot-libpath=&lt;path&gt;</code> - Override the default runtime library search path. Use this if you want to override where HotSpot searches for JNI libraries by default.</li>
+ </ul>
+ <h4 id="configure-arguments-for-native-compilation">Configure Arguments for Native Compilation</h4>
+ <ul>
+diff --git a/doc/building.md b/doc/building.md
+--- a/doc/building.md
++++ b/doc/building.md
+@@ -661,6 +661,9 @@
+     on a `<bits>` platform. Use this to create 32-bit output on a 64-bit build
+     platform, instead of doing a full cross-compile. (This is known as a
+     *reduced* build.)
++  * `--with-hotspot-libpath=<path>` - Override the default runtime library
++    search path. Use this if you want to override where HotSpot searches
++    for JNI libraries by default.
+ 
+ #### Configure Arguments for Native Compilation
+ 
+diff --git a/make/autoconf/configure.ac b/make/autoconf/configure.ac
+--- a/make/autoconf/configure.ac
++++ b/make/autoconf/configure.ac
+@@ -225,6 +225,9 @@
+ 
+ HOTSPOT_SETUP_JVM_FEATURES
+ 
++# handle custom hotspot library path path
++HOTSPOT_CUSTOM_LIBPATH
++
+ ###############################################################################
+ #
+ # We need to do some final tweaking, when everything else is done.
+diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
+--- a/make/autoconf/hotspot.m4
++++ b/make/autoconf/hotspot.m4
+@@ -615,3 +615,23 @@
+ 
+   AC_SUBST(BUILD_GTEST)
+ ])
++
++###############################################################################
++# Set up custom hotspot library path
++#
++AC_DEFUN_ONCE([HOTSPOT_CUSTOM_LIBPATH],
++[
++  AC_ARG_WITH([hotspot-libpath], [AS_HELP_STRING([--with-hotspot-libpath],
++      [Override the default runtime library search path.])])
++
++  AC_MSG_CHECKING([for custom hotspot library path])
++  if test "x${with_hotspot_libpath}" = "x"; then
++    AC_MSG_RESULT([no])
++    HOTSPOT_LIBPATH_OVERRIDE=
++  else
++    AC_MSG_RESULT(${with_hotspot_libpath})
++    HOTSPOT_LIBPATH_OVERRIDE=${with_hotspot_libpath}
++  fi
++  AC_SUBST(HOTSPOT_LIBPATH_OVERRIDE)
++])
++
+diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
+--- a/make/autoconf/spec.gmk.in
++++ b/make/autoconf/spec.gmk.in
+@@ -274,6 +274,9 @@
+ # Control wether Hotspot builds gtest tests
+ BUILD_GTEST := @BUILD_GTEST@
+ 
++# Allow overriding the default hotspot library path
++HOTSPOT_LIBPATH_OVERRIDE := @HOTSPOT_LIBPATH_OVERRIDE@
++
+ # Control use of precompiled header in hotspot libjvm build
+ USE_PRECOMPILED_HEADER := @USE_PRECOMPILED_HEADER@
+ 
+diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
+--- a/make/hotspot/lib/JvmFlags.gmk
++++ b/make/hotspot/lib/JvmFlags.gmk
+@@ -95,3 +95,7 @@
+ ifeq ($(USE_PRECOMPILED_HEADER), false)
+   JVM_CFLAGS += -DDONT_USE_PRECOMPILED_HEADER
+ endif
++
++ifneq ($(HOTSPOT_LIBPATH_OVERRIDE),)
++  JVM_CFLAGS += -DOVERRIDE_LIBPATH='"$(HOTSPOT_LIBPATH_OVERRIDE)"'
++endif
+diff --git a/src/hotspot/os/aix/os_aix.cpp b/src/hotspot/os/aix/os_aix.cpp
+--- a/src/hotspot/os/aix/os_aix.cpp
++++ b/src/hotspot/os/aix/os_aix.cpp
+@@ -541,7 +541,11 @@
+ 
+ void os::init_system_properties_values() {
+ 
+-#define DEFAULT_LIBPATH "/lib:/usr/lib"
++#ifndef OVERRIDE_LIBPATH
++  #define DEFAULT_LIBPATH "/lib:/usr/lib"
++#else
++  #define DEFAULT_LIBPATH OVERRIDE_LIBPATH
++#endif
+ #define EXTENSIONS_DIR  "/lib/ext"
+ 
+   // Buffer that fits several sprintfs.
+diff --git a/src/hotspot/os/bsd/os_bsd.cpp b/src/hotspot/os/bsd/os_bsd.cpp
+--- a/src/hotspot/os/bsd/os_bsd.cpp
++++ b/src/hotspot/os/bsd/os_bsd.cpp
+@@ -316,7 +316,11 @@
+   //        ...
+   //        7: The default directories, normally /lib and /usr/lib.
+ #ifndef DEFAULT_LIBPATH
+-  #define DEFAULT_LIBPATH "/lib:/usr/lib"
++  #ifndef OVERRIDE_LIBPATH
++    #define DEFAULT_LIBPATH "/lib:/usr/lib"
++  #else
++    #define DEFAULT_LIBPATH OVERRIDE_LIBPATH
++  #endif
+ #endif
+ 
+ // Base path of extensions installed on the system.
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -323,10 +323,14 @@
+   //        1: ...
+   //        ...
+   //        7: The default directories, normally /lib and /usr/lib.
+-#if defined(AMD64) || (defined(_LP64) && defined(SPARC)) || defined(PPC64) || defined(S390)
+-  #define DEFAULT_LIBPATH "/usr/lib64:/lib64:/lib:/usr/lib"
++#ifndef OVERRIDE_LIBPATH
++  #if defined(AMD64) || (defined(_LP64) && defined(SPARC)) || defined(PPC64) || defined(S390)
++    #define DEFAULT_LIBPATH "/usr/lib64:/lib64:/lib:/usr/lib"
++  #else
++    #define DEFAULT_LIBPATH "/lib:/usr/lib"
++  #endif
+ #else
+-  #define DEFAULT_LIBPATH "/lib:/usr/lib"
++  #define DEFAULT_LIBPATH OVERRIDE_LIBPATH
+ #endif
+ 
+ // Base path of extensions installed on the system.
