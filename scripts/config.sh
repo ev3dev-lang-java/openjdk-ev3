@@ -22,10 +22,11 @@ TARBALL_MAX_DOWNLOADS=10
 ##
 
 # invalid or unset VM
-if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ]; then
+if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ] && [ "$JDKVM" != "minimal" ]; then
   echo "Error! Please specify JDK VM to compile via the JDKVM environment variable." >&2
   echo "Acceptable values:" >&2
   echo "JDKVM=client" >&2
+  echo "JDKVM=minimal" >&2
   echo "JDKVM=zero" >&2
   exit 1
 fi
