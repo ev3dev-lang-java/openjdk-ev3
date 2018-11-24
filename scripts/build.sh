@@ -40,7 +40,7 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
   LIBFFI_LIBS=-lffi_pic \
   bash ./configure --with-boot-jdk="$HOSTJDK" \
                    --openjdk-target=arm-linux-gnueabi \
-                   --with-abi-profile=arm926ejs \
+                   --with-abi-profile="$HOTSPOT_ABI" \
                    --enable-headless-only \
                    --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
                    --with-freetype-include=/usr/include \

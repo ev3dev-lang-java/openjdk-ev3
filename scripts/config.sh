@@ -79,6 +79,7 @@ if [ "$JDKVER" == "9" ]; then
   HOSTJDK_FILE="$BUILDDIR/openjdk-9.0.4_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
+  HOTSPOT_ABI=arm926ejs
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
@@ -91,6 +92,7 @@ elif [ "$JDKVER" == "10" ]; then
   HOSTJDK_FILE="$BUILDDIR/openjdk-10.0.2_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10.0.2/19aef61b38124481863b1413dce1855f/13/openjdk-10.0.2_linux-x64_bin.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
+  HOTSPOT_ABI=arm926ejs
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
@@ -102,6 +104,7 @@ elif [ "$JDKVER" == "11" ]; then
   HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
+  HOTSPOT_ABI=arm926ejs
 
 # OpenJDK Master+dev
 elif [ "$JDKVER" == "12" ]; then
@@ -113,6 +116,7 @@ elif [ "$JDKVER" == "12" ]; then
   HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-release/images"
+  HOTSPOT_ABI=arm-sflt
 
 # invalid or unset version
 else
