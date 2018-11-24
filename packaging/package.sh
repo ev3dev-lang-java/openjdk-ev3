@@ -7,6 +7,10 @@ source /build/jver.sh
 
 # 11.0.1+13-ev3
 
+if [ -z "$JAVA_PACKAGE_REVISION" ]; then
+    JAVA_PACKAGE_REVISION="-1"
+fi
+
 DEB_JRI_PREFIX=$(echo "$JAVA_VERSION" | cut -d + -f 1)
 export DEB_JRI_MAJOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 1)
 export DEB_JRI_MINOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 2)
@@ -40,8 +44,8 @@ tar -cJf "$PKGDIR.orig.tar.xz" "$PKGNAME"
 cp -rf /opt/jdkpkg/debian "$PKGDIR"
 cd "$PKGDIR"
 
-sed -i -e "s/@@package@@/$PKG/g;s/@@version@@/$PKGVER-1/g;s/@@distro@@/$DISTRO/g;s/@@date@@/$DATE/g" "$PKGDIR/debian/changelog"
-sed -i -e "s/@@package@@/$PKG/g;s/@@version@@/$PKGVER-1/g;s/@@distro@@/$DISTRO/g;s/@@date@@/$DATE/g" "$PKGDIR/debian/control"
+sed -i -e "s/@@package@@/$PKG/g;s/@@version@@/$PKGVER$JAVA_PACKAGE_REVISION/g;s/@@distro@@/$DISTRO/g;s/@@date@@/$DATE/g" "$PKGDIR/debian/changelog"
+sed -i -e "s/@@package@@/$PKG/g;s/@@version@@/$PKGVER$JAVA_PACKAGE_REVISION/g;s/@@distro@@/$DISTRO/g;s/@@date@@/$DATE/g" "$PKGDIR/debian/control"
 cd "$PKGDIR"
 debuild -b -us -uc --no-sign --buildinfo-option="-O"
 cd /build
