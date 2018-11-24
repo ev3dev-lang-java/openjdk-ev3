@@ -58,7 +58,8 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    AR="arm-linux-gnueabi-gcc-ar" \
                    NM="arm-linux-gnueabi-gcc-nm" \
                    BUILD_AR="gcc-ar" \
-                   BUILD_NM="gcc-nm"
+                   BUILD_NM="gcc-nm" \
+                   "$JNI_PATH_FLAGS"
 fi
 
 # start the build
