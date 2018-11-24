@@ -5,7 +5,7 @@ COPY qemu-arm-static /usr/bin/qemu-arm-static
 
 # install packaging utilities
 RUN ["/usr/bin/qemu-arm-static", "/bin/bash", "-c", \
-     "apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends devscripts debhelper fakeroot zip unzip gnupg dctrl-tools dput"]
+     "apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends devscripts debhelper fakeroot zip unzip gnupg dctrl-tools dput liblcms2-2"]
 
 # prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler

@@ -3,7 +3,7 @@ Section: java
 Priority: optional
 Maintainer: Jakub Vaněk <linuxtardis@gmail.com>
 Uploaders: Jakub Vaněk <linuxtardis@gmail.com>
-Build-Depends: debhelper (>= 10), dpkg-dev, zip, unzip
+Build-Depends: debhelper (>= 10), dpkg-dev, zip, unzip, liblcms2-2
 Standards-Version: 4.1.3
 Homepage: https://ev3dev-lang-java.github.io/
 Vcs-Git: https://github.com/ev3dev-lang-java/openjdk-ev3.git
