@@ -1,0 +1,28 @@
+# HG changeset patch
+# User Jakub Vaněk <linuxtardis@gmail.com>
+# Date 1543065765 -3600
+#      Sat Nov 24 14:22:45 2018 +0100
+# Node ID 1876e24fad75579f76e3106121e61f7951b03fc8
+# Parent  c5ff4e346842d9025e8abdde0cf8c7d33dfd8d82
+Upgrade ARMv5 GCC -march to ARMv5TE
+
+diff --git a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
+--- a/make/autoconf/flags.m4
++++ b/make/autoconf/flags.m4
+@@ -56,12 +56,12 @@
+       ARM_ARCH_TYPE_ASFLAGS='-march=armv7-a -mthumb'
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
+       ARM_FLOAT_TYPE=sflt
+-      ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
+-      ARM_ARCH_TYPE_ASFLAGS='-march=armv5t'
++      ARM_ARCH_TYPE_FLAGS='-march=armv5te -marm'
++      ARM_ARCH_TYPE_ASFLAGS='-march=armv5te'
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
+       ARM_FLOAT_TYPE=vfp-sflt
+-      ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
+-      ARM_ARCH_TYPE_ASFLAGS='-march=armv5t'
++      ARM_ARCH_TYPE_FLAGS='-march=armv5te -marm'
++      ARM_ARCH_TYPE_ASFLAGS='-march=armv5te'
+     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv6-vfp-hflt; then
+       ARM_FLOAT_TYPE=vfp-hflt
+       ARM_ARCH_TYPE_FLAGS='-march=armv6 -marm'
