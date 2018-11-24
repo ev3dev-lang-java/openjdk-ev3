@@ -66,7 +66,8 @@ export JDKVER=10        # OpenJDK 10
 export JDKVER=11        # OpenJDK 11
 export JDKVER=12        # OpenJDK 12
 export JDKVM=zero       # Use Zero interpreter
-export JDKVM=client     # Use ARM32 JIT
+export JDKVM=client     # Use full ARM32 JIT
+export JDKVM=minimal    # Use minimal ARM32 JIT (https://openjdk.java.net/jeps/148)
 export JDKPLATFORM=ev3  # Use EV3  build flags
 ```
 6. Before we can start the build process, Boot JDK must be downloaded:
