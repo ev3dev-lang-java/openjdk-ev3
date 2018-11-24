@@ -31,6 +31,7 @@ RUN dpkg --add-architecture armel && \
         libx11-dev:armel         \
         libxext-dev:armel        \
         libxrender-dev:armel     \
+        libxrandr-dev:armel      \
         libxtst-dev:armel        \
         libxt-dev:armel          \
         libffi-dev:armel         \
