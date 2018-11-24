@@ -54,12 +54,7 @@ configure)
                 $basedir/bin/$i \
                 $priority
         done
-        update-alternatives \
-        --install /usr/bin/jexec jexec $basedir/lib/jexec $priority \
-        --slave \
-            /usr/share/binfmts/jar \
-            jexec-binfmt \
-            $basedir/lib/jar.binfmt
+        update-alternatives --install /usr/share/binfmts/jar jexec-binfmt $basedir/lib/jar.binfmt $priority
     fi # update alternatives
 
     # register binfmt; ignore errors, the alternative may already be
