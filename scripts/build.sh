@@ -50,6 +50,11 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-version-string="$JAVA_VERSION" \
                    --with-cacerts-file="$CACERTFILE" \
                    --with-debug-level=release \
+                   --with-libjpeg=system \
+                   --with-giflib=system \
+                   --with-libpng=system \
+                   --with-zlib=system \
+                   --with-lcms=system \
                    AR="arm-linux-gnueabi-gcc-ar" \
                    NM="arm-linux-gnueabi-gcc-nm" \
                    BUILD_AR="gcc-ar" \

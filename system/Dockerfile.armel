@@ -35,6 +35,11 @@ RUN dpkg --add-architecture armel && \
         libxtst-dev:armel        \
         libxt-dev:armel          \
         libffi-dev:armel         \
+        libpng-dev:armel         \
+        libjpeg-dev:armel        \
+        libgif-dev:armel         \
+        liblcms2-dev:armel       \
+        zlib1g-dev:armel         \
         curl \
         make \
         m4 \

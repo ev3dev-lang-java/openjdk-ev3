@@ -14,7 +14,7 @@ multiarch = $(shell dpkg-architecture -q DEB_HOST_MULTIARCH)
 priority = $(version_major)$(version_minor)$(version_patch)
 pkgname = $(basename)-$(version_platform)
 
-dlopen_hl_depends = libcups2, liblcms2-2, libjpeg62-turbo, libfontconfig1
+dlopen_hl_depends = libcups2, liblcms2-2, libjpeg62-turbo, libfontconfig1, libpng16-16, libgif7
 dlopen_hl_recommends =
 
 control_vars  = '-Vdlopenhl:Depends=$(dlopen_hl_depends)'
