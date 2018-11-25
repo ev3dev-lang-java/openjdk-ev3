@@ -4,7 +4,7 @@
 #      Sat Nov 24 21:01:55 2018 +0100
 # Node ID 2fbd203937c0a42439a48c9c5b505f239a8832af
 # Parent  30a02b4e6c06e874ec8735dedb7e894844b1d627
-Add support for overriding default JNI library search path
+Add a flag for overriding default JNI library search path
 
 diff --git a/doc/building.html b/doc/building.html
 --- a/doc/building.html
@@ -62,12 +62,12 @@ diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
 +  AC_MSG_CHECKING([for custom hotspot library path])
 +  if test "x${with_hotspot_libpath}" = "x"; then
 +    AC_MSG_RESULT([no])
-+    HOTSPOT_LIBPATH_OVERRIDE=
++    HOTSPOT_OVERRIDE_LIBPATH=
 +  else
 +    AC_MSG_RESULT(${with_hotspot_libpath})
-+    HOTSPOT_LIBPATH_OVERRIDE=${with_hotspot_libpath}
++    HOTSPOT_OVERRIDE_LIBPATH=${with_hotspot_libpath}
 +  fi
-+  AC_SUBST(HOTSPOT_LIBPATH_OVERRIDE)
++  AC_SUBST(HOTSPOT_OVERRIDE_LIBPATH)
 +])
 +
 diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
@@ -78,7 +78,7 @@ diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
  BUILD_GTEST := @BUILD_GTEST@
  
 +# Allow overriding the default hotspot library path
-+HOTSPOT_LIBPATH_OVERRIDE := @HOTSPOT_LIBPATH_OVERRIDE@
++HOTSPOT_OVERRIDE_LIBPATH := @HOTSPOT_OVERRIDE_LIBPATH@
 +
  # Control use of precompiled header in hotspot libjvm build
  USE_PRECOMPILED_HEADER := @USE_PRECOMPILED_HEADER@
@@ -91,8 +91,8 @@ diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
    JVM_CFLAGS += -DDONT_USE_PRECOMPILED_HEADER
  endif
 +
-+ifneq ($(HOTSPOT_LIBPATH_OVERRIDE),)
-+  JVM_CFLAGS += -DOVERRIDE_LIBPATH='"$(HOTSPOT_LIBPATH_OVERRIDE)"'
++ifneq ($(HOTSPOT_OVERRIDE_LIBPATH),)
++  JVM_CFLAGS += -DOVERRIDE_LIBPATH='"$(HOTSPOT_OVERRIDE_LIBPATH)"'
 +endif
 diff --git a/src/hotspot/os/aix/os_aix.cpp b/src/hotspot/os/aix/os_aix.cpp
 --- a/src/hotspot/os/aix/os_aix.cpp
