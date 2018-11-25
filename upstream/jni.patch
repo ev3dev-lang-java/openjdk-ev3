@@ -62,7 +62,7 @@ diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
 +  AC_MSG_CHECKING([for custom hotspot library path])
 +  if test "x${with_hotspot_libpath}" = "x"; then
 +    AC_MSG_RESULT([no])
-+    HOTSPOT_OVERRIDE_LIBPATH=
++    HOTSPOT_OVERRIDE_LIBPATH=""
 +  else
 +    AC_MSG_RESULT(${with_hotspot_libpath})
 +    HOTSPOT_OVERRIDE_LIBPATH=${with_hotspot_libpath}
@@ -91,7 +91,7 @@ diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
    JVM_CFLAGS += -DDONT_USE_PRECOMPILED_HEADER
  endif
 +
-+ifneq ($(HOTSPOT_OVERRIDE_LIBPATH),)
++ifneq ($(HOTSPOT_OVERRIDE_LIBPATH), )
 +  JVM_CFLAGS += -DOVERRIDE_LIBPATH='"$(HOTSPOT_OVERRIDE_LIBPATH)"'
 +endif
 diff --git a/src/hotspot/os/aix/os_aix.cpp b/src/hotspot/os/aix/os_aix.cpp
