@@ -13,7 +13,7 @@ diff --git a/doc/building.html b/doc/building.html
  <li><code>--with-jvm-features=&lt;feature&gt;[,&lt;feature&gt;...]</code> - Use the specified JVM features when building Hotspot. The list of features will be enabled on top of the default list. For the <code>custom</code> JVM variant, this default list is empty. A complete list of available JVM features can be found using <code>bash configure --help</code>.</li>
  <li><code>--with-target-bits=&lt;bits&gt;</code> - Create a target binary suitable for running on a <code>&lt;bits&gt;</code> platform. Use this to create 32-bit output on a 64-bit build platform, instead of doing a full cross-compile. (This is known as a <em>reduced</em> build.)</li>
  </ul>
-+<p>On Linux, macOS, BSD and AIX, it is possible to override where Java by default searches for runtime/JNI libraries. This can be useful in situations where there is a special shared directory for system JNI libraries. This setting can in turn be overriden at runtime by setting the <code>java.library.path</code> property.</p>
++<p>On Linux, BSD and AIX, it is possible to override where Java by default searches for runtime/JNI libraries. This can be useful in situations where there is a special shared directory for system JNI libraries. This setting can in turn be overriden at runtime by setting the <code>java.library.path</code> property.</p>
 +<ul>
 +<li><code>--with-jni-libpath=&lt;path&gt;</code> - Use the specified path as a default when searching for runtime libraries.</li>
 +</ul>
@@ -27,7 +27,7 @@ diff --git a/doc/building.md b/doc/building.md
      platform, instead of doing a full cross-compile. (This is known as a
      *reduced* build.)
  
-+On Linux, macOS, BSD and AIX, it is possible to override where Java by default
++On Linux, BSD and AIX, it is possible to override where Java by default
 +searches for runtime/JNI libraries. This can be useful in situations where
 +there is a special shared directory for system JNI libraries. This setting
 +can in turn be overriden at runtime by setting the `java.library.path` property.
@@ -41,7 +41,7 @@ diff --git a/doc/building.md b/doc/building.md
 diff --git a/make/autoconf/jdk-options.m4 b/make/autoconf/jdk-options.m4
 --- a/make/autoconf/jdk-options.m4
 +++ b/make/autoconf/jdk-options.m4
-@@ -244,6 +244,26 @@
+@@ -244,6 +244,25 @@
      COPYRIGHT_YEAR=`$DATE +'%Y'`
    fi
    AC_SUBST(COPYRIGHT_YEAR)
@@ -55,11 +55,10 @@ diff --git a/make/autoconf/jdk-options.m4 b/make/autoconf/jdk-options.m4
 +  else
 +    HOTSPOT_OVERRIDE_LIBPATH=${with_jni_libpath}
 +    if test "x$OPENJDK_TARGET_OS" != "xlinux" &&
-+         test "x$OPENJDK_TARGET_OS" != "xmacosx" &&
 +         test "x$OPENJDK_TARGET_OS" != "xbsd" &&
 +         test "x$OPENJDK_TARGET_OS" != "xaix"; then
 +      AC_MSG_RESULT([fail])
-+      AC_MSG_ERROR([Overriding JNI library path is supported only on Linux, macOS, BSD and AIX.])
++      AC_MSG_ERROR([Overriding JNI library path is supported only on Linux, BSD and AIX.])
 +    fi
 +    AC_MSG_RESULT(${HOTSPOT_OVERRIDE_LIBPATH})
 +  fi
