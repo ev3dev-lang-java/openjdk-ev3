@@ -132,7 +132,7 @@ elif [ "$JDKVER" == "12" ]; then
   HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-release/images"
   HOTSPOT_ABI=arm-sflt
-  JNI_PATH_FLAGS="--with-hotspot-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
+  JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
 
 # invalid or unset version
 else

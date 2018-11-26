@@ -1,75 +1,72 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1543089715 -3600
-#      Sat Nov 24 21:01:55 2018 +0100
-# Node ID 2fbd203937c0a42439a48c9c5b505f239a8832af
-# Parent  30a02b4e6c06e874ec8735dedb7e894844b1d627
-Add support for overriding default JNI library search path
+# Date 1543257950 -3600
+#      Mon Nov 26 19:45:50 2018 +0100
+# Node ID d20246c2ce573662520cbdd5203e4268935423c2
+# Parent  e017d2f176d0119cdc70c9f2ee98e78c0c13f0c7
+Add an option for overriding default JNI library search path
 
 diff --git a/doc/building.html b/doc/building.html
 --- a/doc/building.html
 +++ b/doc/building.html
-@@ -463,6 +463,7 @@
- <li><code>--with-jvm-variants=&lt;variant&gt;[,&lt;variant&gt;...]</code> - Build the specified variant (or variants) of Hotspot. Valid variants are: <code>server</code>, <code>client</code>, <code>minimal</code>, <code>core</code>, <code>zero</code>, <code>custom</code>. Note that not all variants are possible to combine in a single build.</li>
+@@ -464,6 +464,10 @@
  <li><code>--with-jvm-features=&lt;feature&gt;[,&lt;feature&gt;...]</code> - Use the specified JVM features when building Hotspot. The list of features will be enabled on top of the default list. For the <code>custom</code> JVM variant, this default list is empty. A complete list of available JVM features can be found using <code>bash configure --help</code>.</li>
  <li><code>--with-target-bits=&lt;bits&gt;</code> - Create a target binary suitable for running on a <code>&lt;bits&gt;</code> platform. Use this to create 32-bit output on a 64-bit build platform, instead of doing a full cross-compile. (This is known as a <em>reduced</em> build.)</li>
-+<li><code>--with-hotspot-libpath=&lt;path&gt;</code> - Override the default runtime library search path. Use this if you want to override where HotSpot searches for JNI libraries by default.</li>
  </ul>
++<p>On Linux, macOS, BSD and AIX, it is possible to override where Java by default searches for runtime/JNI libraries. This can be useful in situations where there is a special shared directory for system JNI libraries. This setting can in turn be overriden at runtime by setting the <code>java.library.path</code> property.</p>
++<ul>
++<li><code>--with-jni-libpath=&lt;path&gt;</code> - Use the specified path as a default when searching for runtime libraries.</li>
++</ul>
  <h4 id="configure-arguments-for-native-compilation">Configure Arguments for Native Compilation</h4>
  <ul>
+ <li><code>--with-devkit=&lt;path&gt;</code> - Use this devkit for compilers, tools and resources</li>
 diff --git a/doc/building.md b/doc/building.md
 --- a/doc/building.md
 +++ b/doc/building.md
-@@ -661,6 +661,9 @@
-     on a `<bits>` platform. Use this to create 32-bit output on a 64-bit build
+@@ -662,6 +662,14 @@
      platform, instead of doing a full cross-compile. (This is known as a
      *reduced* build.)
-+  * `--with-hotspot-libpath=<path>` - Override the default runtime library
-+    search path. Use this if you want to override where HotSpot searches
-+    for JNI libraries by default.
  
++On Linux, macOS, BSD and AIX, it is possible to override where Java by default
++searches for runtime/JNI libraries. This can be useful in situations where
++there is a special shared directory for system JNI libraries. This setting
++can in turn be overriden at runtime by setting the `java.library.path` property.
++
++  * `--with-jni-libpath=<path>` - Use the specified path as a default
++  when searching for runtime libraries.
++
  #### Configure Arguments for Native Compilation
  
-diff --git a/make/autoconf/configure.ac b/make/autoconf/configure.ac
---- a/make/autoconf/configure.ac
-+++ b/make/autoconf/configure.ac
-@@ -225,6 +225,9 @@
+   * `--with-devkit=<path>` - Use this devkit for compilers, tools and resources
+diff --git a/make/autoconf/jdk-options.m4 b/make/autoconf/jdk-options.m4
+--- a/make/autoconf/jdk-options.m4
++++ b/make/autoconf/jdk-options.m4
+@@ -204,6 +204,25 @@
+   fi
+   AC_SUBST(CACERTS_FILE)
  
- HOTSPOT_SETUP_JVM_FEATURES
- 
-+# handle custom hotspot library path path
-+HOTSPOT_CUSTOM_LIBPATH
-+
- ###############################################################################
- #
- # We need to do some final tweaking, when everything else is done.
-diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
---- a/make/autoconf/hotspot.m4
-+++ b/make/autoconf/hotspot.m4
-@@ -615,3 +615,23 @@
- 
-   AC_SUBST(BUILD_GTEST)
- ])
-+
-+###############################################################################
-+# Set up custom hotspot library path
-+#
-+AC_DEFUN_ONCE([HOTSPOT_CUSTOM_LIBPATH],
-+[
-+  AC_ARG_WITH([hotspot-libpath], [AS_HELP_STRING([--with-hotspot-libpath],
-+      [Override the default runtime library search path.])])
-+
-+  AC_MSG_CHECKING([for custom hotspot library path])
-+  if test "x${with_hotspot_libpath}" = "x"; then
-+    AC_MSG_RESULT([no])
-+    HOTSPOT_LIBPATH_OVERRIDE=
++  # Override default library path
++  AC_ARG_WITH([jni-libpath], [AS_HELP_STRING([--with-jni-libpath],
++      [override default JNI library search path])])
++  AC_MSG_CHECKING([for jni library path])
++  if test "x${with_jni_libpath}" == "x"; then
++    AC_MSG_RESULT([default])
 +  else
-+    AC_MSG_RESULT(${with_hotspot_libpath})
-+    HOTSPOT_LIBPATH_OVERRIDE=${with_hotspot_libpath}
++    HOTSPOT_OVERRIDE_LIBPATH=${with_jni_libpath}
++    if test "x$OPENJDK_TARGET_OS_TYPE" != "xlinux" &&
++         test "x$OPENJDK_TARGET_OS_TYPE" != "xmacosx" &&
++         test "x$OPENJDK_TARGET_OS_TYPE" != "xbsd" &&
++         test "x$OPENJDK_TARGET_OS_TYPE" != "xaix"; then
++      AC_MSG_RESULT([fail])
++      AC_MSG_ERROR([Overriding JNI library path is not supported on this platform.])
++    fi
++    AC_MSG_RESULT(${HOTSPOT_OVERRIDE_LIBPATH})
 +  fi
-+  AC_SUBST(HOTSPOT_LIBPATH_OVERRIDE)
-+])
++  AC_SUBST(HOTSPOT_OVERRIDE_LIBPATH)
 +
+   # Enable or disable unlimited crypto
+   AC_ARG_ENABLE(unlimited-crypto, [AS_HELP_STRING([--disable-unlimited-crypto],
+       [Disable unlimited crypto policy @<:@enabled@:>@])],,
 diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
 --- a/make/autoconf/spec.gmk.in
 +++ b/make/autoconf/spec.gmk.in
@@ -78,7 +75,7 @@ diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
  BUILD_GTEST := @BUILD_GTEST@
  
 +# Allow overriding the default hotspot library path
-+HOTSPOT_LIBPATH_OVERRIDE := @HOTSPOT_LIBPATH_OVERRIDE@
++HOTSPOT_OVERRIDE_LIBPATH := @HOTSPOT_OVERRIDE_LIBPATH@
 +
  # Control use of precompiled header in hotspot libjvm build
  USE_PRECOMPILED_HEADER := @USE_PRECOMPILED_HEADER@
@@ -91,8 +88,8 @@ diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
    JVM_CFLAGS += -DDONT_USE_PRECOMPILED_HEADER
  endif
 +
-+ifneq ($(HOTSPOT_LIBPATH_OVERRIDE),)
-+  JVM_CFLAGS += -DOVERRIDE_LIBPATH='"$(HOTSPOT_LIBPATH_OVERRIDE)"'
++ifneq ($(HOTSPOT_OVERRIDE_LIBPATH), )
++  JVM_CFLAGS += -DOVERRIDE_LIBPATH='"$(HOTSPOT_OVERRIDE_LIBPATH)"'
 +endif
 diff --git a/src/hotspot/os/aix/os_aix.cpp b/src/hotspot/os/aix/os_aix.cpp
 --- a/src/hotspot/os/aix/os_aix.cpp
