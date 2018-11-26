@@ -28,13 +28,11 @@ diff --git a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
 +      ARM_ARCH_TYPE_ASFLAGS='-march=armv7-a -mthumb'
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
        ARM_FLOAT_TYPE=sflt
--      ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
-+      ARM_ARCH_TYPE_FLAGS='-march=armv5te -marm'
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 +      ARM_ARCH_TYPE_ASFLAGS='-march=armv5te'
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
        ARM_FLOAT_TYPE=vfp-sflt
--      ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
-+      ARM_ARCH_TYPE_FLAGS='-march=armv5te -marm'
+       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 +      ARM_ARCH_TYPE_ASFLAGS='-march=armv5te'
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv6-vfp-hflt; then
        ARM_FLOAT_TYPE=vfp-hflt
