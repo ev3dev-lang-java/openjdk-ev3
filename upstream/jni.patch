@@ -1,8 +1,8 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1543260470 -3600
-#      Mon Nov 26 20:27:50 2018 +0100
-# Node ID 218a4f07e539efade7404093508e94c7ed02b177
+# Date 1543266969 -3600
+#      Mon Nov 26 22:16:09 2018 +0100
+# Node ID 0e938f324f9601d7d86f8acbb6a3f7c65cfc852e
 # Parent  e017d2f176d0119cdc70c9f2ee98e78c0c13f0c7
 Add an option for overriding default JNI library search path
 
@@ -41,7 +41,7 @@ diff --git a/doc/building.md b/doc/building.md
 diff --git a/make/autoconf/jdk-options.m4 b/make/autoconf/jdk-options.m4
 --- a/make/autoconf/jdk-options.m4
 +++ b/make/autoconf/jdk-options.m4
-@@ -244,6 +244,25 @@
+@@ -244,6 +244,28 @@
      COPYRIGHT_YEAR=`$DATE +'%Y'`
    fi
    AC_SUBST(COPYRIGHT_YEAR)
@@ -50,8 +50,11 @@ diff --git a/make/autoconf/jdk-options.m4 b/make/autoconf/jdk-options.m4
 +  AC_ARG_WITH([jni-libpath], [AS_HELP_STRING([--with-jni-libpath],
 +      [override default JNI library search path])])
 +  AC_MSG_CHECKING([for jni library path])
-+  if test "x${with_jni_libpath}" == "x"; then
++  if test "x${with_jni_libpath}" = "x" || test "x${with_jni_libpath}" = "xno"; then
 +    AC_MSG_RESULT([default])
++  elif test "x${with_jni_libpath}" = "xyes"; then
++    AC_MSG_RESULT([invalid])
++    AC_MSG_ERROR([The --with-jni-libpath option requires an argument.])
 +  else
 +    HOTSPOT_OVERRIDE_LIBPATH=${with_jni_libpath}
 +    if test "x$OPENJDK_TARGET_OS" != "xlinux" &&
