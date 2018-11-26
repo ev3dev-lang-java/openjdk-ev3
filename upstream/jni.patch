@@ -1,8 +1,8 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1543257950 -3600
-#      Mon Nov 26 19:45:50 2018 +0100
-# Node ID d20246c2ce573662520cbdd5203e4268935423c2
+# Date 1543260470 -3600
+#      Mon Nov 26 20:27:50 2018 +0100
+# Node ID 218a4f07e539efade7404093508e94c7ed02b177
 # Parent  e017d2f176d0119cdc70c9f2ee98e78c0c13f0c7
 Add an option for overriding default JNI library search path
 
@@ -41,10 +41,11 @@ diff --git a/doc/building.md b/doc/building.md
 diff --git a/make/autoconf/jdk-options.m4 b/make/autoconf/jdk-options.m4
 --- a/make/autoconf/jdk-options.m4
 +++ b/make/autoconf/jdk-options.m4
-@@ -204,6 +204,25 @@
+@@ -244,6 +244,26 @@
+     COPYRIGHT_YEAR=`$DATE +'%Y'`
    fi
-   AC_SUBST(CACERTS_FILE)
- 
+   AC_SUBST(COPYRIGHT_YEAR)
++
 +  # Override default library path
 +  AC_ARG_WITH([jni-libpath], [AS_HELP_STRING([--with-jni-libpath],
 +      [override default JNI library search path])])
@@ -53,20 +54,20 @@ diff --git a/make/autoconf/jdk-options.m4 b/make/autoconf/jdk-options.m4
 +    AC_MSG_RESULT([default])
 +  else
 +    HOTSPOT_OVERRIDE_LIBPATH=${with_jni_libpath}
-+    if test "x$OPENJDK_TARGET_OS_TYPE" != "xlinux" &&
-+         test "x$OPENJDK_TARGET_OS_TYPE" != "xmacosx" &&
-+         test "x$OPENJDK_TARGET_OS_TYPE" != "xbsd" &&
-+         test "x$OPENJDK_TARGET_OS_TYPE" != "xaix"; then
++    if test "x$OPENJDK_TARGET_OS" != "xlinux" &&
++         test "x$OPENJDK_TARGET_OS" != "xmacosx" &&
++         test "x$OPENJDK_TARGET_OS" != "xbsd" &&
++         test "x$OPENJDK_TARGET_OS" != "xaix"; then
 +      AC_MSG_RESULT([fail])
-+      AC_MSG_ERROR([Overriding JNI library path is not supported on this platform.])
++      AC_MSG_ERROR([Overriding JNI library path is supported only on Linux, macOS, BSD and AIX.])
 +    fi
 +    AC_MSG_RESULT(${HOTSPOT_OVERRIDE_LIBPATH})
 +  fi
 +  AC_SUBST(HOTSPOT_OVERRIDE_LIBPATH)
 +
-   # Enable or disable unlimited crypto
-   AC_ARG_ENABLE(unlimited-crypto, [AS_HELP_STRING([--disable-unlimited-crypto],
-       [Disable unlimited crypto policy @<:@enabled@:>@])],,
+ ])
+ 
+ ###############################################################################
 diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
 --- a/make/autoconf/spec.gmk.in
 +++ b/make/autoconf/spec.gmk.in
