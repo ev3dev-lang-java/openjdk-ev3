@@ -54,7 +54,8 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-extra-cflags="-w -Wno-error -D__SOFTFP__" \
                    --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
                    --with-version-string="$JAVA_VERSION" \
-                   --with-softfloat="$SFLTLIB" \
+                   --with-softfloat-lib="$SFLTLIB" \
+                   --with-softfloat-include="$SFLTINC" \
                    --with-cacerts-file="$CACERTFILE" \
                    --with-debug-level=release \
                    --with-libjpeg=system \
