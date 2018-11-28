@@ -1,8 +1,8 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1543448532 -3600
-#      Thu Nov 29 00:42:12 2018 +0100
-# Node ID a16b7de2c35e9db4e82f1847d55302fbd483520b
+# Date 1543449177 -3600
+#      Thu Nov 29 00:52:57 2018 +0100
+# Node ID c87b8f17d4734989723ed221f80bea33b284ad36
 # Parent  0bdbf854472ff9311458d67fe02ae289225b2d1b
 Add support for external softfloat library on arm-sflt
 
@@ -240,7 +240,7 @@ diff --git a/src/hotspot/cpu/arm/softfloat_arm.cpp b/src/hotspot/cpu/arm/softflo
 new file mode 100644
 --- /dev/null
 +++ b/src/hotspot/cpu/arm/softfloat_arm.cpp
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,108 @@
 +/*
 + * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 + * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -265,11 +265,20 @@ new file mode 100644
 + *
 + */
 +
-+#include "precompiled.hpp"
-+#include "asm/macroAssembler.inline.hpp"
-+#include "runtime/sharedRuntime.hpp"
-+#include "runtime/stubRoutines.hpp"
-+#include "vmreg_arm.inline.hpp"
++#ifdef __SOFTFP__
++
++// Soft float function declarations
++extern "C" {
++    extern float  __aeabi_fadd(float, float);
++    extern float  __aeabi_fsub(float, float);
++    extern double __aeabi_dadd(double, double);
++    extern double __aeabi_dsub(double, double);
++
++    extern float __aeabi_fadd_extlib(float, float);
++    extern float __aeabi_fsub_extlib(float, float);
++    extern double __aeabi_dadd_extlib(double, double);
++    extern double __aeabi_dsub_extlib(double, double);
++};
 +
 +#ifdef SOFTFLOAT_EXTERNAL
 +
@@ -338,6 +347,8 @@ new file mode 100644
 +}
 +
 +#endif
++
++#endif // __SOFTFP__
 diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/templateTable_arm.cpp
 --- a/src/hotspot/cpu/arm/templateTable_arm.cpp
 +++ b/src/hotspot/cpu/arm/templateTable_arm.cpp
