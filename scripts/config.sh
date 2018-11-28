@@ -6,6 +6,14 @@ SCRIPTDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BUILDDIR="/build"
 # jdk repository directory
 JDKDIR="$BUILDDIR/jdk"
+# softfloat repository directory
+SFLTDIR="$BUILDDIR/sflt"
+# softfloat repository
+SFLTREPO="https://github.com/ev3dev-lang-java/softfloat-openjdk.git"
+# softfloat build directory
+SFLTBUILD="$SFLTDIR/build/Linux-ARM-VFPv2-GCC-OpenJDK"
+# softfloat static library
+SFLTLIB="$SFLTBUILD/softfloat.a"
 # openjdk-build repo dir
 ABLDDIR="$BUILDDIR/openjdk-build"
 # openjdk-build repo
@@ -19,6 +27,7 @@ TARBALL_MAX_DOWNLOADS=10
 
 # EV3
 if [ "$JDKPLATFORM" == "ev3" ]; then
+  SFLT_NEEDED=true
   eval "$(dpkg-architecture -s -a armel -A armel)"
 
 # invalid or unset platform
