@@ -300,11 +300,11 @@ diff --git a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp b/src/hotspot/cpu/arm/c1_Ru
    FUNCTION_CASE(entry, __aeabi_ddiv);
  
    FUNCTION_CASE(entry, __aeabi_f2d);
-diff --git a/src/hotspot/cpu/arm/softfloat.cpp b/src/hotspot/cpu/arm/softfloat.cpp
+diff --git a/src/hotspot/cpu/arm/softfloat_arm.cpp b/src/hotspot/cpu/arm/softfloat_arm.cpp
 new file mode 100644
 --- /dev/null
-+++ b/src/hotspot/cpu/arm/softfloat.cpp
-@@ -0,0 +1,93 @@
++++ b/src/hotspot/cpu/arm/softfloat_arm.cpp
+@@ -0,0 +1,97 @@
 +/*
 + * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 + * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -329,7 +329,11 @@ new file mode 100644
 + *
 + */
 +
-+#include "assembler_arm_32.hpp"
++#include "precompiled.hpp"
++#include "asm/macroAssembler.inline.hpp"
++#include "runtime/sharedRuntime.hpp"
++#include "runtime/stubRoutines.hpp"
++#include "vmreg_arm.inline.hpp"
 +
 +#ifdef SOFTFLOAT_EXTERNAL
 +
