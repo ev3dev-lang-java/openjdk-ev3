@@ -315,7 +315,7 @@ diff --git a/src/hotspot/cpu/arm/softfloat_arm.cpp b/src/hotspot/cpu/arm/softflo
 new file mode 100644
 --- /dev/null
 +++ b/src/hotspot/cpu/arm/softfloat_arm.cpp
-@@ -0,0 +1,110 @@
+@@ -0,0 +1,112 @@
 +/*
 + * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 + * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -357,7 +357,9 @@ new file mode 100644
 +
 +#ifdef SOFTFLOAT_EXTERNAL
 +
++extern "C" {
 +#include "softfloat.h"
++}
 +
 +#include <cstring>
 +
