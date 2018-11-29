@@ -388,7 +388,7 @@ new file mode 100644
 +    return __aeabi_double_handling(a, b, true);
 +}
 +
-+double __aeabi_dsub_extlib(double natA, double natB) {
++double __aeabi_dsub_extlib(double a, double b) {
 +    return __aeabi_double_handling(a, b, false);
 +}
 +
