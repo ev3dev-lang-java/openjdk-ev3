@@ -1,80 +1,77 @@
-diff --git a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
---- a/make/autoconf/flags-other.m4
-+++ b/make/autoconf/flags-other.m4
-@@ -119,6 +119,12 @@
-   # Misuse EXTRA_CFLAGS to mimic old behavior
-   $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS ${$2EXTRA_CFLAGS}"
+diff --git a/doc/building.html b/doc/building.html
+--- a/doc/building.html
++++ b/doc/building.html
+@@ -53,6 +53,7 @@
+ <li><a href="#x11">X11</a></li>
+ <li><a href="#alsa">ALSA</a></li>
+ <li><a href="#libffi">libffi</a></li>
++<li><a href="#softfloat">SoftFloat</a></li>
+ </ul></li>
+ <li><a href="#build-tools-requirements">Build Tools Requirements</a><ul>
+ <li><a href="#autoconf">Autoconf</a></li>
+@@ -415,6 +416,12 @@
+ <li>To install on an rpm-based Linux, try running <code>sudo yum install libffi-devel</code>.</li>
+ </ul>
+ <p>Use <code>--with-libffi=&lt;path&gt;</code> if <code>configure</code> does not properly locate your libffi files.</p>
++<h3 id="softfloat">SoftFloat</h3>
++<p><a href="http://www.jhauser.us/arithmetic/SoftFloat.html">Berkeley SoftFloat-3</a> can be used on ARM processors without FPU to slightly enhance the arithmetic precision of some floating point operations. It is not required, system softfp routines can be used without any problems. The precision loss is extremely small, but <a href="http://mail.openjdk.java.net/pipermail/aarch32-port-dev/2016-November/000611.html">the JCK detects it</a>.</p>
++<ul>
++<li>To install the library, you will have to download its source and build it for the target platform. To do so, take a look in the <code>build/Linux-ARM-VFPv2-GCC</code> subdirectory.</li>
++</ul>
++<p>Use <code>--with-softfloat-lib=&lt;path&gt;</code> and <code>--with-softfloat-include=&lt;path&gt;</code> to specify the path to the <code>softfloat.a</code> archive and the <code>source/include</code> directory. If you omit them or use <code>--without-softfloat-*</code>, standard system libraries will be used instead.</p>
+ <h2 id="build-tools-requirements">Build Tools Requirements</h2>
+ <h3 id="autoconf">Autoconf</h3>
+ <p>The JDK requires <a href="http://www.gnu.org/software/autoconf">Autoconf</a> on all platforms. At least version 2.69 is required.</p>
+@@ -486,6 +493,7 @@
+ <li><code>--with-x=&lt;path&gt;</code> - Set the path to <a href="#x11">X11</a></li>
+ <li><code>--with-alsa=&lt;path&gt;</code> - Set the path to <a href="#alsa">ALSA</a></li>
+ <li><code>--with-libffi=&lt;path&gt;</code> - Set the path to <a href="#libffi">libffi</a></li>
++<li><code>--with-softfloat-lib=&lt;path&gt;</code>, <code>--with-softfloat-include=&lt;path&gt;</code> - Set the path to <a href="#softfloat">SoftFloat</a> library and include directory.</li>
+ <li><code>--with-jtreg=&lt;path&gt;</code> - Set the path to JTReg. See <a href="#running-tests">Running Tests</a></li>
+ </ul>
+ <p>Certain third-party libraries used by the JDK (libjpeg, giflib, libpng, lcms and zlib) are included in the JDK repository. The default behavior of the JDK build is to use this version of these libraries, but they might be replaced by an external version. To do so, specify <code>system</code> as the <code>&lt;source&gt;</code> option in these arguments. (The default is <code>bundled</code>).</p>
+diff --git a/doc/building.md b/doc/building.md
+--- a/doc/building.md
++++ b/doc/building.md
+@@ -527,6 +527,24 @@
+ Use `--with-libffi=<path>` if `configure` does not properly locate your libffi
+ files.
  
-+  if test "x$1" = "xTARGET" && \
-+      test "x$TOOLCHAIN_TYPE" = xgcc && \
-+      test "x$OPENJDK_TARGET_CPU" = xarm; then
-+    $2JVM_ASFLAGS="${$2JVM_ASFLAGS} $ARM_ARCH_TYPE_ASFLAGS $ARM_FLOAT_TYPE_ASFLAGS"
-+  fi
++### SoftFloat
 +
-   AC_SUBST($2JVM_ASFLAGS)
- ])
- 
-diff --git a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
---- a/make/autoconf/flags.m4
-+++ b/make/autoconf/flags.m4
-@@ -49,38 +49,52 @@
-     if test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-vfp-sflt; then
-       ARM_FLOAT_TYPE=vfp-sflt
-       ARM_ARCH_TYPE_FLAGS='-march=armv7-a -mthumb'
-+      ARM_ARCH_TYPE_ASFLAGS='-march=armv7-a -mthumb'
-     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-vfp-hflt; then
-       ARM_FLOAT_TYPE=vfp-hflt
-       ARM_ARCH_TYPE_FLAGS='-march=armv7-a -mthumb'
-+      ARM_ARCH_TYPE_ASFLAGS='-march=armv7-a -mthumb'
-     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm-sflt; then
-       ARM_FLOAT_TYPE=sflt
-       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
-+      ARM_ARCH_TYPE_ASFLAGS='-march=armv5te'
-     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
-       ARM_FLOAT_TYPE=vfp-sflt
-       ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
-+      ARM_ARCH_TYPE_ASFLAGS='-march=armv5te'
-     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv6-vfp-hflt; then
-       ARM_FLOAT_TYPE=vfp-hflt
-       ARM_ARCH_TYPE_FLAGS='-march=armv6 -marm'
-+      ARM_ARCH_TYPE_ASFLAGS='-march=armv6'
-     elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xaarch64; then
-       # No special flags, just need to trigger setting JDK_ARCH_ABI_PROP_NAME
-       ARM_FLOAT_TYPE=
-       ARM_ARCH_TYPE_FLAGS=
-+      ARM_ARCH_TYPE_ASFLAGS=
-     else
-       AC_MSG_ERROR([Invalid ABI profile: "$OPENJDK_TARGET_ABI_PROFILE"])
-     fi
- 
-     if test "x$ARM_FLOAT_TYPE" = xvfp-sflt; then
-       ARM_FLOAT_TYPE_FLAGS='-mfloat-abi=softfp -mfpu=vfp -DFLOAT_ARCH=-vfp-sflt'
-+      ARM_FLOAT_TYPE_ASFLAGS="-mfloat-abi=softfp -mfpu=vfp"
-     elif test "x$ARM_FLOAT_TYPE" = xvfp-hflt; then
-       ARM_FLOAT_TYPE_FLAGS='-mfloat-abi=hard -mfpu=vfp -DFLOAT_ARCH=-vfp-hflt'
-+      ARM_FLOAT_TYPE_ASFLAGS="-mfloat-abi=hard -mfpu=vfp"
-     elif test "x$ARM_FLOAT_TYPE" = xsflt; then
-       ARM_FLOAT_TYPE_FLAGS='-msoft-float -mfpu=vfp'
-+      ARM_FLOAT_TYPE_ASFLAGS="-mfloat-abi=soft -mfpu=vfp"
-     fi
++[Berkeley SoftFloat-3](http://www.jhauser.us/arithmetic/SoftFloat.html)
++can be used on ARM processors without FPU to slightly enhance
++the arithmetic precision of some floating point operations. It is not
++required, system softfp routines can be used without any problems.
++The precision loss is extremely small, but [the JCK detects it](
++http://mail.openjdk.java.net/pipermail/aarch32-port-dev/2016-November/000611.html).
 +
-     AC_MSG_CHECKING([for $ARM_FLOAT_TYPE floating point flags])
-     AC_MSG_RESULT([$ARM_FLOAT_TYPE_FLAGS])
-+    AC_MSG_CHECKING([for $ARM_FLOAT_TYPE floating point flags for assembler])
-+    AC_MSG_RESULT([$ARM_FLOAT_TYPE_ASFLAGS])
++  * To install the library, you will have to download its source and build it
++    for the target platform. To do so, take a look in the
++    `build/Linux-ARM-VFPv2-GCC` subdirectory.
++
++Use `--with-softfloat-lib=<path>` and `--with-softfloat-include=<path>`
++to specify the path to the `softfloat.a` archive and the `source/include`
++directory. If you omit them or use `--without-softfloat-*`, standard
++system libraries will be used instead.
++
+ ## Build Tools Requirements
  
-     AC_MSG_CHECKING([for arch type flags])
-     AC_MSG_RESULT([$ARM_ARCH_TYPE_FLAGS])
-+    AC_MSG_CHECKING([for arch type flags for assembler])
-+    AC_MSG_RESULT([$ARM_ARCH_TYPE_ASFLAGS])
+ ### Autoconf
+@@ -694,6 +712,8 @@
+   * `--with-x=<path>` - Set the path to [X11](#x11)
+   * `--with-alsa=<path>` - Set the path to [ALSA](#alsa)
+   * `--with-libffi=<path>` - Set the path to [libffi](#libffi)
++  * `--with-softfloat-lib=<path>`, `--with-softfloat-include=<path>` -
++    Set the path to [SoftFloat](#softfloat) library and include directory.
+   * `--with-jtreg=<path>` - Set the path to JTReg. See [Running Tests](
+     #running-tests)
  
-     # Now set JDK_ARCH_ABI_PROP_NAME. This is equivalent to the last part of the
-     # autoconf target triplet.
 diff --git a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
 new file mode 100644
 --- /dev/null
 +++ b/make/autoconf/lib-softfloat.m4
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,93 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 +# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -101,54 +98,68 @@ new file mode 100644
 +#
 +
 +################################################################################
-+# Setup softfloat helper
++# Setup softfloat library
 +################################################################################
 +AC_DEFUN_ONCE([LIB_SETUP_SOFTFLOAT],
 +[
 +  AC_ARG_WITH(softfloat-lib, [AS_HELP_STRING([--with-softfloat-lib],
-+      [specify path to SoftFloat-3e static library])])
++      [specify the path to SoftFloat-3 static library])])
 +  AC_ARG_WITH(softfloat-include, [AS_HELP_STRING([--with-softfloat-include],
-+      [specify path to SoftFloat-3e include directory])])
++      [specify the path to SoftFloat-3 include directory])])
 +
 +  AC_MSG_CHECKING([if softfloat helper library is to be used])
 +
 +  SOFTFLOAT_LIB=${with_softfloat_lib}
 +  SOFTFLOAT_INC=${with_softfloat_include}
 +
-+  if test "x$NEEDS_LIB_SOFTFLOAT" = xfalse; then
++  if test "x$NEEDS_LIB_SOFTFLOAT" = xtrue; then
++
++    if test "x${SOFTFLOAT_LIB}" = x || test "x${SOFTFLOAT_LIB}" = xno; then
++      SOFTFLOAT_FOUND=false
++
++      if test "x${SOFTFLOAT_INC}" != x && test "x${SOFTFLOAT_INC}" != xno; then
++        AC_MSG_ERROR([--with-softfloat-include was specified, but not --with-softfloat-lib])
++      fi
++
++    elif test "x${SOFTFLOAT_INC}" = x || test "x${SOFTFLOAT_INC}" = xno; then
++      SOFTFLOAT_FOUND=false
++
++      if test "x${SOFTFLOAT_LIB}" != x && test "x${SOFTFLOAT_LIB}" != xno; then
++        AC_MSG_ERROR([--with-softfloat-lib was specified, but not --with-softfloat-include])
++      fi
++
++    else
++      SOFTFLOAT_FOUND=true
++    fi
++
++    if test "x$SOFTFLOAT_FOUND" = "xtrue"; then
++      AC_MSG_RESULT([yes, external library used])
++
++      SOFTFLOAT_LIBS="${SOFTFLOAT_LIB}"
++      SOFTFLOAT_CFLAGS="-I${SOFTFLOAT_INC} -DSOFTFLOAT_EXTERNAL"
++
++      AC_MSG_CHECKING([for softfloat library])
++      AC_MSG_RESULT([$SOFTFLOAT_LIBS])
++
++      AC_MSG_CHECKING([for softfloat compiler flags])
++      AC_MSG_RESULT([$SOFTFLOAT_CFLAGS])
++
++    else
++      AC_MSG_RESULT([no, system softfp used])
++      AC_MSG_NOTICE([Floating point operations may be less precise by a very small amount])
++      SOFTFLOAT_LIBS=
++      SOFTFLOAT_CFLAGS=
++    fi
++  else
 +    AC_MSG_RESULT([no, not needed])
-+    if (test "x${SOFTFLOAT_LIB}" != x && test "x${SOFTFLOAT_LIB}" != xno); then
++    if test "x${SOFTFLOAT_LIB}" != x && test "x${SOFTFLOAT_LIB}" != xno; then
 +      AC_MSG_WARN([[sflt build not used, so --with-softfloat-lib is ignored]])
 +    fi
-+    if (test "x${SOFTFLOAT_INC}" != x && test "x${SOFTFLOAT_INC}" != xno); then
++    if test "x${SOFTFLOAT_INC}" != x && test "x${SOFTFLOAT_INC}" != xno; then
 +      AC_MSG_WARN([[sflt build not used, so --with-softfloat-include is ignored]])
 +    fi
 +    SOFTFLOAT_LIBS=
 +    SOFTFLOAT_CFLAGS=
-+  else
-+    if test "x${SOFTFLOAT_LIB}" = x   || test "x${SOFTFLOAT_INC}" = x   ||
-+       test "x${SOFTFLOAT_LIB}" = xno || test "x${SOFTFLOAT_INC}" = xno; then
-+      AC_MSG_RESULT([no, system softfp used])
-+      AC_MSG_WARN([Floating point math may not be perfectly accurate])
-+      SOFTFLOAT_LIBS=
-+      SOFTFLOAT_CFLAGS=
-+
-+    else
-+      AC_MSG_RESULT([yes, external library used])
-+
-+      SOFTFLOAT_LIBS="${SOFTFLOAT_LIB}"
-+      AC_MSG_CHECKING([for softfloat library])
-+      AC_MSG_RESULT([$SOFTFLOAT_LIBS])
-+
-+      SOFTFLOAT_CFLAGS="-I${SOFTFLOAT_INC} -DSOFTFLOAT_EXTERNAL"
-+      AC_MSG_CHECKING([for softfloat compiler flags])
-+      AC_MSG_RESULT([$SOFTFLOAT_CFLAGS])
-+    fi
-+
-+    if test "x$SOFTFLOAT_FOUND" = xno; then
-+      HELP_MSG_MISSING_DEPENDENCY([softfloat])
-+      AC_MSG_ERROR([Could not find softfloat! $HELP_MSG])
-+    fi
 +  fi
 +
 +  AC_SUBST(SOFTFLOAT_LIBS)
@@ -190,7 +201,7 @@ diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
 diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
 --- a/make/autoconf/spec.gmk.in
 +++ b/make/autoconf/spec.gmk.in
-@@ -350,6 +350,8 @@
+@@ -353,6 +353,8 @@
  CUPS_CFLAGS:=@CUPS_CFLAGS@
  ALSA_LIBS:=@ALSA_LIBS@
  ALSA_CFLAGS:=@ALSA_CFLAGS@
