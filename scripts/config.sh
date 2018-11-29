@@ -15,7 +15,7 @@ SFLTBUILD="$SFLTDIR/build/Linux-ARM-VFPv2-GCC-OpenJDK"
 # softfloat static library
 SFLTLIB="$SFLTBUILD/softfloat.a"
 # softfloat include directory
-SFLTINC="$SFLTBUILD/include"
+SFLTINC="$SFLTDIR/include"
 # openjdk-build repo dir
 ABLDDIR="$BUILDDIR/openjdk-build"
 # openjdk-build repo
