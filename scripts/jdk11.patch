@@ -16,7 +16,7 @@ diff -Naur a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 +    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm926ejs; then
 +      ARM_FLOAT_TYPE=sflt
-+      ARM_ARCH_TYPE_FLAGS='-mcpu=arm926ej-s -marm'
++      ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
        ARM_FLOAT_TYPE=vfp-sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
@@ -28,7 +28,7 @@ diff -Naur a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS ${$2EXTRA_CFLAGS}"
  
 +  if test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm926ejs; then
-+    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS -mcpu=arm926ej-s"
++    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS -march=armv5te"
 +  fi
 +
    AC_SUBST($2JVM_ASFLAGS)

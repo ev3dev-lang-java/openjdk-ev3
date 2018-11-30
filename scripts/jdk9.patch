@@ -16,7 +16,7 @@ diff -Naur a/common/autoconf/flags.m4 b/common/autoconf/flags.m4
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 +    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm926ejs; then
 +      ARM_FLOAT_TYPE=sflt
-+      ARM_ARCH_TYPE_FLAGS='-mcpu=arm926ej-s -marm'
++      ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
      elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarmv5-vfp-sflt; then
        ARM_FLOAT_TYPE=vfp-sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
@@ -25,7 +25,7 @@ diff -Naur a/common/autoconf/flags.m4 b/common/autoconf/flags.m4
      if test "x$OPENJDK_$1_CPU" = xx86; then
        $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -march=i586"
 +    elif test "x$OPENJDK_TARGET_ABI_PROFILE" = xarm926ejs; then
-+      $2JVM_ASFLAGS="-mcpu=arm926ej-s"
++      $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -march=armv5te"
      fi
    elif test "x$OPENJDK_$1_OS" = xmacosx; then
      $2JVM_ASFLAGS="[$]$2JVM_ASFLAGS -x assembler-with-cpp -mno-omit-leaf-frame-pointer -mstack-alignment=16"
