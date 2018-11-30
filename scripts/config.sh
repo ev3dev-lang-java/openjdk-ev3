@@ -104,6 +104,7 @@ if [ "$JDKVER" == "9" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
+  SOFTFLOAT_FLAGS=
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
@@ -118,6 +119,7 @@ elif [ "$JDKVER" == "10" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
+  SOFTFLOAT_FLAGS=
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
@@ -131,6 +133,7 @@ elif [ "$JDKVER" == "11" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
+  SOFTFLOAT_FLAGS=
 
 # OpenJDK Master+dev
 elif [ "$JDKVER" == "12" ]; then
@@ -144,6 +147,7 @@ elif [ "$JDKVER" == "12" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-release/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
+  SOFTFLOAT_FLAGS="--with-softfloat-lib=\"$SFLTLIB\" --with-softfloat-include=\"$SFLTINC\""
 
 # invalid or unset version
 else

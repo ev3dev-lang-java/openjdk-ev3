@@ -54,8 +54,8 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-extra-cflags="-w -Wno-error -D__SOFTFP__" \
                    --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
                    --with-version-string="$JAVA_VERSION" \
-                   --with-softfloat-lib="$SFLTLIB" \
-                   --with-softfloat-include="$SFLTINC" \
+                   "$JNI_PATH_FLAGS" \
+                   "$SOFTFLOAT_FLAGS" \
                    --with-cacerts-file="$CACERTFILE" \
                    --with-debug-level=release \
                    --with-libjpeg=system \
@@ -66,8 +66,7 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    AR="arm-linux-gnueabi-gcc-ar" \
                    NM="arm-linux-gnueabi-gcc-nm" \
                    BUILD_AR="gcc-ar" \
-                   BUILD_NM="gcc-nm" \
-                   "$JNI_PATH_FLAGS"
+                   BUILD_NM="gcc-nm"
 fi
 
 # start the build
