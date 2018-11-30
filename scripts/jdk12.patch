@@ -1,3 +1,11 @@
+# HG changeset patch
+# User Jakub Vaněk <linuxtardis@gmail.com>
+# Date 1543498682 -3600
+#      Thu Nov 29 14:38:02 2018 +0100
+# Node ID bc14ee6f50c73703229f979e78b93bcef12ae106
+# Parent  a96844b3a929cc2eb92fe7963be8aec603f24a83
+Add support for SoftFloat library on ARM
+
 diff --git a/doc/building.html b/doc/building.html
 --- a/doc/building.html
 +++ b/doc/building.html
@@ -181,7 +189,7 @@ diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
    fi
  
 +  if (test "x$OPENJDK_TARGET_CPU" == xarm &&
-+      test "x$ARM_FLOAT_TYPE" = xsflt); then
++      (test "x$ARM_FLOAT_TYPE" = "xsflt" || test "x$ARM_FLOAT_TYPE" = "xvfp-sflt" )); then
 +    NEEDS_LIB_SOFTFLOAT=true
 +  else
 +    NEEDS_LIB_SOFTFLOAT=false

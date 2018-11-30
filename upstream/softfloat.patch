@@ -189,7 +189,7 @@ diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
    fi
  
 +  if (test "x$OPENJDK_TARGET_CPU" == xarm &&
-+      test "x$ARM_FLOAT_TYPE" = xsflt); then
++      (test "x$ARM_FLOAT_TYPE" = "xsflt" || test "x$ARM_FLOAT_TYPE" = "xvfp-sflt" )); then
 +    NEEDS_LIB_SOFTFLOAT=true
 +  else
 +    NEEDS_LIB_SOFTFLOAT=false
