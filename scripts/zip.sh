@@ -28,7 +28,7 @@ fi
    --strip-debug \
    --no-header-files \
    --no-man-pages \
-   --add-modules java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent \
+   --add-modules java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool \
    --output ./jri
 
 if [ "$SFLT_NEEDED" == "true" ]; then
