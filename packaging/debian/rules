@@ -9,7 +9,7 @@ old_priority = ${DEB_JRI_OLD}
 
 basename = jri-$(version_major)
 binfmt_name = $(basename)
-jre_tools = java jrunscript keytool rmid rmiregistry
+jre_tools = jar jarsigner java jrunscript keytool rmid rmiregistry
 multiarch = $(shell dpkg-architecture -q DEB_HOST_MULTIARCH)
 priority = $(version_major)$(version_minor)$(version_patch)
 pkgname = $(basename)-$(version_platform)

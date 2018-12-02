@@ -3,6 +3,8 @@ alias=@@pkgname@@
 priority=@@priority@@
 section=main
 
+hl jar /usr/lib/jvm/@@pkgname@@/bin/jar
+hl jarsigner /usr/lib/jvm/@@pkgname@@/bin/jarsigner
 hl java /usr/lib/jvm/@@pkgname@@/bin/java
 hl jrunscript /usr/lib/jvm/@@pkgname@@/bin/jrunscript
 hl keytool /usr/lib/jvm/@@pkgname@@/bin/keytool
