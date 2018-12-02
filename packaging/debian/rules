@@ -8,7 +8,6 @@ version_platform = ${DEB_JRI_PLATFORM}
 old_priority = ${DEB_JRI_OLD}
 
 basename = jri-$(version_major)
-binfmt_name = $(basename)
 jre_tools = jar jarsigner java jrunscript keytool rmid rmiregistry
 multiarch = $(shell dpkg-architecture -q DEB_HOST_MULTIARCH)
 priority = $(version_major)$(version_minor)$(version_patch)
@@ -34,7 +33,6 @@ templates: binary-pre
 	    case "$$f" in debian/control.in) continue; esac; \
 	    dst=$$(echo $$f | sed -E 's|^debian/||;s|\.in$$||;s|^|$(pkgname).|;s|^|debian/|'); \
 	    sed -e 's/@@basename@@/$(basename)/g' \
-	        -e 's/@@binfmt-name@@/$(binfmt_name)/g' \
 	        -e 's/@@jre-tools@@/$(jre_tools)/g' \
 	        -e 's/@@multiarch@@/$(multiarch)/g' \
 	        -e 's/@@priority@@/$(priority)/g' \
@@ -46,7 +44,6 @@ templates: binary-pre
 mkdirs: binary-pre
 	# make directories
 	mkdir -p debian/$(pkgname)/usr/lib/jvm/$(pkgname) \
-	         debian/$(pkgname)/usr/share/binfmt \
 	         debian/$(pkgname)/etc/$(pkgname)/security/policy/unlimited \
 	         debian/$(pkgname)/etc/$(pkgname)/security/policy/limited
 
@@ -58,7 +55,6 @@ mkcustom: binary-pre mkdirs copy_java templates
 	rm debian/$(pkgname)/usr/lib/jvm/$(pkgname)/lib/security/cacerts
 	ln -s /etc/ssl/certs/java/cacerts debian/$(pkgname)/usr/lib/jvm/$(pkgname)/lib/security/cacerts
 	# custom config
-	install -o root -g root -m 0644 debian/$(pkgname).jar.binfmt debian/$(pkgname)/usr/lib/jvm/$(pkgname)/lib/jar.binfmt
 	install -o root -g root -m 0644 debian/nss.cfg debian/$(pkgname)/etc/$(pkgname)/security/nss.cfg
 	install -o root -g root -m 0644 debian/jvm.cfg debian/$(pkgname)/etc/$(pkgname)/jvm.cfg
 	install -o root -g root -m 0644 debian/$(pkgname).jinfo debian/$(pkgname)/usr/lib/jvm/.$(pkgname).jinfo

@@ -54,14 +54,7 @@ configure)
                 $basedir/bin/$i \
                 $priority
         done
-        update-alternatives --install /usr/share/binfmts/jar jexec-binfmt $basedir/lib/jar.binfmt $priority
     fi # update alternatives
-
-    # register binfmt; ignore errors, the alternative may already be
-    # registered by another JRE.
-    if which update-binfmts >/dev/null && [ -r /usr/share/binfmts/jar ]; then
-        update-binfmts --package @@binfmt-name@@ --import jar || true
-    fi
 
     rm -f $basedir/lib/server/classes.jsa
     log=$(tempfile)
