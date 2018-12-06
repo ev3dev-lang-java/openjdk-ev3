@@ -1,5 +1,11 @@
 FROM ev3dev-lang-java:jdk-stretch
 
+ARG commit=unknown
+ENV BUILDER_COMMIT=${commit}
+
+ARG extra=none
+ENV BUILDER_EXTRA=${extra}
+
 # copy build patches & scripts
 COPY *.awk *.patch *.sh /opt/jdkcross/
 RUN chmod +x /opt/jdkcross/*.sh

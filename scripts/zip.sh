@@ -37,6 +37,10 @@ if [ "$SFLT_NEEDED" == "true" ]; then
    cp "$SFLTDIR/COPYING.txt" "jmods/SoftFloat.txt"
 fi
 
+cp "$BUILDDIR/metadata" "jri/metadata"
+cp "$BUILDDIR/metadata" "jdk/metadata"
+cp "$BUILDDIR/metadata" "jmods/metadata"
+
 # create zip files
 echo "[ZIP] Creating JRI archive"
 tar -cf - jri   | pigz -9 > "$BUILDDIR/jri-$JDKPLATFORM.tar.gz"

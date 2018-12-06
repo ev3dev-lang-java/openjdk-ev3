@@ -48,7 +48,7 @@ mkdirs: binary-pre
 	         debian/$(pkgname)/etc/$(pkgname)/security/policy/limited
 
 copy_java: binary-pre mkdirs
-	cp -rf bin conf legal lib release debian/$(pkgname)/usr/lib/jvm/$(pkgname)/
+	cp -rf bin conf legal lib release metadata debian/$(pkgname)/usr/lib/jvm/$(pkgname)/
 
 mkcustom: binary-pre mkdirs copy_java templates
 	# ca certificates

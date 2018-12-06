@@ -21,6 +21,7 @@ if [ ! -d "$JDKDIR" ]; then
     fi
 
     JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')-ev3"
+    JAVA_COMMIT="$(hg log -r "." --template "{node}\n")"
 
   elif [ "$JAVA_SCM" == "hg_zip" ]; then
     cd "$BUILDDIR"
@@ -67,7 +68,7 @@ if [ ! -d "$JDKDIR" ]; then
     fi
 
     JAVA_VERSION="$(cat ./.hg_archival.txt | grep "latesttag:" | sed -E 's/^.*jdk-//')-ev3"
-
+    JAVA_COMMIT="$(cat ./.hg_archival.txt | grep "node:" | sed -E 's/^node: //')"
   elif [ "$JAVA_SCM" == "git" ]; then
     latestTag="$($SCRIPTDIR/latest.awk "$JAVA_REPO")"
     JAVA_VERSION="$(echo "$latestTag" | sed 's/jdk-//')-ev3"
@@ -78,10 +79,24 @@ if [ ! -d "$JDKDIR" ]; then
 
     # enter the jdk repo
     cd "$JDKDIR"
+    JAVA_COMMIT="$(git rev-parse HEAD)"
   fi
 
-  echo "[FETCH] Java version string: $JAVA_VERSION"
-  echo -e "#!/bin/bash\nJAVA_VERSION=\"$JAVA_VERSION\"" >"$BUILDDIR/jver.sh"
+  # build metadata
+  echo "# ev3dev-lang-java openjdk build metadata"  >"$BUILDDIR/metadata"
+  echo "JAVA_ORIGIN=\"$JAVA_SCM\""                 >>"$BUILDDIR/metadata"
+  echo "JAVA_VERSION=\"$JAVA_VERSION\""            >>"$BUILDDIR/metadata"
+  echo "JAVA_COMMIT=\"$JAVA_COMMIT\""              >>"$BUILDDIR/metadata"
+  echo "CONFIG_VM=\"$JDKVM\""                      >>"$BUILDDIR/metadata"
+  echo "CONFIG_VERSION=\"$JDKVER\""                >>"$BUILDDIR/metadata"
+  echo "CONFIG_PLATFORM=\"$JDKPLATFORM\""          >>"$BUILDDIR/metadata"
+  echo "BUILDER_COMMIT=\"$BUILDER_COMMIT\""        >>"$BUILDDIR/metadata"
+  echo "BUILDER_EXTRA=\"$BUILDER_EXTRA\""          >>"$BUILDDIR/metadata"
+
+
+  echo "[FETCH] Build metadata: "
+  cat "$BUILDDIR/metadata"
+  echo
 
   # apply the EV3-specific patches
   echo "[FETCH] Patching the source tree"

@@ -20,9 +20,12 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
 
         // do the docker build stuff
         stage("Docker build") {
-            osImage  = docker.build("ev3dev-lang-java:jdk-stretch", "-f system/Dockerfile.${params.DOCKER_ARCH} ./system")
-            bldImage = docker.build("ev3dev-lang-java:jdk-build",   "-f scripts/Dockerfile                      ./scripts")
-            //pkgImage = docker.build("ev3dev-lang-java:jdk-package", "-f packaging/Dockerfile                    ./packaging")
+            def infoArg = ""
+            infoArg += " --build-arg commit=\"${env.GIT_COMMIT}@${env.GIT_BRANCH}\""
+            infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER} (${env.BUILD_ID})\""
+            osImage  = docker.build("ev3dev-lang-java:jdk-stretch",   "${infoArg} -f system/Dockerfile.${params.DOCKER_ARCH} ./system")
+            bldImage = docker.build("ev3dev-lang-java:jdk-build",     "${infoArg} -f scripts/Dockerfile                      ./scripts")
+            //pkgImage = docker.build("ev3dev-lang-java:jdk-package", "${infoArg} -f packaging/Dockerfile                    ./packaging")
         }
         stage("JDK download") {
             bldImage.inside("${mountParams} ${envParams}") {
@@ -44,6 +47,7 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             archiveArtifacts artifacts: "build/jri-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
             archiveArtifacts artifacts: "build/jdk-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
             archiveArtifacts artifacts: "build/jmods-${params.JDKPLATFORM_VALUE}.tar.gz", fingerprint: true
+            archiveArtifacts artifacts: "build/metadata", fingerprint: true
         }
 
         //stage("JDK debpkg") {

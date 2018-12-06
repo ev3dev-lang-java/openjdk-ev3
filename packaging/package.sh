@@ -3,7 +3,7 @@
 set -x
 set -e
 
-source /build/jver.sh
+source /build/metadata
 
 # 11.0.1+13-ev3
 
