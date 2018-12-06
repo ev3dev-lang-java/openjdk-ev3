@@ -28,7 +28,7 @@ fi
    --strip-debug \
    --no-header-files \
    --no-man-pages \
-   --add-modules java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool \
+   --add-modules "$JRI_MODULES" \
    --output ./jri
 
 if [ "$SFLT_NEEDED" == "true" ]; then
@@ -37,9 +37,9 @@ if [ "$SFLT_NEEDED" == "true" ]; then
    cp "$SFLTDIR/COPYING.txt" "jmods/SoftFloat.txt"
 fi
 
-cp "$BUILDDIR/metadata" "jri/metadata"
-cp "$BUILDDIR/metadata" "jdk/metadata"
-cp "$BUILDDIR/metadata" "jmods/metadata"
+cp "$BUILDDIR/metadata" "jri/metadata";   echo "TYPE=\"jri\""   >>"jri/metadata"
+cp "$BUILDDIR/metadata" "jdk/metadata";   echo "TYPE=\"jdk\""   >>"jdk/metadata"
+cp "$BUILDDIR/metadata" "jmods/metadata"; echo "TYPE=\"jmods\"" >>"jmods/metadata"
 
 # create zip files
 echo "[ZIP] Creating JRI archive"

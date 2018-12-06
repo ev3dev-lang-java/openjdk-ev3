@@ -27,6 +27,8 @@ JAVA_BZ2="$BUILDDIR/tip.tar.bz2"
 JAVA_TMP="$BUILDDIR/jdk_tmp"
 TARBALL_MAX_DOWNLOADS=10
 
+JRI_MODULES="java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool"
+
 # EV3
 if [ "$JDKPLATFORM" == "ev3" ]; then
   SFLT_NEEDED=true

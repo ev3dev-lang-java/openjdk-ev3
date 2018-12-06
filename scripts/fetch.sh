@@ -90,6 +90,7 @@ if [ ! -d "$JDKDIR" ]; then
   echo "CONFIG_VM=\"$JDKVM\""                      >>"$BUILDDIR/metadata"
   echo "CONFIG_VERSION=\"$JDKVER\""                >>"$BUILDDIR/metadata"
   echo "CONFIG_PLATFORM=\"$JDKPLATFORM\""          >>"$BUILDDIR/metadata"
+  echo "CONFIG_MODULES=\"$JRI_MODULES\""           >>"$BUILDDIR/metadata"
   echo "BUILDER_COMMIT=\"$BUILDER_COMMIT\""        >>"$BUILDDIR/metadata"
   echo "BUILDER_EXTRA=\"$BUILDER_EXTRA\""          >>"$BUILDDIR/metadata"
 
