@@ -20,9 +20,10 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
 
         // do the docker build stuff
         stage("Docker build") {
+            def commit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             def infoArg = ""
-            infoArg += " --build-arg commit=\"${env.GIT_COMMIT}@${env.GIT_BRANCH}\""
-            infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER} (${env.BUILD_ID})\""
+            infoArg += " --build-arg commit=\"$commit\""
+            infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER}\""
             osImage  = docker.build("ev3dev-lang-java:jdk-stretch",   "${infoArg} -f system/Dockerfile.${params.DOCKER_ARCH} ./system")
             bldImage = docker.build("ev3dev-lang-java:jdk-build",     "${infoArg} -f scripts/Dockerfile                      ./scripts")
             //pkgImage = docker.build("ev3dev-lang-java:jdk-package", "${infoArg} -f packaging/Dockerfile                    ./packaging")
