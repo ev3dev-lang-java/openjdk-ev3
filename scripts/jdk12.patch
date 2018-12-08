@@ -1,8 +1,8 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544271579 -3600
-#      Sat Dec 08 13:19:39 2018 +0100
-# Node ID e6f050b1ba4cd98ddc8ed5c3895d000ecdac37e9
+# Date 1544273385 -3600
+#      Sat Dec 08 13:49:45 2018 +0100
+# Node ID 2dda78cf712d402b53df779325e8b8f23b487be2
 # Parent  583fd71c47d60dea883b1f03d9f1b2c267c0a891
 Add support for compiling with SoftFloat-3e on arm sflt builds
 
@@ -32,11 +32,12 @@ diff --git a/doc/building.html b/doc/building.html
  <h2 id="build-tools-requirements">Build Tools Requirements</h2>
  <h3 id="autoconf">Autoconf</h3>
  <p>The JDK requires <a href="http://www.gnu.org/software/autoconf">Autoconf</a> on all platforms. At least version 2.69 is required.</p>
-@@ -486,6 +495,7 @@
+@@ -486,6 +495,8 @@
  <li><code>--with-x=&lt;path&gt;</code> - Set the path to <a href="#x11">X11</a></li>
  <li><code>--with-alsa=&lt;path&gt;</code> - Set the path to <a href="#alsa">ALSA</a></li>
  <li><code>--with-libffi=&lt;path&gt;</code> - Set the path to <a href="#libffi">libffi</a></li>
-+<li><code>--with-softfloat-lib=&lt;path&gt;</code>, <code>--with-softfloat-include=&lt;path&gt;</code> - Set the path to <a href="#softfloat">SoftFloat</a> library and include directory.</li>
++<li><code>--enable-softfloat</code> - Enable the use of external <a href="#softfloat">SoftFloat</a> library on sflt builds.</li>
++<li><code>--with-softfloat=&lt;path&gt;</code> or <code>--with-softfloat-lib=&lt;path&gt;</code>, <code>--with-softfloat-include=&lt;path&gt;</code> - Set the path to <a href="#softfloat">SoftFloat</a> library and include directory.</li>
  <li><code>--with-jtreg=&lt;path&gt;</code> - Set the path to JTReg. See <a href="#running-tests">Running Tests</a></li>
  </ul>
  <p>Certain third-party libraries used by the JDK (libjpeg, giflib, libpng, lcms and zlib) are included in the JDK repository. The default behavior of the JDK build is to use this version of these libraries, but they might be replaced by an external version. To do so, specify <code>system</code> as the <code>&lt;source&gt;</code> option in these arguments. (The default is <code>bundled</code>).</p>
@@ -72,10 +73,12 @@ diff --git a/doc/building.md b/doc/building.md
  ## Build Tools Requirements
  
  ### Autoconf
-@@ -694,6 +716,8 @@
+@@ -694,6 +716,10 @@
    * `--with-x=<path>` - Set the path to [X11](#x11)
    * `--with-alsa=<path>` - Set the path to [ALSA](#alsa)
    * `--with-libffi=<path>` - Set the path to [libffi](#libffi)
++  * `--enable-softfloat` - Enable the use of external [SoftFloat](#softfloat)
++    library on sflt builds.
 +  * `--with-softfloat=<path>` or `--with-softfloat-lib=<path>`, `--with-softfloat-include=<path>` -
 +    Set the path to [SoftFloat](#softfloat) library and include directory.
    * `--with-jtreg=<path>` - Set the path to JTReg. See [Running Tests](
