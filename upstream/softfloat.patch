@@ -1,8 +1,8 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544268430 -3600
-#      Sat Dec 08 12:27:10 2018 +0100
-# Node ID 1a5456e957141d8872f84387916032288b1ac3f7
+# Date 1544270396 -3600
+#      Sat Dec 08 12:59:56 2018 +0100
+# Node ID 15f9bc199346608cb4cbf8092efe9cdd61a1e57f
 # Parent  583fd71c47d60dea883b1f03d9f1b2c267c0a891
 Add support for compiling with SoftFloat-3e on arm sflt builds
 
@@ -213,7 +213,7 @@ new file mode 100644
 +    LIBS="$LIBS $SOFTFLOAT_LIBS"
 +    AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <softfloat.h>],
 +        [
-+          return f32_to_i32( f32_sub( i32_to_f32(1), i32_to_f32(1) ) );
++          return f32_to_i32(f32_sub(i32_to_f32(1), i32_to_f32(1)), softfloat_round_near_even, false);
 +        ])],
 +        [SOFTFLOAT_WORKS=yes],
 +        [SOFTFLOAT_WORKS=no]
