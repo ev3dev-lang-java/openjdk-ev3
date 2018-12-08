@@ -1,9 +1,9 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544266914 -3600
-#      Sat Dec 08 12:01:54 2018 +0100
-# Node ID f506ef85dc3cce6ece7618881cc1f49da2c00733
-# Parent  1f2cd8329576578b423a9385fdf487f1f73b4058
+# Date 1544267658 -3600
+#      Sat Dec 08 12:14:18 2018 +0100
+# Node ID 6a81777c4332d88fb7c5de392e928a5772540672
+# Parent  583fd71c47d60dea883b1f03d9f1b2c267c0a891
 Add support for compiling with SoftFloat-3e on arm sflt builds
 
 diff --git a/doc/building.html b/doc/building.html
