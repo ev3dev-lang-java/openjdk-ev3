@@ -1,8 +1,8 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544267658 -3600
-#      Sat Dec 08 12:14:18 2018 +0100
-# Node ID 6a81777c4332d88fb7c5de392e928a5772540672
+# Date 1544268430 -3600
+#      Sat Dec 08 12:27:10 2018 +0100
+# Node ID 1a5456e957141d8872f84387916032288b1ac3f7
 # Parent  583fd71c47d60dea883b1f03d9f1b2c267c0a891
 Add support for compiling with SoftFloat-3e on arm sflt builds
 
@@ -85,7 +85,7 @@ diff --git a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
 new file mode 100644
 --- /dev/null
 +++ b/make/autoconf/lib-softfloat.m4
-@@ -0,0 +1,148 @@
+@@ -0,0 +1,149 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 +# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -190,6 +190,7 @@ new file mode 100644
 +            SOFTFLOAT_FOUND=yes
 +            SOFTFLOAT_CFLAGS="-DSOFTFLOAT_EXTERNAL"
 +            SOFTFLOAT_LIBS="-l:softfloat.a"
++          ],
 +          [SOFTFLOAT_FOUND=no]
 +      )
 +    fi
