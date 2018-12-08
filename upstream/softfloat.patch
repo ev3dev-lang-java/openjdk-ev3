@@ -1,8 +1,8 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544270396 -3600
-#      Sat Dec 08 12:59:56 2018 +0100
-# Node ID 15f9bc199346608cb4cbf8092efe9cdd61a1e57f
+# Date 1544271579 -3600
+#      Sat Dec 08 13:19:39 2018 +0100
+# Node ID e6f050b1ba4cd98ddc8ed5c3895d000ecdac37e9
 # Parent  583fd71c47d60dea883b1f03d9f1b2c267c0a891
 Add support for compiling with SoftFloat-3e on arm sflt builds
 
@@ -280,6 +280,20 @@ diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
  LIBFFI_LIBS:=@LIBFFI_LIBS@
  LIBFFI_CFLAGS:=@LIBFFI_CFLAGS@
  ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
+diff --git a/make/copy/Copy-java.base.gmk b/make/copy/Copy-java.base.gmk
+--- a/make/copy/Copy-java.base.gmk
++++ b/make/copy/Copy-java.base.gmk
+@@ -219,6 +219,10 @@
+   LEGAL_EXCLUDES += zlib.md
+ endif
+ 
++ifeq ($(SOFTFLOAT_LIBS), )
++  LEGAL_EXCLUDES += softfloat.md
++endif
++
+ $(eval $(call SetupCopyLegalFiles, COPY_LEGAL, \
+     EXCLUDES := $(LEGAL_EXCLUDES), \
+ ))
 diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
 --- a/make/hotspot/lib/CompileJvm.gmk
 +++ b/make/hotspot/lib/CompileJvm.gmk
@@ -526,3 +540,48 @@ diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/tem
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dmul), R0, R1, R2, R3); break;
      case div: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_ddiv), R0, R1, R2, R3); break;
      case rem: __ call_VM_leaf(CAST_FROM_FN_PTR(address, SharedRuntime::drem), R0, R1, R2, R3); break;
+diff --git a/src/java.base/share/legal/softfloat.md b/src/java.base/share/legal/softfloat.md
+new file mode 100644
+--- /dev/null
++++ b/src/java.base/share/legal/softfloat.md
+@@ -0,0 +1,40 @@
++## SoftFloat-3e
++
++### SoftFloat license
++```
++License for Berkeley SoftFloat Release 3e
++
++John R. Hauser
++2018 January 20
++
++The following applies to the whole of SoftFloat Release 3e as well as to
++each source file individually.
++
++Copyright 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 The Regents of the
++University of California.  All rights reserved.
++
++Redistribution and use in source and binary forms, with or without
++modification, are permitted provided that the following conditions are met:
++
++ 1. Redistributions of source code must retain the above copyright notice,
++    this list of conditions, and the following disclaimer.
++
++ 2. Redistributions in binary form must reproduce the above copyright
++    notice, this list of conditions, and the following disclaimer in the
++    documentation and/or other materials provided with the distribution.
++
++ 3. Neither the name of the University nor the names of its contributors
++    may be used to endorse or promote products derived from this software
++    without specific prior written permission.
++
++THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS", AND ANY
++EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ARE
++DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY
++DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
++ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++```
