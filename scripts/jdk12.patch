@@ -1,9 +1,9 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544273385 -3600
-#      Sat Dec 08 13:49:45 2018 +0100
-# Node ID 2dda78cf712d402b53df779325e8b8f23b487be2
-# Parent  583fd71c47d60dea883b1f03d9f1b2c267c0a891
+# Date 1544471909 -3600
+#      Mon Dec 10 20:58:29 2018 +0100
+# Node ID 16f2f6587ffddd125177ff26d740e2223b0f5692
+# Parent  3b0fe3d6c3d77474164b67103dcaed1a2358e5f8
 Add support for compiling with SoftFloat-3e on arm sflt builds
 
 diff --git a/doc/building.html b/doc/building.html
@@ -27,24 +27,23 @@ diff --git a/doc/building.html b/doc/building.html
 +<ul>
 +<li>To build the library, you will have to download its source and build it for the target platform. To do so, take a look in its <code>build/Linux-ARM-VFPv2-GCC</code> subdirectory.</li>
 +</ul>
-+<p>Use <code>--enable-softfloat</code> to enable the use of this library. You can then use <code>--with-softfloat-lib=&lt;path&gt;</code> and <code>--with-softfloat-include=&lt;path&gt;</code> to specify the path to the <code>softfloat.a</code> archive and the <code>source/include</code> directory. Alternatively, if you install the library and its headers to a prefix, you can pass its path to <code>--with-softfloat=&lt;path&gt;</code>.</p>
++<p>You can enable this library by specifying a library prefix via <code>--with-softfloat=&lt;path&gt;</code> or by specifying path to softfloat.a via <code>--with-softfloat-lib=&lt;path&gt;</code> and path to directory containing softfloat.h via <code>--with-softfloat-include=&lt;path&gt;</code>. When specifying the prefix, ensure that <code>&lt;prefix&gt;/lib/softfloat.a</code> and <code>&lt;prefix&gt;/include/softfloat.h</code> exist.</p>
 +<p>If you do not enable this library, standard system libraries will be used instead.</p>
  <h2 id="build-tools-requirements">Build Tools Requirements</h2>
  <h3 id="autoconf">Autoconf</h3>
  <p>The JDK requires <a href="http://www.gnu.org/software/autoconf">Autoconf</a> on all platforms. At least version 2.69 is required.</p>
-@@ -486,6 +495,8 @@
+@@ -486,6 +495,7 @@
  <li><code>--with-x=&lt;path&gt;</code> - Set the path to <a href="#x11">X11</a></li>
  <li><code>--with-alsa=&lt;path&gt;</code> - Set the path to <a href="#alsa">ALSA</a></li>
  <li><code>--with-libffi=&lt;path&gt;</code> - Set the path to <a href="#libffi">libffi</a></li>
-+<li><code>--enable-softfloat</code> - Enable the use of external <a href="#softfloat">SoftFloat</a> library on sflt builds.</li>
-+<li><code>--with-softfloat=&lt;path&gt;</code> or <code>--with-softfloat-lib=&lt;path&gt;</code>, <code>--with-softfloat-include=&lt;path&gt;</code> - Set the path to <a href="#softfloat">SoftFloat</a> library and include directory.</li>
++<li><code>--with-softfloat=&lt;path&gt;</code> or <code>--with-softfloat-lib=&lt;path&gt;</code>, <code>--with-softfloat-include=&lt;path&gt;</code> - Set the path to <a href="#softfloat">SoftFloat</a> library and include directory and enable its use.</li>
  <li><code>--with-jtreg=&lt;path&gt;</code> - Set the path to JTReg. See <a href="#running-tests">Running Tests</a></li>
  </ul>
  <p>Certain third-party libraries used by the JDK (libjpeg, giflib, libpng, lcms and zlib) are included in the JDK repository. The default behavior of the JDK build is to use this version of these libraries, but they might be replaced by an external version. To do so, specify <code>system</code> as the <code>&lt;source&gt;</code> option in these arguments. (The default is <code>bundled</code>).</p>
 diff --git a/doc/building.md b/doc/building.md
 --- a/doc/building.md
 +++ b/doc/building.md
-@@ -527,6 +527,28 @@
+@@ -527,6 +527,29 @@
  Use `--with-libffi=<path>` if `configure` does not properly locate your libffi
  files.
  
@@ -61,11 +60,12 @@ diff --git a/doc/building.md b/doc/building.md
 +    for the target platform. To do so, take a look in its
 +    `build/Linux-ARM-VFPv2-GCC` subdirectory.
 +
-+Use `--enable-softfloat` to enable the use of this library. You can then
-+use `--with-softfloat-lib=<path>` and `--with-softfloat-include=<path>`
-+to specify the path to the `softfloat.a` archive and the `source/include`
-+directory. Alternatively, if you install the library and its headers to
-+a prefix, you can pass its path to `--with-softfloat=<path>`.
++You can enable this library by specifying a library prefix
++via `--with-softfloat=<path>` or by specifying path to softfloat.a
++via `--with-softfloat-lib=<path>` and path to directory
++containing softfloat.h via `--with-softfloat-include=<path>`. When
++specifying the prefix, ensure that `<prefix>/lib/softfloat.a` and
++`<prefix>/include/softfloat.h` exist.
 +
 +If you do not enable this library, standard system libraries
 +will be used instead.
@@ -73,14 +73,12 @@ diff --git a/doc/building.md b/doc/building.md
  ## Build Tools Requirements
  
  ### Autoconf
-@@ -694,6 +716,10 @@
+@@ -694,6 +717,8 @@
    * `--with-x=<path>` - Set the path to [X11](#x11)
    * `--with-alsa=<path>` - Set the path to [ALSA](#alsa)
    * `--with-libffi=<path>` - Set the path to [libffi](#libffi)
-+  * `--enable-softfloat` - Enable the use of external [SoftFloat](#softfloat)
-+    library on sflt builds.
 +  * `--with-softfloat=<path>` or `--with-softfloat-lib=<path>`, `--with-softfloat-include=<path>` -
-+    Set the path to [SoftFloat](#softfloat) library and include directory.
++    Set the path to [SoftFloat](#softfloat) library and include directory and enable its use.
    * `--with-jtreg=<path>` - Set the path to JTReg. See [Running Tests](
      #running-tests)
  
@@ -88,7 +86,7 @@ diff --git a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
 new file mode 100644
 --- /dev/null
 +++ b/make/autoconf/lib-softfloat.m4
-@@ -0,0 +1,149 @@
+@@ -0,0 +1,115 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 +# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -120,11 +118,8 @@ new file mode 100644
 +AC_DEFUN_ONCE([LIB_SETUP_SOFTFLOAT],
 +[
 +  # define options
-+  AC_ARG_ENABLE(softfloat, [AS_HELP_STRING([--enable-softfloat],
-+      [enable use of SoftFloat-3 on softfp builds])])
-+
 +  AC_ARG_WITH(softfloat, [AS_HELP_STRING([--with-softfloat],
-+      [specify prefix directory for the softfloat package
++      [specify prefix directory for the SoftFloat-3 prefix
 +      (expecting softfloat.a under PATH/lib and softfloat.h under PATH/include)])])
 +
 +  AC_ARG_WITH(softfloat-lib, [AS_HELP_STRING([--with-softfloat-lib],
@@ -136,24 +131,61 @@ new file mode 100644
 +  # check if softfloat can be used and if the user enabled it
 +  AC_MSG_CHECKING([if softfloat library should be used])
 +  if test "x$USES_LIB_SOFTFLOAT" = "xtrue"; then
++    SOFTFLOAT_SPECIFIED=no
 +
-+    if test "x$enable_softfloat" = "x" || test "x$enable_softfloat" = "xno"; then
++    if test "x${with_softfloat}" != x; then
++      SOFTFLOAT_CFLAGS="-I${with_softfloat}/include -DSOFTFLOAT_EXTERNAL"
++      SOFTFLOAT_LIBS="${with_softfloat}/lib/softfloat.a"
++      SOFTFLOAT_SPECIFIED=yes
++    fi
++    if test "x${with_softfloat_include}" != x; then
++      SOFTFLOAT_CFLAGS="-I${with_softfloat_include} -DSOFTFLOAT_EXTERNAL"
++      SOFTFLOAT_SPECIFIED=yes
++    fi
++    if test "x${with_softfloat_lib}" != x; then
++      SOFTFLOAT_LIBS="${with_softfloat_lib}"
++      SOFTFLOAT_SPECIFIED=yes
++    fi
++
++    if test "x$SOFTFLOAT_SPECIFIED" = xno; then
 +      AC_MSG_RESULT([no, system softfp used])
 +      AC_MSG_NOTICE([Floating point operations may be less precise by a very small amount])
-+      SOFTFLOAT_ENABLED=no
-+
-+    elif  test "x$enable_softfloat" = "xyes"; then
-+      AC_MSG_RESULT([yes])
-+      SOFTFLOAT_ENABLED=yes
++      SOFTFLOAT_CFLAGS=
++      SOFTFLOAT_LIBS=
 +    else
-+      AC_MSG_ERROR([Invalid value for --enable-softfloat])
-+    fi
++      AC_MSG_RESULT([yes])
 +
++      AC_MSG_CHECKING([for softfloat preprocessor flags])
++      AC_MSG_RESULT([$SOFTFLOAT_CFLAGS])
++
++      AC_MSG_CHECKING([for softfloat linker flags])
++      AC_MSG_RESULT([$SOFTFLOAT_LIBS])
++
++      AC_MSG_CHECKING([if softfloat works])
++      AC_LANG_PUSH(C)
++      OLD_CFLAGS="$CFLAGS"
++      CFLAGS="$CFLAGS $SOFTFLOAT_CFLAGS"
++      OLD_LIBS="$LIBS"
++      LIBS="$LIBS $SOFTFLOAT_LIBS"
++      AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <softfloat.h>],
++          [
++            return f32_to_i32(f32_sub(i32_to_f32(1), i32_to_f32(1)), softfloat_round_near_even, false);
++          ])],
++          [SOFTFLOAT_WORKS=yes],
++          [SOFTFLOAT_WORKS=no]
++      )
++      CFLAGS="$OLD_CFLAGS"
++      LIBS="$OLD_LIBS"
++      AC_LANG_POP(C)
++      AC_MSG_RESULT([$SOFTFLOAT_WORKS])
++
++      if test "x$SOFTFLOAT_WORKS" = xno; then
++        HELP_MSG_MISSING_DEPENDENCY([softfloat])
++        AC_MSG_ERROR([Found softfloat but could not link and compile with it. $HELP_MSG])
++      fi
++    fi
 +  else
 +    AC_MSG_RESULT([no, not needed])
-+    if test "x${enable_softfloat}" != x && test "x${enable_softfloat}" != xno; then
-+      AC_MSG_WARN([[not building for sflt, so --enable-softfloat is ignored]])
-+    fi
 +    if test "x${with_softfloat}" != x && test "x${with_softfloat}" != xno; then
 +      AC_MSG_WARN([[not building for sflt, so --with-softfloat is ignored]])
 +    fi
@@ -163,74 +195,6 @@ new file mode 100644
 +    if test "x${with_softfloat_include}" != x && test "x${with_softfloat_include}" != xno; then
 +      AC_MSG_WARN([[not building for sflt, so --with-softfloat-include is ignored]])
 +    fi
-+    SOFTFLOAT_ENABLED=no
-+  fi
-+
-+  # if the library can be used and the user wants it, find it and test it
-+  if test "x$SOFTFLOAT_ENABLED" = "xyes"; then
-+    SOFTFLOAT_FOUND=no
-+
-+    if test "x${with_softfloat}" = xno || test "x${with_softfloat_lib}" = xno || test "x${with_softfloat_include}" = xno; then
-+      AC_MSG_ERROR([Please do not combine --enable-softfloat and --without-softfloat* options.])
-+    fi
-+
-+    if test "x${with_softfloat}" != x; then
-+      SOFTFLOAT_CFLAGS="-I${with_softfloat}/include -DSOFTFLOAT_EXTERNAL"
-+      SOFTFLOAT_LIBS="${with_softfloat}/lib/softfloat.a"
-+      SOFTFLOAT_FOUND=yes
-+    fi
-+    if test "x${with_softfloat_include}" != x; then
-+      SOFTFLOAT_CFLAGS="-I${with_softfloat_include} -DSOFTFLOAT_EXTERNAL"
-+      SOFTFLOAT_FOUND=yes
-+    fi
-+    if test "x${with_softfloat_lib}" != x; then
-+      SOFTFLOAT_LIBS="${with_softfloat_lib}"
-+      SOFTFLOAT_FOUND=yes
-+    fi
-+    if test "x$SOFTFLOAT_FOUND" = xno; then
-+      AC_CHECK_HEADERS([softfloat.h],
-+          [
-+            SOFTFLOAT_FOUND=yes
-+            SOFTFLOAT_CFLAGS="-DSOFTFLOAT_EXTERNAL"
-+            SOFTFLOAT_LIBS="-l:softfloat.a"
-+          ],
-+          [SOFTFLOAT_FOUND=no]
-+      )
-+    fi
-+    if test "x$SOFTFLOAT_FOUND" = xno; then
-+      HELP_MSG_MISSING_DEPENDENCY([softfloat])
-+      AC_MSG_ERROR([Could not find softfloat! $HELP_MSG])
-+    else
-+      AC_MSG_CHECKING([for softfloat library])
-+      AC_MSG_RESULT([$SOFTFLOAT_LIBS])
-+
-+      AC_MSG_CHECKING([for softfloat compiler flags])
-+      AC_MSG_RESULT([$SOFTFLOAT_CFLAGS])
-+    fi
-+
-+    AC_MSG_CHECKING([if softfloat works])
-+    AC_LANG_PUSH(C)
-+    OLD_CFLAGS="$CFLAGS"
-+    CFLAGS="$CFLAGS $SOFTFLOAT_CFLAGS"
-+    OLD_LIBS="$LIBS"
-+    LIBS="$LIBS $SOFTFLOAT_LIBS"
-+    AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <softfloat.h>],
-+        [
-+          return f32_to_i32(f32_sub(i32_to_f32(1), i32_to_f32(1)), softfloat_round_near_even, false);
-+        ])],
-+        [SOFTFLOAT_WORKS=yes],
-+        [SOFTFLOAT_WORKS=no]
-+    )
-+    CFLAGS="$OLD_CFLAGS"
-+    LIBS="$OLD_LIBS"
-+    AC_LANG_POP(C)
-+    AC_MSG_RESULT([$SOFTFLOAT_WORKS])
-+
-+    if test "x$SOFTFLOAT_WORKS" = xno; then
-+      HELP_MSG_MISSING_DEPENDENCY([softfloat])
-+      AC_MSG_ERROR([Found softfloat but could not link and compile with it. $HELP_MSG])
-+    fi
-+  else
 +    SOFTFLOAT_CFLAGS=
 +    SOFTFLOAT_LIBS=
 +  fi

@@ -149,7 +149,7 @@ elif [ "$JDKVER" == "12" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-release/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
-  SOFTFLOAT_FLAGS="--enable-softfloat --with-softfloat-lib=$SFLTLIB --with-softfloat-include=$SFLTINC"
+  SOFTFLOAT_FLAGS="--with-softfloat-lib=$SFLTLIB --with-softfloat-include=$SFLTINC"
 
 # invalid or unset version
 else
