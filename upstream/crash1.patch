@@ -1,0 +1,25 @@
+# HG changeset patch
+# User Jakub Vaněk <linuxtardis@gmail.com>
+# Date 1544311444 -3600
+#      Sun Dec 09 00:24:04 2018 +0100
+# Node ID 87425963180285bfee8170afa07fb3989abeb1a1
+# Parent  f94276ccc9fc9d6c5b00cf9bafa77d708e9c2e6b
+Fix crash on arm-sflt debug builds
+
+diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
+--- a/src/hotspot/share/oops/constantPool.cpp
++++ b/src/hotspot/share/oops/constantPool.cpp
+@@ -406,8 +406,12 @@
+ }
+ 
+ int ConstantPool::cp_to_object_index(int cp_index) {
++  Array<u2> *map = reference_map();
++  if (map == 0)
++    return _no_index_sentinel;
++
+   // this is harder don't do this so much.
+-  int i = reference_map()->find(cp_index);
++  int i = map->find(cp_index);
+   // We might not find the index for jsr292 call.
+   return (i < 0) ? _no_index_sentinel : i;
+ }
