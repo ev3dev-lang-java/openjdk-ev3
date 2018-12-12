@@ -28,6 +28,31 @@ TARBALL_MAX_DOWNLOADS=10
 
 JRI_MODULES="java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool"
 
+
+###############################################################################
+# Set the debug level
+#    release: no debug information, all optimizations, no asserts.
+#    optimized: no debug information, all optimizations, no asserts, HotSpot target is 'optimized'.
+#    fastdebug: debug information (-g), all optimizations, all asserts
+#    slowdebug: debug information (-g), no optimizations, all asserts
+if [ "$JDKDEBUG" == "release" ] ||
+   [ "$JDKDEBUG" == "optimized" ] ||
+   [ "$JDKDEBUG" == "fastdebug" ] ||
+   [ "$JDKDEBUG" == "slowdebug" ]; then
+  HOTSPOT_DEBUG="$JDKDEBUG"
+elif [ -z "$JDKDEBUG" ]; then
+  HOTSPOT_DEBUG="release"
+else
+  echo "Error! Please specify a valid JVM debug level via the JDKDEBUG environment variable." >&2
+  echo "Acceptable values:" >&2
+  echo "JDKDEBUG=release" >&2
+  echo "JDKDEBUG=optimized" >&2
+  echo "JDKDEBUG=fastdebug" >&2
+  echo "JDKDEBUG=slowdebug" >&2
+  exit 1
+fi
+
+
 # EV3
 if [ "$JDKPLATFORM" == "ev3" ]; then
   eval "$(dpkg-architecture -s -a armel -A armel)"
@@ -101,7 +126,7 @@ if [ "$JDKVER" == "9" ]; then
   HOSTJDK="$BUILDDIR/jdk-9.0.4"
   HOSTJDK_FILE="$BUILDDIR/openjdk-9.0.4_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_linux-x64_bin.tar.gz"
-  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
+  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
@@ -116,7 +141,7 @@ elif [ "$JDKVER" == "10" ]; then
   HOSTJDK="$BUILDDIR/jdk-10.0.2"
   HOSTJDK_FILE="$BUILDDIR/openjdk-10.0.2_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk10/10.0.2/19aef61b38124481863b1413dce1855f/13/openjdk-10.0.2_linux-x64_bin.tar.gz"
-  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
+  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
@@ -131,7 +156,7 @@ elif [ "$JDKVER" == "11" ]; then
   HOSTJDK="$BUILDDIR/jdk-11.0.1"
   HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
-  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-release/images"
+  IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
@@ -146,7 +171,7 @@ elif [ "$JDKVER" == "12" ] || [ "$JDKVER" == "tip" ]; then
   HOSTJDK="$BUILDDIR/jdk-11.0.1"
   HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
   HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
-  IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-release/images"
+  IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
   SOFTFLOAT_FLAGS="--with-softfloat-lib=$SFLTLIB --with-softfloat-include=$SFLTINC"

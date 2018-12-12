@@ -83,6 +83,7 @@ if [ ! -d "$JDKDIR" ]; then
   echo "JAVA_COMMIT=\"$JAVA_COMMIT\""              >>"$BUILDDIR/metadata"
   echo "JAVA_VERSION=\"$JAVA_VERSION\""            >>"$BUILDDIR/metadata"
   echo "CONFIG_VM=\"$JDKVM\""                      >>"$BUILDDIR/metadata"
+  echo "CONFIG_DEBUG=\"$HOTSPOT_DEBUG\""           >>"$BUILDDIR/metadata"
   echo "CONFIG_VERSION=\"$JDKVER\""                >>"$BUILDDIR/metadata"
   echo "CONFIG_PLATFORM=\"$JDKPLATFORM\""          >>"$BUILDDIR/metadata"
   echo "CONFIG_MODULES=\"$JRI_MODULES\""           >>"$BUILDDIR/metadata"

@@ -66,7 +66,7 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    $JNI_PATH_FLAGS \
                    $SOFTFLOAT_FLAGS \
                    --with-cacerts-file="$CACERTFILE" \
-                   --with-debug-level=release \
+                   --with-debug-level=$HOTSPOT_DEBUG \
                    --with-libjpeg=system \
                    --with-giflib=system \
                    --with-libpng=system \
