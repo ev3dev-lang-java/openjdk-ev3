@@ -9,11 +9,22 @@ if [ ! -d "$JDKDIR" ]; then
   if [ "$JAVA_SCM" == "hg_zip" ]; then
     cd "$BUILDDIR"
 
-    # download bz2
-    echo "[FETCH] Downloading Java tarball from Mercurial"
+    # Identify latest HG tag
+    JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | tail -n 1 | cut -d " " -f 2)"
+
+    # select URL for latest tag in given repo
+    if [ "$JDKVER" == "tip" ]; then
+      JAVA_DST="tip.tar.bz2"
+    else
+      JAVA_DST="$JAVA_TAG.tar.bz2"
+    fi
+    JAVA_URL="$HG_BASE_URL/archive/$JAVA_DST"
+
+    # download it
+    echo "[FETCH] Downloading Java tarball from Mercurial (tag $JAVA_TAG)"
 
     set +e
-    wget -nv -N "$JAVA_REPO"
+    wget -nv -N "$JAVA_URL"
     status=$?
     tries=1
     while [[ "$status" -ne "0" ]]; do
@@ -23,7 +34,7 @@ if [ ! -d "$JDKDIR" ]; then
         exit 1
       fi
 
-      wget -nv -N "$JAVA_REPO"
+      wget -nv -N "$JAVA_URL"
       status=$?
       tries=$(($tries+1))
     done
@@ -32,7 +43,7 @@ if [ ! -d "$JDKDIR" ]; then
     # extract
     echo "[FETCH] Extracting tarball"
     mkdir "$JAVA_TMP"
-    tar -C "$JAVA_TMP" -xf "$JAVA_BZ2"
+    tar -C "$JAVA_TMP" -xf "$JAVA_DST"
 
     # move to the right place
     # https://unix.stackexchange.com/a/156287
@@ -52,6 +63,7 @@ if [ ! -d "$JDKDIR" ]; then
 
     JAVA_VERSION="$(cat ./.hg_archival.txt | grep "latesttag:" | sed -E 's/^.*jdk-//')-ev3"
     JAVA_COMMIT="$(cat ./.hg_archival.txt | grep "node:" | sed -E 's/^node: //')"
+
   elif [ "$JAVA_SCM" == "git" ]; then
     latestTag="$($SCRIPTDIR/latest.awk "$JAVA_REPO")"
     JAVA_VERSION="$(echo "$latestTag" | sed 's/jdk-//')-ev3"
@@ -68,8 +80,8 @@ if [ ! -d "$JDKDIR" ]; then
   # build metadata
   echo "# ev3dev-lang-java openjdk build metadata"  >"$BUILDDIR/metadata"
   echo "JAVA_ORIGIN=\"$JAVA_SCM\""                 >>"$BUILDDIR/metadata"
-  echo "JAVA_VERSION=\"$JAVA_VERSION\""            >>"$BUILDDIR/metadata"
   echo "JAVA_COMMIT=\"$JAVA_COMMIT\""              >>"$BUILDDIR/metadata"
+  echo "JAVA_VERSION=\"$JAVA_VERSION\""            >>"$BUILDDIR/metadata"
   echo "CONFIG_VM=\"$JDKVM\""                      >>"$BUILDDIR/metadata"
   echo "CONFIG_VERSION=\"$JDKVER\""                >>"$BUILDDIR/metadata"
   echo "CONFIG_PLATFORM=\"$JDKPLATFORM\""          >>"$BUILDDIR/metadata"

@@ -23,7 +23,6 @@ ABLDREPO="https://github.com/AdoptOpenJDK/openjdk-build.git"
 # cacertfile
 CACERTFILE="$ABLDDIR/security/cacerts"
 # hg tarball
-JAVA_BZ2="$BUILDDIR/tip.tar.bz2"
 JAVA_TMP="$BUILDDIR/jdk_tmp"
 TARBALL_MAX_DOWNLOADS=10
 
@@ -109,7 +108,7 @@ if [ "$JDKVER" == "9" ]; then
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
-  JAVA_REPO="https://hg.openjdk.java.net/jdk-updates/jdk10u/archive/tip.tar.bz2"
+  HG_BASE_URL="https://hg.openjdk.java.net/jdk-updates/jdk10u"
   JAVA_SCM="hg_zip"
   PATCHVER="jdk10"
   AUTOGEN_STYLE="v1"
@@ -124,7 +123,8 @@ elif [ "$JDKVER" == "10" ]; then
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
-  JAVA_REPO="https://hg.openjdk.java.net/jdk-updates/jdk11u/archive/tip.tar.bz2"
+  # download latest tag
+  HG_BASE_URL="https://hg.openjdk.java.net/jdk-updates/jdk11u"
   JAVA_SCM="hg_zip"
   PATCHVER="jdk11"
   AUTOGEN_STYLE="v2"
@@ -136,9 +136,10 @@ elif [ "$JDKVER" == "11" ]; then
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
 
-# OpenJDK Master+dev
-elif [ "$JDKVER" == "12" ]; then
-  JAVA_REPO="https://hg.openjdk.java.net/jdk/jdk/archive/tip.tar.bz2"
+# OpenJDK 12/Master+dev
+elif [ "$JDKVER" == "12" ] || [ "$JDKVER" == "tip" ]; then
+  # download tip
+  HG_BASE_URL="https://hg.openjdk.java.net/jdk/jdk"
   JAVA_SCM="hg_zip"
   PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
@@ -161,5 +162,6 @@ else
   echo "JDKVER=10" >&2
   echo "JDKVER=11" >&2
   echo "JDKVER=12" >&2
+  echo "JDKVER=tip" >&2
   exit 1
 fi
