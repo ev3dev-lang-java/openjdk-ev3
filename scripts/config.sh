@@ -31,7 +31,6 @@ JRI_MODULES="java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jar
 
 # EV3
 if [ "$JDKPLATFORM" == "ev3" ]; then
-  SFLT_NEEDED=true
   eval "$(dpkg-architecture -s -a armel -A armel)"
 
 # invalid or unset platform
@@ -150,6 +149,9 @@ elif [ "$JDKVER" == "12" ]; then
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
   SOFTFLOAT_FLAGS="--with-softfloat-lib=$SFLTLIB --with-softfloat-include=$SFLTINC"
+  if [ "$JDKPLATFORM" == "ev3" ]; then
+    SFLT_NEEDED=true
+  fi
 
 # invalid or unset version
 else
