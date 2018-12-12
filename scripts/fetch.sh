@@ -6,24 +6,7 @@ source config.sh
 
 if [ ! -d "$JDKDIR" ]; then
 
-  if [ "$JAVA_SCM" == "hg" ]; then
-    # clone the root project
-    echo "[FETCH] Cloning Java repo from Mercurial"
-    hg clone "$JAVA_REPO" "$JDKDIR"
-
-    # enter the jdk repo
-    cd "$JDKDIR"
-
-    # clone the rest of the tree, if needed
-    if [ -f "./get_source.sh" ]; then
-      echo "[FETCH] Downloading Java components"
-      bash ./get_source.sh
-    fi
-
-    JAVA_VERSION="$(hg log -r "." --template "{latesttag}\n" | sed 's/jdk-//')-ev3"
-    JAVA_COMMIT="$(hg log -r "." --template "{node}\n")"
-
-  elif [ "$JAVA_SCM" == "hg_zip" ]; then
+  if [ "$JAVA_SCM" == "hg_zip" ]; then
     cd "$BUILDDIR"
 
     # download bz2
