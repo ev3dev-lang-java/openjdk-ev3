@@ -1,15 +1,15 @@
 # HG changeset patch
 # User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544471909 -3600
-#      Mon Dec 10 20:58:29 2018 +0100
-# Node ID 16f2f6587ffddd125177ff26d740e2223b0f5692
-# Parent  3b0fe3d6c3d77474164b67103dcaed1a2358e5f8
+# Date 1544720228 -3600
+#      Thu Dec 13 17:57:08 2018 +0100
+# Node ID 25de02a2f1da1ed417cf2ec49f7cef375f18ffc6
+# Parent  ece620f32d2d3cc6548000f6b20881b57254a7a6
 Add support for compiling with SoftFloat-3e on arm sflt builds
 
 diff --git a/doc/building.html b/doc/building.html
 --- a/doc/building.html
 +++ b/doc/building.html
-@@ -53,6 +53,7 @@
+@@ -58,6 +58,7 @@
  <li><a href="#x11">X11</a></li>
  <li><a href="#alsa">ALSA</a></li>
  <li><a href="#libffi">libffi</a></li>
@@ -17,7 +17,7 @@ diff --git a/doc/building.html b/doc/building.html
  </ul></li>
  <li><a href="#build-tools-requirements">Build Tools Requirements</a><ul>
  <li><a href="#autoconf">Autoconf</a></li>
-@@ -415,6 +416,14 @@
+@@ -420,6 +421,14 @@
  <li>To install on an rpm-based Linux, try running <code>sudo yum install libffi-devel</code>.</li>
  </ul>
  <p>Use <code>--with-libffi=&lt;path&gt;</code> if <code>configure</code> does not properly locate your libffi files.</p>
@@ -32,7 +32,7 @@ diff --git a/doc/building.html b/doc/building.html
  <h2 id="build-tools-requirements">Build Tools Requirements</h2>
  <h3 id="autoconf">Autoconf</h3>
  <p>The JDK requires <a href="http://www.gnu.org/software/autoconf">Autoconf</a> on all platforms. At least version 2.69 is required.</p>
-@@ -486,6 +495,7 @@
+@@ -491,6 +500,7 @@
  <li><code>--with-x=&lt;path&gt;</code> - Set the path to <a href="#x11">X11</a></li>
  <li><code>--with-alsa=&lt;path&gt;</code> - Set the path to <a href="#alsa">ALSA</a></li>
  <li><code>--with-libffi=&lt;path&gt;</code> - Set the path to <a href="#libffi">libffi</a></li>
@@ -304,9 +304,7 @@ diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/asse
 diff --git a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
 --- a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
 +++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
-@@ -490,27 +490,27 @@
-     // Call function compiled with -msoft-float.
- 
+@@ -492,25 +492,25 @@
        // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
  
      case Bytecodes::_fadd:
@@ -415,19 +413,19 @@ new file mode 100644
 +static float __aeabi_float_handling(float natA, float natB, bool add) {
 +    float32_t libC;
 +
-+    libC = add ? f32_add(*reinterpret_cast<float32_t*>(&natA), *reinterpret_cast<float32_t*>(&natB))
-+               : f32_sub(*reinterpret_cast<float32_t*>(&natA), *reinterpret_cast<float32_t*>(&natB));
++    libC = add ? f32_add(reinterpret_cast<float32_t &>(natA), reinterpret_cast<float32_t &>(natB))
++               : f32_sub(reinterpret_cast<float32_t &>(natA), reinterpret_cast<float32_t &>(natB));
 +
-+    return *reinterpret_cast<float*>(&libC);
++    return reinterpret_cast<float &>(libC);
 +}
 +
 +static double __aeabi_double_handling(double natA, double natB, bool add) {
 +    float64_t libC;
 +
-+    libC = add ? f64_add(*reinterpret_cast<float64_t*>(&natA), *reinterpret_cast<float64_t*>(&natB))
-+               : f64_sub(*reinterpret_cast<float64_t*>(&natA), *reinterpret_cast<float64_t*>(&natB));
++    libC = add ? f64_add(reinterpret_cast<float64_t &>(natA), reinterpret_cast<float64_t &>(natB))
++               : f64_sub(reinterpret_cast<float64_t &>(natA), reinterpret_cast<float64_t &>(natB));
 +
-+    return *reinterpret_cast<double*>(&libC);
++    return reinterpret_cast<double &>(libC);
 +}
 +
 +float __aeabi_fadd_extlib(float a, float b) {
@@ -482,7 +480,7 @@ diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/tem
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fmul), R0, R1); break;
      case div: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fdiv), R0, R1); break;
      case rem: __ call_VM_leaf(CAST_FROM_FN_PTR(address, SharedRuntime::frem), R0, R1); break;
-@@ -1653,8 +1654,9 @@
+@@ -1653,8 +1654,8 @@
    __ pop_l(R0, R1);
    switch (op) {
      // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
