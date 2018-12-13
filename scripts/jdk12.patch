@@ -304,11 +304,10 @@ diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/asse
 diff --git a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
 --- a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
 +++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
-@@ -490,27 +490,28 @@
+@@ -490,27 +490,27 @@
      // Call function compiled with -msoft-float.
  
        // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
-+      // http://mail.openjdk.java.net/pipermail/aarch32-port-dev/2016-November/000611.html
  
      case Bytecodes::_fadd:
 -      runtime_func = CAST_FROM_FN_PTR(address, __aeabi_fadd_glibc);
@@ -340,13 +339,12 @@ diff --git a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp b/src/hotspot/cpu/arm/c
 diff --git a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp b/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
 --- a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
 +++ b/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
-@@ -804,15 +804,16 @@
+@@ -804,15 +804,15 @@
  #define FUNCTION_CASE(a, f) \
    if ((intptr_t)a == CAST_FROM_FN_PTR(intptr_t, f))  return #f
  
 -  FUNCTION_CASE(entry, __aeabi_fadd_glibc);
 +  // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
-+  // http://mail.openjdk.java.net/pipermail/aarch32-port-dev/2016-November/000611.html
 +  FUNCTION_CASE(entry, __aeabi_fadd_extlib);
    FUNCTION_CASE(entry, __aeabi_fmul);
 -  FUNCTION_CASE(entry, __aeabi_fsub_glibc);
@@ -366,7 +364,7 @@ diff --git a/src/hotspot/cpu/arm/softfloat_arm.cpp b/src/hotspot/cpu/arm/softflo
 new file mode 100644
 --- /dev/null
 +++ b/src/hotspot/cpu/arm/softfloat_arm.cpp
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,102 @@
 +/*
 + * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 + * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -415,31 +413,21 @@ new file mode 100644
 +#include <cstring>
 +
 +static float __aeabi_float_handling(float natA, float natB, bool add) {
-+    float32_t libA;
-+    float32_t libB;
 +    float32_t libC;
-+    float natC;
 +
-+    memcpy(&libA, &natA, sizeof(libA));
-+    memcpy(&libB, &natB, sizeof(libB));
-+    libC = add ? f32_add(libA, libB) : f32_sub(libA, libB);
-+    memcpy(&natC, &libC, sizeof(libC));
++    libC = add ? f32_add(*reinterpret_cast<float32_t*>(&natA), *reinterpret_cast<float32_t*>(&natB))
++               : f32_sub(*reinterpret_cast<float32_t*>(&natA), *reinterpret_cast<float32_t*>(&natB));
 +
-+    return natC;
++    return *reinterpret_cast<float*>(&libC);
 +}
 +
 +static double __aeabi_double_handling(double natA, double natB, bool add) {
-+    float64_t libA;
-+    float64_t libB;
 +    float64_t libC;
-+    double natC;
 +
-+    memcpy(&libA, &natA, sizeof(libA));
-+    memcpy(&libB, &natB, sizeof(libB));
-+    libC = add ? f64_add(libA, libB) : f64_sub(libA, libB);
-+    memcpy(&natC, &libC, sizeof(libC));
++    libC = add ? f64_add(*reinterpret_cast<float64_t*>(&natA), *reinterpret_cast<float64_t*>(&natB))
++               : f64_sub(*reinterpret_cast<float64_t*>(&natA), *reinterpret_cast<float64_t*>(&natB));
 +
-+    return natC;
++    return *reinterpret_cast<double*>(&libC);
 +}
 +
 +float __aeabi_fadd_extlib(float a, float b) {
@@ -482,14 +470,13 @@ new file mode 100644
 diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/templateTable_arm.cpp
 --- a/src/hotspot/cpu/arm/templateTable_arm.cpp
 +++ b/src/hotspot/cpu/arm/templateTable_arm.cpp
-@@ -1610,8 +1610,10 @@
+@@ -1610,8 +1610,8 @@
    __ mov(R1, R0_tos);
    __ pop_i(R0);
    switch (op) {
 -    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fadd_glibc), R0, R1); break;
 -    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fsub_glibc), R0, R1); break;
 +    // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
-+    // http://mail.openjdk.java.net/pipermail/aarch32-port-dev/2016-November/000611.html
 +    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fadd_extlib), R0, R1); break;
 +    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fsub_extlib), R0, R1); break;
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fmul), R0, R1); break;
@@ -501,7 +488,6 @@ diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/tem
      // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
 -    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dadd_glibc), R0, R1, R2, R3); break;
 -    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dsub_glibc), R0, R1, R2, R3); break;
-+    // http://mail.openjdk.java.net/pipermail/aarch32-port-dev/2016-November/000611.html
 +    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dadd_extlib), R0, R1, R2, R3); break;
 +    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dsub_extlib), R0, R1, R2, R3); break;
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dmul), R0, R1, R2, R3); break;
