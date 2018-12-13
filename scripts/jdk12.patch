@@ -482,7 +482,7 @@ diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/tem
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fmul), R0, R1); break;
      case div: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fdiv), R0, R1); break;
      case rem: __ call_VM_leaf(CAST_FROM_FN_PTR(address, SharedRuntime::frem), R0, R1); break;
-@@ -1653,8 +1655,9 @@
+@@ -1653,8 +1654,9 @@
    __ pop_l(R0, R1);
    switch (op) {
      // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
