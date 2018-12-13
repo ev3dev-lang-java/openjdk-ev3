@@ -470,7 +470,7 @@ new file mode 100644
 diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/templateTable_arm.cpp
 --- a/src/hotspot/cpu/arm/templateTable_arm.cpp
 +++ b/src/hotspot/cpu/arm/templateTable_arm.cpp
-@@ -1610,8 +1610,8 @@
+@@ -1610,8 +1610,9 @@
    __ mov(R1, R0_tos);
    __ pop_i(R0);
    switch (op) {
