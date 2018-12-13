@@ -61,7 +61,12 @@ if [ ! -d "$JDKDIR" ]; then
       bash ./get_source.sh
     fi
 
-    JAVA_VERSION="$(echo "$JAVA_TAG" | sed -E 's/^.*jdk-//')-ev3"
+    if [ "$JDKVER" == "tip" ]; then
+      SUFFIX="ev3dirty"
+    else
+      SUFFIX="ev3"
+    fi
+    JAVA_VERSION="$(echo "$JAVA_TAG" | sed -E 's/^.*jdk-//')-$SUFFIX"
     JAVA_COMMIT="$(cat ./.hg_archival.txt | grep "node:" | sed -E 's/^node: //')"
 
   elif [ "$JAVA_SCM" == "git" ]; then
