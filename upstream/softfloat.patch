@@ -1,14 +1,6 @@
-# HG changeset patch
-# User Jakub Vaněk <linuxtardis@gmail.com>
-# Date 1544720228 -3600
-#      Thu Dec 13 17:57:08 2018 +0100
-# Node ID 25de02a2f1da1ed417cf2ec49f7cef375f18ffc6
-# Parent  ece620f32d2d3cc6548000f6b20881b57254a7a6
-Add support for compiling with SoftFloat-3e on arm sflt builds
-
-diff --git a/doc/building.html b/doc/building.html
---- a/doc/building.html
-+++ b/doc/building.html
+diff -r 95c62fd12b88 doc/building.html
+--- a/doc/building.html	Sat Dec 22 10:38:45 2018 +0800
++++ b/doc/building.html	Sun Dec 23 21:41:43 2018 +0100
 @@ -58,6 +58,7 @@
  <li><a href="#x11">X11</a></li>
  <li><a href="#alsa">ALSA</a></li>
@@ -17,33 +9,32 @@ diff --git a/doc/building.html b/doc/building.html
  </ul></li>
  <li><a href="#build-tools-requirements">Build Tools Requirements</a><ul>
  <li><a href="#autoconf">Autoconf</a></li>
-@@ -420,6 +421,14 @@
+@@ -420,6 +421,13 @@
  <li>To install on an rpm-based Linux, try running <code>sudo yum install libffi-devel</code>.</li>
  </ul>
  <p>Use <code>--with-libffi=&lt;path&gt;</code> if <code>configure</code> does not properly locate your libffi files.</p>
-+
 +<h3 id="softfloat">SoftFloat</h3>
 +<p><a href="http://www.jhauser.us/arithmetic/SoftFloat.html">Berkeley SoftFloat-3</a> can be used on ARM processors without FPU to slightly enhance the arithmetic precision of some floating point operations. It is not required, system softfp routines can be used without any problems. The precision loss is extremely small, but <a href="http://mail.openjdk.java.net/pipermail/aarch32-port-dev/2016-November/000611.html">the JCK detects it</a>.</p>
 +<ul>
 +<li>To build the library, you will have to download its source and build it for the target platform. To do so, take a look in its <code>build/Linux-ARM-VFPv2-GCC</code> subdirectory.</li>
 +</ul>
-+<p>You can enable this library by specifying a library prefix via <code>--with-softfloat=&lt;path&gt;</code> or by specifying path to softfloat.a via <code>--with-softfloat-lib=&lt;path&gt;</code> and path to directory containing softfloat.h via <code>--with-softfloat-include=&lt;path&gt;</code>. When specifying the prefix, ensure that <code>&lt;prefix&gt;/lib/softfloat.a</code> and <code>&lt;prefix&gt;/include/softfloat.h</code> exist.</p>
++<p>You can enable this library by specifying a library prefix via <code>--with-sflt=&lt;path&gt;</code> or by specifying path to softfloat.a via <code>--with-sflt-lib=&lt;path&gt;</code> and path to directory containing softfloat.h via <code>--with-sflt-include=&lt;path&gt;</code>. You will also need to specify path to the SoftFloat license file with <code>--with-sflt-license=&lt;path&gt;</code>. If you want to use the prefix option, ensure that <code>&lt;prefix&gt;/lib/softfloat.a</code>, <code>&lt;prefix&gt;/include/softfloat.h</code> and <code>&lt;prefix&gt;/share/softfloat/softfloat.md</code> exist. However you can override the defaults by using the options above.</p>
 +<p>If you do not enable this library, standard system libraries will be used instead.</p>
  <h2 id="build-tools-requirements">Build Tools Requirements</h2>
  <h3 id="autoconf">Autoconf</h3>
  <p>The JDK requires <a href="http://www.gnu.org/software/autoconf">Autoconf</a> on all platforms. At least version 2.69 is required.</p>
-@@ -491,6 +500,7 @@
+@@ -491,6 +499,7 @@
  <li><code>--with-x=&lt;path&gt;</code> - Set the path to <a href="#x11">X11</a></li>
  <li><code>--with-alsa=&lt;path&gt;</code> - Set the path to <a href="#alsa">ALSA</a></li>
  <li><code>--with-libffi=&lt;path&gt;</code> - Set the path to <a href="#libffi">libffi</a></li>
-+<li><code>--with-softfloat=&lt;path&gt;</code> or <code>--with-softfloat-lib=&lt;path&gt;</code>, <code>--with-softfloat-include=&lt;path&gt;</code> - Set the path to <a href="#softfloat">SoftFloat</a> library and include directory and enable its use.</li>
++<li><code>--with-sflt=&lt;path&gt;</code> - Enable and set the path to <a href="#softfloat">SoftFloat</a> library.</li>
  <li><code>--with-jtreg=&lt;path&gt;</code> - Set the path to JTReg. See <a href="#running-tests">Running Tests</a></li>
  </ul>
  <p>Certain third-party libraries used by the JDK (libjpeg, giflib, libpng, lcms and zlib) are included in the JDK repository. The default behavior of the JDK build is to use this version of these libraries, but they might be replaced by an external version. To do so, specify <code>system</code> as the <code>&lt;source&gt;</code> option in these arguments. (The default is <code>bundled</code>).</p>
-diff --git a/doc/building.md b/doc/building.md
---- a/doc/building.md
-+++ b/doc/building.md
-@@ -527,6 +527,29 @@
+diff -r 95c62fd12b88 doc/building.md
+--- a/doc/building.md	Sat Dec 22 10:38:45 2018 +0800
++++ b/doc/building.md	Sun Dec 23 21:41:43 2018 +0100
+@@ -527,6 +527,32 @@
  Use `--with-libffi=<path>` if `configure` does not properly locate your libffi
  files.
  
@@ -61,11 +52,14 @@ diff --git a/doc/building.md b/doc/building.md
 +    `build/Linux-ARM-VFPv2-GCC` subdirectory.
 +
 +You can enable this library by specifying a library prefix
-+via `--with-softfloat=<path>` or by specifying path to softfloat.a
-+via `--with-softfloat-lib=<path>` and path to directory
-+containing softfloat.h via `--with-softfloat-include=<path>`. When
-+specifying the prefix, ensure that `<prefix>/lib/softfloat.a` and
-+`<prefix>/include/softfloat.h` exist.
++via `--with-sflt=<path>` or by specifying path to softfloat.a
++via `--with-sflt-lib=<path>` and path to directory
++containing softfloat.h via `--with-sflt-include=<path>`. You
++will also need to specify path to the SoftFloat license file with
++`--with-sflt-license=<path>`. If you want to use the prefix option, ensure that
++`<prefix>/lib/softfloat.a`, `<prefix>/include/softfloat.h` and
++`<prefix>/share/softfloat/softfloat.md` exist. However you can override
++the defaults by using the options above.
 +
 +If you do not enable this library, standard system libraries
 +will be used instead.
@@ -73,20 +67,19 @@ diff --git a/doc/building.md b/doc/building.md
  ## Build Tools Requirements
  
  ### Autoconf
-@@ -694,6 +717,8 @@
+@@ -694,6 +720,8 @@
    * `--with-x=<path>` - Set the path to [X11](#x11)
    * `--with-alsa=<path>` - Set the path to [ALSA](#alsa)
    * `--with-libffi=<path>` - Set the path to [libffi](#libffi)
-+  * `--with-softfloat=<path>` or `--with-softfloat-lib=<path>`, `--with-softfloat-include=<path>` -
-+    Set the path to [SoftFloat](#softfloat) library and include directory and enable its use.
++  * `--with-sflt=<path>` - Enable and set the path to [SoftFloat](#softfloat)
++    library.
    * `--with-jtreg=<path>` - Set the path to JTReg. See [Running Tests](
      #running-tests)
  
-diff --git a/make/autoconf/lib-softfloat.m4 b/make/autoconf/lib-softfloat.m4
-new file mode 100644
---- /dev/null
-+++ b/make/autoconf/lib-softfloat.m4
-@@ -0,0 +1,115 @@
+diff -r 95c62fd12b88 make/autoconf/lib-softfloat.m4
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/make/autoconf/lib-softfloat.m4	Sun Dec 23 21:41:43 2018 +0100
+@@ -0,0 +1,161 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
 +# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -118,38 +111,54 @@ new file mode 100644
 +AC_DEFUN_ONCE([LIB_SETUP_SOFTFLOAT],
 +[
 +  # define options
-+  AC_ARG_WITH(softfloat, [AS_HELP_STRING([--with-softfloat],
++  AC_ARG_WITH(sflt, [AS_HELP_STRING([--with-sflt],
 +      [specify prefix directory for the SoftFloat-3 prefix
-+      (expecting softfloat.a under PATH/lib and softfloat.h under PATH/include)])])
++      (expecting PATH/lib/softfloat.a, PATH/include/softfloat.h and PATH/share/softfloat/softfloat.md)])])
 +
-+  AC_ARG_WITH(softfloat-lib, [AS_HELP_STRING([--with-softfloat-lib],
++  AC_ARG_WITH(sflt-lib, [AS_HELP_STRING([--with-sflt-lib],
 +      [specify the path to SoftFloat-3 static library])])
 +
-+  AC_ARG_WITH(softfloat-include, [AS_HELP_STRING([--with-softfloat-include],
++  AC_ARG_WITH(sflt-include, [AS_HELP_STRING([--with-sflt-include],
 +      [specify the path to SoftFloat-3 include directory])])
++
++  AC_ARG_WITH(sflt-license, [AS_HELP_STRING([--with-sflt-license],
++      [specify the path to SoftFloat-3 license file])])
 +
 +  # check if softfloat can be used and if the user enabled it
 +  AC_MSG_CHECKING([if softfloat library should be used])
 +  if test "x$USES_LIB_SOFTFLOAT" = "xtrue"; then
 +    SOFTFLOAT_SPECIFIED=no
 +
-+    if test "x${with_softfloat}" != x; then
-+      SOFTFLOAT_CFLAGS="-I${with_softfloat}/include -DSOFTFLOAT_EXTERNAL"
-+      SOFTFLOAT_LIBS="${with_softfloat}/lib/softfloat.a"
++    if test "x${with_sflt}" != x; then
++      if test "x${with_sflt}" = "xyes" || test "x${with_sflt}" = "xno"; then
++        AC_MSG_RESULT([error])
++        AC_MSG_ERROR([--with-sflt must have a value])
++      fi
++      SOFTFLOAT_CFLAGS="-I${with_sflt}/include -DSOFTFLOAT_EXTERNAL"
++      SOFTFLOAT_LIBS="${with_sflt}/lib/softfloat.a"
 +      SOFTFLOAT_SPECIFIED=yes
 +    fi
-+    if test "x${with_softfloat_include}" != x; then
-+      SOFTFLOAT_CFLAGS="-I${with_softfloat_include} -DSOFTFLOAT_EXTERNAL"
++    if test "x${with_sflt_include}" != x; then
++      if test "x${with_sflt_include}" = "xyes" || test "x${with_sflt_include}" = "xno"; then
++        AC_MSG_RESULT([error])
++        AC_MSG_ERROR([--with-sflt-include must have a value])
++      fi
++      SOFTFLOAT_CFLAGS="-I${with_sflt_include} -DSOFTFLOAT_EXTERNAL"
 +      SOFTFLOAT_SPECIFIED=yes
 +    fi
-+    if test "x${with_softfloat_lib}" != x; then
-+      SOFTFLOAT_LIBS="${with_softfloat_lib}"
++    if test "x${with_sflt_lib}" != x; then
++      if test "x${with_sflt_lib}" = "xyes" || test "x${with_sflt_lib}" = "xno"; then
++        AC_MSG_RESULT([error])
++        AC_MSG_ERROR([--with-sflt-lib must have a value])
++      fi
++      SOFTFLOAT_LIBS="${with_sflt_lib}"
 +      SOFTFLOAT_SPECIFIED=yes
 +    fi
 +
 +    if test "x$SOFTFLOAT_SPECIFIED" = xno; then
 +      AC_MSG_RESULT([no, system softfp used])
 +      AC_MSG_NOTICE([Floating point operations may be less precise by a very small amount])
++      SOFTFLOAT_LICENSE=
 +      SOFTFLOAT_CFLAGS=
 +      SOFTFLOAT_LIBS=
 +    else
@@ -183,28 +192,58 @@ new file mode 100644
 +        HELP_MSG_MISSING_DEPENDENCY([softfloat])
 +        AC_MSG_ERROR([Found softfloat but could not link and compile with it. $HELP_MSG])
 +      fi
++
++      SOFTFLOAT_LICENSE=""
++      AC_MSG_CHECKING([for softfloat license])
++
++      if test "x$with_sflt_license" = "xyes" || "x$with_sflt_license" = "xno"; then
++        AC_MSG_RESULT([error])
++        AC_MSG_ERROR([--with-sflt-license must have a value])
++      elif test "x$with_sflt_license" != "x"; then
++        AC_MSG_RESULT([$with_sflt_license])
++        SOFTFLOAT_LICENSE="$with_sflt_license"
++        BASIC_FIXUP_PATH(SOFTFLOAT_LICENSE)
++        if test ! -f "$SOFTFLOAT_LICENSE"; then
++          AC_MSG_ERROR([$SOFTFLOAT_LICENSE cannot be found])
++        fi
++      else
++        if test "x$with_sflt" != "x" && test -f "$with_sflt/share/softfloat/softfloat.md"; then
++          SOFTFLOAT_LICENSE="$with_sflt/share/softfloat/softfloat.md"
++          AC_MSG_RESULT([$SOFTFLOAT_LICENSE])
++          BASIC_FIXUP_PATH(SOFTFLOAT_LICENSE)
++        else
++          AC_MSG_RESULT([error])
++          AC_MSG_ERROR([softfloat license file cannot be found])
++        fi
++      fi
++
 +    fi
 +  else
 +    AC_MSG_RESULT([no, not needed])
-+    if test "x${with_softfloat}" != x && test "x${with_softfloat}" != xno; then
-+      AC_MSG_WARN([[not building for sflt, so --with-softfloat is ignored]])
++    if test "x${with_sflt}" != x && test "x${with_sflt}" != xno; then
++      AC_MSG_WARN([[not building for sflt, so --with-sflt is ignored]])
 +    fi
-+    if test "x${with_softfloat_lib}" != x && test "x${with_softfloat_lib}" != xno; then
-+      AC_MSG_WARN([[not building for sflt, so --with-softfloat-lib is ignored]])
++    if test "x${with_sflt_lib}" != x && test "x${with_sflt_lib}" != xno; then
++      AC_MSG_WARN([[not building for sflt, so --with-sflt-lib is ignored]])
 +    fi
-+    if test "x${with_softfloat_include}" != x && test "x${with_softfloat_include}" != xno; then
-+      AC_MSG_WARN([[not building for sflt, so --with-softfloat-include is ignored]])
++    if test "x${with_sflt_include}" != x && test "x${with_sflt_include}" != xno; then
++      AC_MSG_WARN([[not building for sflt, so --with-sflt-include is ignored]])
++    fi
++    if test "x${with_sflt_license}" != x && test "x${with_sflt_license}" != xno; then
++      AC_MSG_WARN([[not building for sflt, so --with-sflt-license is ignored]])
 +    fi
 +    SOFTFLOAT_CFLAGS=
 +    SOFTFLOAT_LIBS=
++    SOFTFLOAT_LICENSE=
 +  fi
 +
 +  AC_SUBST(SOFTFLOAT_LIBS)
 +  AC_SUBST(SOFTFLOAT_CFLAGS)
++  AC_SUBST(SOFTFLOAT_LICENSE)
 +])
-diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
---- a/make/autoconf/libraries.m4
-+++ b/make/autoconf/libraries.m4
+diff -r 95c62fd12b88 make/autoconf/libraries.m4
+--- a/make/autoconf/libraries.m4	Sat Dec 22 10:38:45 2018 +0800
++++ b/make/autoconf/libraries.m4	Sun Dec 23 21:41:43 2018 +0100
 @@ -33,6 +33,7 @@
  m4_include([lib-x11.m4])
  m4_include([lib-fontconfig.m4])
@@ -235,35 +274,45 @@ diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
    LIB_SETUP_LIBFFI
    LIB_SETUP_BUNDLED_LIBS
    LIB_SETUP_MISC_LIBS
-diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
---- a/make/autoconf/spec.gmk.in
-+++ b/make/autoconf/spec.gmk.in
-@@ -353,6 +353,8 @@
+diff -r 95c62fd12b88 make/autoconf/spec.gmk.in
+--- a/make/autoconf/spec.gmk.in	Sat Dec 22 10:38:45 2018 +0800
++++ b/make/autoconf/spec.gmk.in	Sun Dec 23 21:41:43 2018 +0100
+@@ -353,6 +353,9 @@
  CUPS_CFLAGS:=@CUPS_CFLAGS@
  ALSA_LIBS:=@ALSA_LIBS@
  ALSA_CFLAGS:=@ALSA_CFLAGS@
 +SOFTFLOAT_LIBS:=@SOFTFLOAT_LIBS@
 +SOFTFLOAT_CFLAGS:=@SOFTFLOAT_CFLAGS@
++SOFTFLOAT_LICENSE:=@SOFTFLOAT_LICENSE@
  LIBFFI_LIBS:=@LIBFFI_LIBS@
  LIBFFI_CFLAGS:=@LIBFFI_CFLAGS@
  ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
-diff --git a/make/copy/Copy-java.base.gmk b/make/copy/Copy-java.base.gmk
---- a/make/copy/Copy-java.base.gmk
-+++ b/make/copy/Copy-java.base.gmk
-@@ -219,6 +219,10 @@
-   LEGAL_EXCLUDES += zlib.md
- endif
+diff -r 95c62fd12b88 make/copy/Copy-java.base.gmk
+--- a/make/copy/Copy-java.base.gmk	Sat Dec 22 10:38:45 2018 +0800
++++ b/make/copy/Copy-java.base.gmk	Sun Dec 23 21:41:43 2018 +0100
+@@ -226,6 +226,19 @@
+ TARGETS += $(COPY_LEGAL)
  
-+ifeq ($(SOFTFLOAT_LIBS), )
-+  LEGAL_EXCLUDES += softfloat.md
+ ################################################################################
++# Copy softfloat license to the image
++
++ifneq ($(SOFTFLOAT_CFLAGS), )
++  $(eval $(call SetupCopyFiles, COPY_SOFTFLOAT_LICENSE, \
++      FILES := $(SOFTFLOAT_LICENSE), \
++      DEST := $(LEGAL_DST_DIR), \
++  ))
++
++  TARGETS += $(COPY_SOFTFLOAT_LICENSE)
 +endif
 +
- $(eval $(call SetupCopyLegalFiles, COPY_LEGAL, \
-     EXCLUDES := $(LEGAL_EXCLUDES), \
- ))
-diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
---- a/make/hotspot/lib/CompileJvm.gmk
-+++ b/make/hotspot/lib/CompileJvm.gmk
++
++################################################################################
+ # Optionally copy libffi.so.? into the the image
+ 
+ ifeq ($(ENABLE_LIBFFI_BUNDLING), true)
+diff -r 95c62fd12b88 make/hotspot/lib/CompileJvm.gmk
+--- a/make/hotspot/lib/CompileJvm.gmk	Sat Dec 22 10:38:45 2018 +0800
++++ b/make/hotspot/lib/CompileJvm.gmk	Sun Dec 23 21:41:43 2018 +0100
 @@ -49,6 +49,7 @@
  
  JVM_LIBS += \
@@ -272,9 +321,9 @@ diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
      #
  
  # These files and directories are always excluded
-diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
---- a/make/hotspot/lib/JvmFlags.gmk
-+++ b/make/hotspot/lib/JvmFlags.gmk
+diff -r 95c62fd12b88 make/hotspot/lib/JvmFlags.gmk
+--- a/make/hotspot/lib/JvmFlags.gmk	Sat Dec 22 10:38:45 2018 +0800
++++ b/make/hotspot/lib/JvmFlags.gmk	Sun Dec 23 21:41:43 2018 +0100
 @@ -88,6 +88,7 @@
      $(JVM_CFLAGS_TARGET_DEFINES) \
      $(JVM_CFLAGS_FEATURES) \
@@ -283,17 +332,21 @@ diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
      $(EXTRA_CFLAGS) \
      #
  
-diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
---- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-@@ -1242,10 +1242,10 @@
+diff -r 95c62fd12b88 src/hotspot/cpu/arm/assembler_arm_32.hpp
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	Sat Dec 22 10:38:45 2018 +0800
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Sun Dec 23 21:41:43 2018 +0100
+@@ -1240,12 +1240,12 @@
+ extern int  __aeabi_dcmpge(double, double);
+ extern int  __aeabi_dcmpgt(double, double);
  
- // Imported code from glibc soft-fp bundle for
- // calculation accuracy improvement. See CR 6757269.
+-// Imported code from glibc soft-fp bundle for
+-// calculation accuracy improvement. See CR 6757269.
 -extern double __aeabi_fadd_glibc(float, float);
 -extern double __aeabi_fsub_glibc(float, float);
 -extern double __aeabi_dadd_glibc(double, double);
 -extern double __aeabi_dsub_glibc(double, double);
++// Optional wrapper around SoftFloat-3e for
++// calculation accuracy improvement. See CR 6757269, JDK-8215902.
 +extern float __aeabi_fadd_extlib(float, float);
 +extern float __aeabi_fsub_extlib(float, float);
 +extern double __aeabi_dadd_extlib(double, double);
@@ -301,11 +354,16 @@ diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/asse
  };
  #endif // __SOFTFP__
  
-diff --git a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
---- a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
-+++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
-@@ -492,25 +492,25 @@
-       // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
+diff -r 95c62fd12b88 src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
+--- a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	Sat Dec 22 10:38:45 2018 +0800
++++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	Sun Dec 23 21:41:43 2018 +0100
+@@ -489,28 +489,29 @@
+ #ifdef __SOFTFP__
+     // Call function compiled with -msoft-float.
+ 
+-      // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
++      // __aeabi_XXXX_extlib: Optional wrapper around SoftFloat-3e
++      // for calculation accuracy improvement. See CR 6757269, JDK-8215902.
  
      case Bytecodes::_fadd:
 -      runtime_func = CAST_FROM_FN_PTR(address, __aeabi_fadd_glibc);
@@ -334,15 +392,17 @@ diff --git a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp b/src/hotspot/cpu/arm/c
        break;
      case Bytecodes::_ddiv:
        runtime_func = CAST_FROM_FN_PTR(address, __aeabi_ddiv);
-diff --git a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp b/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
---- a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
-+++ b/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
-@@ -804,15 +804,15 @@
+diff -r 95c62fd12b88 src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
+--- a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp	Sat Dec 22 10:38:45 2018 +0800
++++ b/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp	Sun Dec 23 21:41:43 2018 +0100
+@@ -804,15 +804,17 @@
  #define FUNCTION_CASE(a, f) \
    if ((intptr_t)a == CAST_FROM_FN_PTR(intptr_t, f))  return #f
  
 -  FUNCTION_CASE(entry, __aeabi_fadd_glibc);
-+  // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
++  // __aeabi_XXXX_extlib: Optional wrapper around SoftFloat-3e
++  // for calculation accuracy improvement. See CR 6757269, JDK-8215902.
++
 +  FUNCTION_CASE(entry, __aeabi_fadd_extlib);
    FUNCTION_CASE(entry, __aeabi_fmul);
 -  FUNCTION_CASE(entry, __aeabi_fsub_glibc);
@@ -358,10 +418,9 @@ diff --git a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp b/src/hotspot/cpu/arm/c1_Ru
    FUNCTION_CASE(entry, __aeabi_ddiv);
  
    FUNCTION_CASE(entry, __aeabi_f2d);
-diff --git a/src/hotspot/cpu/arm/softfloat_arm.cpp b/src/hotspot/cpu/arm/softfloat_arm.cpp
-new file mode 100644
---- /dev/null
-+++ b/src/hotspot/cpu/arm/softfloat_arm.cpp
+diff -r 95c62fd12b88 src/hotspot/cpu/arm/softfloat_arm.cpp
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/src/hotspot/cpu/arm/softfloat_arm.cpp	Sun Dec 23 21:41:43 2018 +0100
 @@ -0,0 +1,102 @@
 +/*
 + * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
@@ -465,74 +524,94 @@ new file mode 100644
 +#endif
 +
 +#endif // __SOFTFP__
-diff --git a/src/hotspot/cpu/arm/templateTable_arm.cpp b/src/hotspot/cpu/arm/templateTable_arm.cpp
---- a/src/hotspot/cpu/arm/templateTable_arm.cpp
-+++ b/src/hotspot/cpu/arm/templateTable_arm.cpp
-@@ -1610,8 +1610,9 @@
+diff -r 95c62fd12b88 src/hotspot/cpu/arm/templateTable_arm.cpp
+--- a/src/hotspot/cpu/arm/templateTable_arm.cpp	Sat Dec 22 10:38:45 2018 +0800
++++ b/src/hotspot/cpu/arm/templateTable_arm.cpp	Sun Dec 23 21:41:43 2018 +0100
+@@ -1610,8 +1610,10 @@
    __ mov(R1, R0_tos);
    __ pop_i(R0);
    switch (op) {
 -    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fadd_glibc), R0, R1); break;
 -    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fsub_glibc), R0, R1); break;
-+    // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
++    // __aeabi_XXXX_extlib: Optional wrapper around SoftFloat-3e
++    // for calculation accuracy improvement. See CR 6757269, JDK-8215902.
 +    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fadd_extlib), R0, R1); break;
 +    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fsub_extlib), R0, R1); break;
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fmul), R0, R1); break;
      case div: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_fdiv), R0, R1); break;
      case rem: __ call_VM_leaf(CAST_FROM_FN_PTR(address, SharedRuntime::frem), R0, R1); break;
-@@ -1653,8 +1654,8 @@
+@@ -1652,9 +1654,10 @@
+   __ mov(R3, R1_tos_hi);
    __ pop_l(R0, R1);
    switch (op) {
-     // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
+-    // __aeabi_XXXX_glibc: Imported code from glibc soft-fp bundle for calculation accuracy improvement. See CR 6757269.
 -    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dadd_glibc), R0, R1, R2, R3); break;
 -    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dsub_glibc), R0, R1, R2, R3); break;
++    // __aeabi_XXXX_extlib: Optional wrapper around SoftFloat-3e
++    // for calculation accuracy improvement. See CR 6757269, JDK-8215902.
 +    case add: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dadd_extlib), R0, R1, R2, R3); break;
 +    case sub: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dsub_extlib), R0, R1, R2, R3); break;
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dmul), R0, R1, R2, R3); break;
      case div: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_ddiv), R0, R1, R2, R3); break;
      case rem: __ call_VM_leaf(CAST_FROM_FN_PTR(address, SharedRuntime::drem), R0, R1, R2, R3); break;
-diff --git a/src/java.base/share/legal/softfloat.md b/src/java.base/share/legal/softfloat.md
-new file mode 100644
---- /dev/null
-+++ b/src/java.base/share/legal/softfloat.md
-@@ -0,0 +1,40 @@
-+## SoftFloat-3e
+diff -r 95c62fd12b88 test/hotspot/jtreg/runtime/8215902/Test8215902.java
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/test/hotspot/jtreg/runtime/8215902/Test8215902.java	Sun Dec 23 21:41:43 2018 +0100
+@@ -0,0 +1,57 @@
++/*
++ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
++ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++ *
++ * This code is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 only, as
++ * published by the Free Software Foundation.
++ *
++ * This code is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++ * version 2 for more details (a copy is included in the LICENSE file that
++ * accompanied this code).
++ *
++ * You should have received a copy of the GNU General Public License version
++ * 2 along with this work; if not, write to the Free Software Foundation,
++ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
++ * or visit www.oracle.com if you need additional information or have any
++ * questions.
++ */
 +
-+### SoftFloat license
-+```
-+License for Berkeley SoftFloat Release 3e
++import java.lang.Float;
++import java.lang.RuntimeException;
 +
-+John R. Hauser
-+2018 January 20
++/*
++ * @test Test8215902.java
++ * @bug 8215902
++ * @summary Check a known imprecision in Linux ARM softfp implementation.
++ * @run main Test8215902
++ * @author jakvanek
++ */
++public strictfp class Test8215902 {
++    private static volatile Float a, b, c;
++    private static volatile int bC;
 +
-+The following applies to the whole of SoftFloat Release 3e as well as to
-+each source file individually.
++    private static final int bA = 0x003fffff;
++    private static final int bB = 0x00000001;
++    private static final int bC_OK = 0x00400000;
 +
-+Copyright 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 The Regents of the
-+University of California.  All rights reserved.
++    public static void main(String... args) {
++        a = Float.intBitsToFloat(bA);
++        b = Float.intBitsToFloat(bB);
++        c = a + b;
++        bC = Float.floatToRawIntBits(c);
 +
-+Redistribution and use in source and binary forms, with or without
-+modification, are permitted provided that the following conditions are met:
++        if (bC == bC_OK) {
++            System.out.println("Passed.");
++        } else {
++            String msg = String.format("Failed.\nResult = 0x%08x|%1.60f\nExpected = 0x%08x|%1.60f",
++                                       bC, c, bC_OK, Float.intBitsToFloat(bC_OK));
++            throw new RuntimeException(msg);
++        }
++    }
++}
 +
-+ 1. Redistributions of source code must retain the above copyright notice,
-+    this list of conditions, and the following disclaimer.
-+
-+ 2. Redistributions in binary form must reproduce the above copyright
-+    notice, this list of conditions, and the following disclaimer in the
-+    documentation and/or other materials provided with the distribution.
-+
-+ 3. Neither the name of the University nor the names of its contributors
-+    may be used to endorse or promote products derived from this software
-+    without specific prior written permission.
-+
-+THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS", AND ANY
-+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ARE
-+DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY
-+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-+```
