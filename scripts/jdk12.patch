@@ -1,6 +1,6 @@
 diff -r 95c62fd12b88 doc/building.html
 --- a/doc/building.html	Sat Dec 22 10:38:45 2018 +0800
-+++ b/doc/building.html	Mon Dec 24 00:00:27 2018 +0100
++++ b/doc/building.html	Tue Dec 25 16:05:16 2018 +0100
 @@ -58,6 +58,7 @@
  <li><a href="#x11">X11</a></li>
  <li><a href="#alsa">ALSA</a></li>
@@ -33,7 +33,7 @@ diff -r 95c62fd12b88 doc/building.html
  <p>Certain third-party libraries used by the JDK (libjpeg, giflib, libpng, lcms and zlib) are included in the JDK repository. The default behavior of the JDK build is to use this version of these libraries, but they might be replaced by an external version. To do so, specify <code>system</code> as the <code>&lt;source&gt;</code> option in these arguments. (The default is <code>bundled</code>).</p>
 diff -r 95c62fd12b88 doc/building.md
 --- a/doc/building.md	Sat Dec 22 10:38:45 2018 +0800
-+++ b/doc/building.md	Mon Dec 24 00:00:27 2018 +0100
++++ b/doc/building.md	Tue Dec 25 16:05:16 2018 +0100
 @@ -527,6 +527,32 @@
  Use `--with-libffi=<path>` if `configure` does not properly locate your libffi
  files.
@@ -78,7 +78,7 @@ diff -r 95c62fd12b88 doc/building.md
  
 diff -r 95c62fd12b88 make/autoconf/lib-softfloat.m4
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/make/autoconf/lib-softfloat.m4	Mon Dec 24 00:00:27 2018 +0100
++++ b/make/autoconf/lib-softfloat.m4	Tue Dec 25 16:05:16 2018 +0100
 @@ -0,0 +1,161 @@
 +#
 +# Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
@@ -243,7 +243,7 @@ diff -r 95c62fd12b88 make/autoconf/lib-softfloat.m4
 +])
 diff -r 95c62fd12b88 make/autoconf/libraries.m4
 --- a/make/autoconf/libraries.m4	Sat Dec 22 10:38:45 2018 +0800
-+++ b/make/autoconf/libraries.m4	Mon Dec 24 00:00:27 2018 +0100
++++ b/make/autoconf/libraries.m4	Tue Dec 25 16:05:16 2018 +0100
 @@ -33,6 +33,7 @@
  m4_include([lib-x11.m4])
  m4_include([lib-fontconfig.m4])
@@ -276,7 +276,7 @@ diff -r 95c62fd12b88 make/autoconf/libraries.m4
    LIB_SETUP_MISC_LIBS
 diff -r 95c62fd12b88 make/autoconf/spec.gmk.in
 --- a/make/autoconf/spec.gmk.in	Sat Dec 22 10:38:45 2018 +0800
-+++ b/make/autoconf/spec.gmk.in	Mon Dec 24 00:00:27 2018 +0100
++++ b/make/autoconf/spec.gmk.in	Tue Dec 25 16:05:16 2018 +0100
 @@ -353,6 +353,9 @@
  CUPS_CFLAGS:=@CUPS_CFLAGS@
  ALSA_LIBS:=@ALSA_LIBS@
@@ -289,7 +289,7 @@ diff -r 95c62fd12b88 make/autoconf/spec.gmk.in
  ENABLE_LIBFFI_BUNDLING:=@ENABLE_LIBFFI_BUNDLING@
 diff -r 95c62fd12b88 make/copy/Copy-java.base.gmk
 --- a/make/copy/Copy-java.base.gmk	Sat Dec 22 10:38:45 2018 +0800
-+++ b/make/copy/Copy-java.base.gmk	Mon Dec 24 00:00:27 2018 +0100
++++ b/make/copy/Copy-java.base.gmk	Tue Dec 25 16:05:16 2018 +0100
 @@ -226,6 +226,19 @@
  TARGETS += $(COPY_LEGAL)
  
@@ -312,7 +312,7 @@ diff -r 95c62fd12b88 make/copy/Copy-java.base.gmk
  ifeq ($(ENABLE_LIBFFI_BUNDLING), true)
 diff -r 95c62fd12b88 make/hotspot/lib/CompileJvm.gmk
 --- a/make/hotspot/lib/CompileJvm.gmk	Sat Dec 22 10:38:45 2018 +0800
-+++ b/make/hotspot/lib/CompileJvm.gmk	Mon Dec 24 00:00:27 2018 +0100
++++ b/make/hotspot/lib/CompileJvm.gmk	Tue Dec 25 16:05:16 2018 +0100
 @@ -49,6 +49,7 @@
  
  JVM_LIBS += \
@@ -323,7 +323,7 @@ diff -r 95c62fd12b88 make/hotspot/lib/CompileJvm.gmk
  # These files and directories are always excluded
 diff -r 95c62fd12b88 make/hotspot/lib/JvmFlags.gmk
 --- a/make/hotspot/lib/JvmFlags.gmk	Sat Dec 22 10:38:45 2018 +0800
-+++ b/make/hotspot/lib/JvmFlags.gmk	Mon Dec 24 00:00:27 2018 +0100
++++ b/make/hotspot/lib/JvmFlags.gmk	Tue Dec 25 16:05:16 2018 +0100
 @@ -88,6 +88,7 @@
      $(JVM_CFLAGS_TARGET_DEFINES) \
      $(JVM_CFLAGS_FEATURES) \
@@ -334,7 +334,7 @@ diff -r 95c62fd12b88 make/hotspot/lib/JvmFlags.gmk
  
 diff -r 95c62fd12b88 src/hotspot/cpu/arm/assembler_arm_32.hpp
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp	Sat Dec 22 10:38:45 2018 +0800
-+++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Mon Dec 24 00:00:27 2018 +0100
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp	Tue Dec 25 16:05:16 2018 +0100
 @@ -1240,12 +1240,12 @@
  extern int  __aeabi_dcmpge(double, double);
  extern int  __aeabi_dcmpgt(double, double);
@@ -356,7 +356,7 @@ diff -r 95c62fd12b88 src/hotspot/cpu/arm/assembler_arm_32.hpp
  
 diff -r 95c62fd12b88 src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
 --- a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	Sat Dec 22 10:38:45 2018 +0800
-+++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	Mon Dec 24 00:00:27 2018 +0100
++++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	Tue Dec 25 16:05:16 2018 +0100
 @@ -489,28 +489,29 @@
  #ifdef __SOFTFP__
      // Call function compiled with -msoft-float.
@@ -394,7 +394,7 @@ diff -r 95c62fd12b88 src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
        runtime_func = CAST_FROM_FN_PTR(address, __aeabi_ddiv);
 diff -r 95c62fd12b88 src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
 --- a/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp	Sat Dec 22 10:38:45 2018 +0800
-+++ b/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp	Mon Dec 24 00:00:27 2018 +0100
++++ b/src/hotspot/cpu/arm/c1_Runtime1_arm.cpp	Tue Dec 25 16:05:16 2018 +0100
 @@ -804,15 +804,17 @@
  #define FUNCTION_CASE(a, f) \
    if ((intptr_t)a == CAST_FROM_FN_PTR(intptr_t, f))  return #f
@@ -420,7 +420,7 @@ diff -r 95c62fd12b88 src/hotspot/cpu/arm/c1_Runtime1_arm.cpp
    FUNCTION_CASE(entry, __aeabi_f2d);
 diff -r 95c62fd12b88 src/hotspot/cpu/arm/softfloat_arm.cpp
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/src/hotspot/cpu/arm/softfloat_arm.cpp	Mon Dec 24 00:00:27 2018 +0100
++++ b/src/hotspot/cpu/arm/softfloat_arm.cpp	Tue Dec 25 16:05:16 2018 +0100
 @@ -0,0 +1,102 @@
 +/*
 + * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
@@ -526,7 +526,7 @@ diff -r 95c62fd12b88 src/hotspot/cpu/arm/softfloat_arm.cpp
 +#endif // __SOFTFP__
 diff -r 95c62fd12b88 src/hotspot/cpu/arm/templateTable_arm.cpp
 --- a/src/hotspot/cpu/arm/templateTable_arm.cpp	Sat Dec 22 10:38:45 2018 +0800
-+++ b/src/hotspot/cpu/arm/templateTable_arm.cpp	Mon Dec 24 00:00:27 2018 +0100
++++ b/src/hotspot/cpu/arm/templateTable_arm.cpp	Tue Dec 25 16:05:16 2018 +0100
 @@ -1610,8 +1610,10 @@
    __ mov(R1, R0_tos);
    __ pop_i(R0);
@@ -554,9 +554,9 @@ diff -r 95c62fd12b88 src/hotspot/cpu/arm/templateTable_arm.cpp
      case mul: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_dmul), R0, R1, R2, R3); break;
      case div: __ call_VM_leaf(CAST_FROM_FN_PTR(address, __aeabi_ddiv), R0, R1, R2, R3); break;
      case rem: __ call_VM_leaf(CAST_FROM_FN_PTR(address, SharedRuntime::drem), R0, R1, R2, R3); break;
-diff -r 95c62fd12b88 test/hotspot/jtreg/runtime/8215902/Test8215902.java
+diff -r 95c62fd12b88 test/hotspot/jtreg/compiler/floatingpoint/Test8215902.java
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/test/hotspot/jtreg/runtime/8215902/Test8215902.java	Mon Dec 24 00:00:27 2018 +0100
++++ b/test/hotspot/jtreg/compiler/floatingpoint/Test8215902.java	Tue Dec 25 16:05:16 2018 +0100
 @@ -0,0 +1,57 @@
 +/*
 + * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
