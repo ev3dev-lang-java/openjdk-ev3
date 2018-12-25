@@ -160,11 +160,29 @@ elif [ "$JDKVER" == "11" ]; then
   SOFTFLOAT_FLAGS=
 
 # OpenJDK 12/Master+dev
-elif [ "$JDKVER" == "12" ] || [ "$JDKVER" == "tip" ]; then
-  # download tip
-  HG_BASE_URL="https://hg.openjdk.java.net/jdk/jdk"
+elif [ "$JDKVER" == "12" ]; then
+  # download latest tag
+  HG_BASE_URL="https://hg.openjdk.java.net/jdk/jdk12"
   JAVA_SCM="hg_zip"
   PATCHVER="jdk12"
+  AUTOGEN_STYLE="v2"
+  HOSTJDK="$BUILDDIR/jdk-11.0.1"
+  HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
+  HOSTJDK_URL="https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz"
+  IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
+  HOTSPOT_ABI=arm-sflt
+  JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
+  SOFTFLOAT_FLAGS="--with-sflt=$SFLTPFX"
+  if [ "$JDKPLATFORM" == "ev3" ]; then
+    SFLT_NEEDED=true
+  fi
+
+# OpenJDK 13/Master+dev
+elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
+  # download tip or latest tag
+  HG_BASE_URL="https://hg.openjdk.java.net/jdk/jdk"
+  JAVA_SCM="hg_zip"
+  PATCHVER="jdk13"
   AUTOGEN_STYLE="v2"
   HOSTJDK="$BUILDDIR/jdk-11.0.1"
   HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.1_linux-x64_bin.tar.gz"
@@ -185,6 +203,7 @@ else
   echo "JDKVER=10" >&2
   echo "JDKVER=11" >&2
   echo "JDKVER=12" >&2
+  echo "JDKVER=13" >&2
   echo "JDKVER=tip" >&2
   exit 1
 fi
