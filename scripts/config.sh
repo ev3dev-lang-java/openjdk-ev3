@@ -12,13 +12,8 @@ SFLTDIR="$BUILDDIR/sflt"
 SFLTREPO="https://github.com/ev3dev-lang-java/softfloat-openjdk.git"
 # softfloat build directory
 SFLTBUILD="$SFLTDIR/build/Linux-ARM-VFPv2-GCC-OpenJDK"
-# softfloat static library
-SFLTLIB="$SFLTBUILD/softfloat.a"
-# softfloat include directory
-SFLTINC="$SFLTDIR/source/include"
 # softfloat license
-SFLTLIC_TXT="$SFLTDIR/COPYING.txt"
-SFLTLIC_MD="$SFLTDIR/softfloat.md"
+SFLTPFX="$SFLTDIR/output"
 # openjdk-build repo dir
 ABLDDIR="$BUILDDIR/openjdk-build"
 # openjdk-build repo
@@ -177,7 +172,7 @@ elif [ "$JDKVER" == "12" ] || [ "$JDKVER" == "tip" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
-  SOFTFLOAT_FLAGS="--with-sflt-lib=$SFLTLIB --with-sflt-include=$SFLTINC --with-sflt-license=$SFLTLIC_MD"
+  SOFTFLOAT_FLAGS="--with-sflt=$SFLTPFX"
   if [ "$JDKPLATFORM" == "ev3" ]; then
     SFLT_NEEDED=true
   fi

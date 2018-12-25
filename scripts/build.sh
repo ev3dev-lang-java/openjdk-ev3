@@ -9,9 +9,7 @@ if [ "$SFLT_NEEDED" == "true" ]; then
   echo "[BUILD] Building softfloat support"
   cd "$SFLTBUILD"
   make
-  echo -e '## SoftFloat-3e\n\n### SoftFloat license\n```' >"$SFLTLIC_MD"
-  cat "$SFLTLIC_TXT" >>"$SFLTLIC_MD"
-  echo '```' >>"$SFLTLIC_MD"
+  make DESTDIR="$SFLTPFX" install
 fi
 
 cd "$JDKDIR"
