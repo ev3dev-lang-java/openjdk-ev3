@@ -128,6 +128,7 @@ if [ "$JDKVER" == "9" ]; then
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
+  GA_REPLACE="+0"
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
@@ -143,6 +144,7 @@ elif [ "$JDKVER" == "10" ]; then
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
+  GA_REPLACE="+0"
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
@@ -158,6 +160,7 @@ elif [ "$JDKVER" == "11" ]; then
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
+  GA_REPLACE="+9"
 
 # OpenJDK 12/Master+dev
 elif [ "$JDKVER" == "12" ]; then
@@ -176,6 +179,7 @@ elif [ "$JDKVER" == "12" ]; then
   if [ "$JDKPLATFORM" == "ev3" ]; then
     SFLT_NEEDED=true
   fi
+  GA_REPLACE="+0"
 
 # OpenJDK 13/Master+dev
 elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
@@ -194,6 +198,7 @@ elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
   if [ "$JDKPLATFORM" == "ev3" ]; then
     SFLT_NEEDED=true
   fi
+  GA_REPLACE="+0"
 
 # invalid or unset version
 else

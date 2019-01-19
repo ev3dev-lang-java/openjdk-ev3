@@ -66,7 +66,7 @@ if [ ! -d "$JDKDIR" ]; then
     else
       SUFFIX="ev3"
     fi
-    JAVA_VERSION="$(echo "$JAVA_TAG" | sed -E 's/^.*jdk-//;s/-ga//')-$SUFFIX"
+    JAVA_VERSION="$(echo "$JAVA_TAG" | sed -E "s/^.*jdk-//;s/-ga/$GA_REPLACE/")-$SUFFIX"
     JAVA_COMMIT="$(cat ./.hg_archival.txt | grep "node:" | sed -E 's/^node: //')"
 
   elif [ "$JAVA_SCM" == "git" ]; then
