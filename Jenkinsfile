@@ -33,6 +33,7 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
                 sh "/opt/jdkcross/prepare.sh"
                 sh "/opt/jdkcross/fetch.sh"
             }
+            archiveArtifacts artifacts: "build/metadata", fingerprint: true
         }
 
         stage("JDK build") {
@@ -48,7 +49,6 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             archiveArtifacts artifacts: "build/jri-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
             archiveArtifacts artifacts: "build/jdk-${params.JDKPLATFORM_VALUE}.tar.gz",   fingerprint: true
             archiveArtifacts artifacts: "build/jmods-${params.JDKPLATFORM_VALUE}.tar.gz", fingerprint: true
-            archiveArtifacts artifacts: "build/metadata", fingerprint: true
         }
 
         //stage("JDK debpkg") {
