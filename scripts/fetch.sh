@@ -105,10 +105,14 @@ if [ ! -d "$JDKDIR" ]; then
   if [ -f "$SCRIPTDIR/${PATCHVER}.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}.patch"
   fi
+
   # debian library path
   if [ -f "$SCRIPTDIR/${PATCHVER}_lib.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_lib.patch"
   fi
+
+  # store mercurial revision
+  echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
 else
   echo "[FETCH] Directory for JDK repository exists, assuming everything has been done already." 2>&1
