@@ -12,9 +12,19 @@ if [ -z "$JAVA_PACKAGE_REVISION" ]; then
 fi
 
 DEB_JRI_PREFIX=$(echo "$JAVA_VERSION" | cut -d + -f 1)
-export DEB_JRI_MAJOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 1)
-export DEB_JRI_MINOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 2)
-export DEB_JRI_PATCH=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 3)
+NUM_OF_FIELDS=$(echo "$DEB_JRI_PREFIX" | awk -F. "{print NF-1}")
+if [ "$NUM_OF_FIELDS" -eq 0 ]; then
+    export DEB_JRI_MAJOR=$DEB_JRI_PREFIX
+    export DEB_JRI_MINOR=0
+    export DEB_JRI_PATCH=0
+elif [ "$NUM_OF_FIELDS" -eq 2 ]; then
+    export DEB_JRI_MAJOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 1)
+    export DEB_JRI_MINOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 2)
+    export DEB_JRI_PATCH=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 3)
+else
+    echo "Unsupported version string: $JAVA_VERSION" 1>&2
+    exit 1
+fi
 export DEB_JRI_BUILD=$(echo "$JAVA_VERSION" | cut -d + -f 2 | cut -d - -f 1)
 export DEB_JRI_PLATFORM=$(echo "$JAVA_VERSION" | cut -d - -f 2)
 export DEB_JRI_OLD=$(expr $DEB_JRI_MAJOR - 1)99
