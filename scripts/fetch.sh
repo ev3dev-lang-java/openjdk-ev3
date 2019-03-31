@@ -10,7 +10,7 @@ if [ ! -d "$JDKDIR" ]; then
     cd "$BUILDDIR"
 
     # Identify latest HG tag
-    JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | tail -n 1 | cut -d " " -f 2)"
+    JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | grep -v -- '-ga' | tail -n 1 | cut -d " " -f 2)"
 
     # select URL for latest tag in given repo
     if [ "$JDKVER" == "tip" ]; then
