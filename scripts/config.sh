@@ -165,7 +165,7 @@ elif [ "$JDKVER" == "11" ]; then
 # OpenJDK 12/Master+dev
 elif [ "$JDKVER" == "12" ]; then
   # download latest tag
-  HG_BASE_URL="https://hg.openjdk.java.net/jdk/jdk12"
+  HG_BASE_URL="https://hg.openjdk.java.net/jdk-updates/jdk12u"
   JAVA_SCM="hg_zip"
   PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
