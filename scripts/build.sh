@@ -61,13 +61,18 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
                    --with-freetype-include=/usr/include \
                    --with-jvm-variants="$HOTSPOT_VARIANT" \
-                   --with-extra-cflags="-w -Wno-error -D__SOFTFP__" \
-                   --with-extra-cxxflags="-w -Wno-error -D__SOFTFP__" \
+                   --disable-warnings-as-errors \
                    --with-version-string="$JAVA_VERSION" \
                    $JNI_PATH_FLAGS \
                    $SOFTFLOAT_FLAGS \
+                   --with-vendor-name="ev3dev-lang-java" \
+                   --with-vendor-url="https://github.com/ev3dev-lang-java/ev3dev-lang-java/" \
+                   --with-vendor-bug-url="https://github.com/ev3dev-lang-java/ev3dev-lang-java/issues/new" \
+                   --with-vendor-vm-bug-url="https://github.com/ev3dev-lang-java/ev3dev-lang-java/issues/new" \
                    --with-cacerts-file="$CACERTFILE" \
                    --with-debug-level=$HOTSPOT_DEBUG \
+                   --with-native-debug-symbols=internal \
+                   --with-stdc++lib=dynamic \
                    --with-libjpeg=system \
                    --with-giflib=system \
                    --with-libpng=system \
