@@ -40,6 +40,7 @@ RUN dpkg --add-architecture armel && \
         libgif-dev:armel         \
         liblcms2-dev:armel       \
         zlib1g-dev:armel         \
+        systemtap-sdt-dev        \
         systemtap-sdt-dev:armel  \
         curl \
         make \
