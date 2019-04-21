@@ -153,9 +153,9 @@ elif [ "$JDKVER" == "11" ]; then
   JAVA_SCM="hg_zip"
   PATCHVER="jdk11"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-11.0.2"
-  HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.2_linux-x64_bin.tar.gz"
-  HOSTJDK_URL="https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz"
+  HOSTJDK="$BUILDDIR/jdk-11.0.3+7"
+  HOSTJDK_FILE="$BUILDDIR/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+  HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
@@ -169,9 +169,9 @@ elif [ "$JDKVER" == "12" ]; then
   JAVA_SCM="hg_zip"
   PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-11.0.2"
-  HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.2_linux-x64_bin.tar.gz"
-  HOSTJDK_URL="https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz"
+  HOSTJDK="$BUILDDIR/jdk-11.0.3+7"
+  HOSTJDK_FILE="$BUILDDIR/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+  HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
@@ -188,9 +188,9 @@ elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
   JAVA_SCM="hg_zip"
   PATCHVER="jdk13"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-11.0.2"
-  HOSTJDK_FILE="$BUILDDIR/openjdk-11.0.2_linux-x64_bin.tar.gz"
-  HOSTJDK_URL="https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz"
+  HOSTJDK="$BUILDDIR/jdk-12+33"
+  HOSTJDK_FILE="$BUILDDIR/OpenJDK12U-jdk_x64_linux_hotspot_12_33.tar.gz"
+  HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12%2B33/OpenJDK12U-jdk_x64_linux_hotspot_12_33.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
