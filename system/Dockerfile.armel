@@ -40,8 +40,8 @@ RUN dpkg --add-architecture armel && \
         libgif-dev:armel         \
         liblcms2-dev:armel       \
         zlib1g-dev:armel         \
+        systemtap                \
         systemtap-sdt-dev        \
-        systemtap-sdt-dev:armel  \
         curl \
         make \
         m4 \
@@ -58,7 +58,10 @@ RUN dpkg --add-architecture armel && \
         autotools-dev \
         mercurial \
         git \
-        zlib1g-dev
+        zlib1g-dev && \
+    wget http://ftp.debian.org/debian/pool/main/s/systemtap/systemtap-sdt-dev_3.1-2_armel.deb -O /tmp/systemtap.deb && \
+    dpkg-deb -x /tmp/systemtap.deb / && \
+    rm -rf /tmp/systemtap.deb /var/lib/apt/lists/*
 
 # prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler
