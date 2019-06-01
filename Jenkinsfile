@@ -23,10 +23,11 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             def commit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             def infoArg = ""
             infoArg += " --build-arg commit=\"$commit\""
-            infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER}\""
-            osImage  = docker.build("ev3dev-lang-java:jdk-stretch",   "${infoArg} -f system/Dockerfile.${params.DOCKER_ARCH} ./system")
-            bldImage = docker.build("ev3dev-lang-java:jdk-build",     "${infoArg} -f scripts/Dockerfile                      ./scripts")
-            //pkgImage = docker.build("ev3dev-lang-java:jdk-package", "${infoArg} -f packaging/Dockerfile                    ./packaging")
+            infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER} with Debian ${params.DEBIAN}\""
+            infoArg += " --build-arg DEBIAN_RELEASE=${params.DEBIAN}"
+            osImage  = docker.build("ev3dev-lang-java:jdk-${params.DEBIAN}", "${infoArg} -f system/${params.DEBIAN}/Dockerfile.${params.DOCKER_ARCH} ./system")
+            bldImage = docker.build("ev3dev-lang-java:jdk-build",            "${infoArg} -f scripts/Dockerfile                                       ./scripts")
+         // pkgImage = docker.build("ev3dev-lang-java:jdk-package",          "${infoArg} -f packaging/Dockerfile                                     ./packaging")
         }
         stage("JDK download") {
             bldImage.inside("${mountParams} ${envParams}") {
