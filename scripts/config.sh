@@ -78,6 +78,10 @@ if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ] && [ "$JDKVM" != "minimal"
 fi
 
 HOTSPOT_VARIANT="$JDKVM"
+VENDOR_FLAGS="              --with-vendor-name=\"ev3dev-lang-java\" "
+VENDOR_FLAGS="$VENDOR_FLAGS --with-vendor-url=\"https://github.com/ev3dev-lang-java/ev3dev-lang-java/\" "
+VENDOR_FLAGS="$VENDOR_FLAGS --with-vendor-bug-url=\"https://github.com/ev3dev-lang-java/ev3dev-lang-java/issues/new\" "
+VENDOR_FLAGS="$VENDOR_FLAGS --with-vendor-vm-bug-url=\"https://github.com/ev3dev-lang-java/ev3dev-lang-java/issues/new\" "
 
 # output images directory
 #IMAGEDIR="/build/jdk/build/linux-arm-normal-client-release/images"
@@ -129,6 +133,7 @@ if [ "$JDKVER" == "9" ]; then
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
   GA_REPLACE="+0"
+  VENDOR_FLAGS=
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then

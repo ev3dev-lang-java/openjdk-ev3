@@ -65,10 +65,7 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-version-string="$JAVA_VERSION" \
                    $JNI_PATH_FLAGS \
                    $SOFTFLOAT_FLAGS \
-                   --with-vendor-name="ev3dev-lang-java" \
-                   --with-vendor-url="https://github.com/ev3dev-lang-java/ev3dev-lang-java/" \
-                   --with-vendor-bug-url="https://github.com/ev3dev-lang-java/ev3dev-lang-java/issues/new" \
-                   --with-vendor-vm-bug-url="https://github.com/ev3dev-lang-java/ev3dev-lang-java/issues/new" \
+                   $VENDOR_FLAGS \
                    --with-cacerts-file="$CACERTFILE" \
                    --with-debug-level=$HOTSPOT_DEBUG \
                    --with-native-debug-symbols=internal \
