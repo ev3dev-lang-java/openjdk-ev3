@@ -7,12 +7,13 @@ Builds for older boards should work on newer boards, the performance might just 
 
 ## Build Status
 
-| OpenJDK version  | Platform | VM     | Status                               |
-|------------------|----------|--------|--------------------------------------|
-| OpenJDK 9        | EV3      | C1 JIT | [![openjdk9_build_ev3_linux][1]][2]  |
-| OpenJDK 10       | EV3      | C1 JIT | [![openjdk10_build_ev3_linux][3]][4] |
-| OpenJDK 11       | EV3      | C1 JIT | [![openjdk11_build_ev3_linux][5]][6] |
-| OpenJDK 12 (dev) | EV3      | C1 JIT | [![openjdk12_build_ev3_linux][7]][8] |
+| OpenJDK version  | Platform | OS             | VM     | Status                               |
+|------------------|----------|----------------|--------|--------------------------------------|
+| OpenJDK 9        | EV3      | ev3dev-stretch | C1 JIT | [![openjdk9_build_ev3_linux][1]][2]  |
+| OpenJDK 10       | EV3      | ev3dev-stretch | C1 JIT | [![openjdk10_build_ev3_linux][3]][4] |
+| OpenJDK 11       | EV3      | ev3dev-stretch | C1 JIT | [![openjdk11_build_ev3_linux][5]][6] |
+| OpenJDK 12       | EV3      | ev3dev-buster  | C1 JIT | [![openjdk12_build_ev3_linux][7]][8] |
+| OpenJDK 13 (dev) | EV3      | ev3dev-buster  | C1 JIT | [![openjdk12_build_ev3_linux][9]][10] |
 
 [1]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk9_build_ev3_linux/badge/icon
 [2]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk9_build_ev3_linux/
@@ -22,6 +23,8 @@ Builds for older boards should work on newer boards, the performance might just 
 [6]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk11_build_ev3_linux/
 [7]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux/badge/icon
 [8]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux/
+[9]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk13_build_ev3_linux/badge/icon
+[10]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk13_build_ev3_linux/
 
 
 ## Components
@@ -43,12 +46,15 @@ To see which modules are included in our case, take a look at the jlink commandl
 1. Install [Docker](https://docs.docker.com/engine/installation/) for your operating system.
 2. Build the base cross-compilation image:
 ```sh
-sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/Dockerfile.armel system
+sudo docker build -t ev3dev-lang-java:jdk-stretch -f system/stretch/Dockerfile.armel system
 ```
+To use Debian Buster, replace occurences of `stretch` with `buster`.
 3. Build the image with OpenJDK cross-compilation scripts:
 ```sh
-sudo docker build -t ev3dev-lang-java:jdk-build   -f scripts/Dockerfile scripts
+sudo docker build -t ev3dev-lang-java:jdk-build  --build-arg DEBIAN_RELEASE=stretch  -f scripts/Dockerfile scripts
 ```
+Again, you can replace `stretch` with `buster`.
+
 Next steps depend on whether you want to navigate the build yourself, or if you want the build to run automatically.
 
 ### Semi-manual build
@@ -65,6 +71,7 @@ export JDKVER=9         # OpenJDK 9
 export JDKVER=10        # OpenJDK 10
 export JDKVER=11        # OpenJDK 11
 export JDKVER=12        # OpenJDK 12
+export JDKVER=13        # OpenJDK 13
 export JDKVM=zero       # Use Zero interpreter
 export JDKVM=client     # Use full ARM32 JIT
 export JDKVM=minimal    # Use minimal ARM32 JIT (https://openjdk.java.net/jeps/148)
