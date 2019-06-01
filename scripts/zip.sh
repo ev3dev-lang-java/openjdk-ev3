@@ -25,7 +25,6 @@ fi
    --module-path ./jmods/ \
    --endian little \
    --compress 0 \
-   --strip-debug \
    --no-header-files \
    --no-man-pages \
    --add-modules "$JRI_MODULES" \
