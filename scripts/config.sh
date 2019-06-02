@@ -26,6 +26,9 @@ TARBALL_MAX_DOWNLOADS=10
 
 JRI_MODULES="java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool"
 
+JTREG="$BUILDDIR/jtreg"
+JTREG_URL="https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"
+JTREG_FILE="$BUILDDIR/jtreg.tar.gz"
 
 ###############################################################################
 # Set the debug level

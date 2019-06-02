@@ -16,3 +16,16 @@ if [ ! -d "$HOSTJDK" ]; then
 else
   echo "[PREPARE] Using cached host JDK directory"
 fi
+
+if [ ! -d "$JTREG" ]; then
+  if [ ! -e "$JTREG_FILE" ]; then
+    echo "[PREPARE] Downloading jtreg"
+    wget -nv "$JTREG_URL" -O "$JTREG_FILE"
+  else
+    echo "[PREPARE] Using cached jtreg archive"
+  fi
+  echo "[PREPARE] Unpacking jtreg"
+  tar -xf "$JTREG_FILE" -C "$(dirname "$JTREG")"
+else
+  echo "[PREPARE] Using cached jtreg directory"
+fi

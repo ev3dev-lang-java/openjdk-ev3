@@ -60,6 +60,7 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --enable-headless-only \
                    --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
                    --with-freetype-include=/usr/include \
+                   --with-jtreg="$JTREG" \
                    --with-jvm-variants="$HOTSPOT_VARIANT" \
                    --disable-warnings-as-errors \
                    --with-version-string="$JAVA_VERSION" \
