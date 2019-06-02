@@ -4,7 +4,7 @@
 
 def selector
 if (params.BUILD_TYPE == "native") {
-    selector = '( linux || sw.os.linux ) && ( armv7l || aarch64 || armv8 ) && ( docker || sw.tool.docker ) && !( test || ci.role.test )'
+    selector = '( linux || sw.os.linux ) && ( aarch64 || armv8 ) && ( docker || sw.tool.docker ) && !( test || ci.role.test )'
 } else {
     selector = '( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( docker || sw.tool.docker ) && !( test || ci.role.test )'
 }
