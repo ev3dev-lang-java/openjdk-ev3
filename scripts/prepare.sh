@@ -12,7 +12,11 @@ if [ ! -d "$HOSTJDK" ]; then
     echo "[PREPARE] Using cached host JDK archive"
   fi
   echo "[PREPARE] Unpacking host JDK"
+  mkdir -p "$(dirname "$HOSTJDK")"
   tar -xf "$HOSTJDK_FILE" -C "$(dirname "$HOSTJDK")"
+  if [ ! -z "$HOSTJDK_RENAME_FROM" ]; then
+    mv "$HOSTJDK_RENAME_FROM" "$HOSTJDK"
+  fi
 else
   echo "[PREPARE] Using cached host JDK directory"
 fi

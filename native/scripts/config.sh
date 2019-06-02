@@ -166,7 +166,8 @@ elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
   PATCHVER="jdk13"
   AUTOGEN_STYLE="v2"
   # dogfooding; I'm not entirely happy with it, but I don't know of other sflt JDK12
-  HOSTJDK="$BUILDDIR/jdk"
+  HOSTJDK="$BUILDDIR/jdk-ev3"
+  HOSTJDK_RENAME_FROM="$BUILDDIR/jdk"
   HOSTJDK_FILE="$BUILDDIR/jdk-ev3.tar.gz"
   HOSTJDK_URL="https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
