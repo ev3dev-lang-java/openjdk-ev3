@@ -1,12 +1,19 @@
 // OpenJDK Jenkins build pipeline
 
 // docker linux build machine
-node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( docker || sw.tool.docker ) && !( test || ci.role.test )') {
+
+def selector
+if (params.BUILD_TYPE == "native") {
+    selector = '( linux || sw.os.linux ) && ( armv7l || aarch64 || armv8 ) && ( docker || sw.tool.docker ) && !( test || ci.role.test )'
+} else {
+    selector = '( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( docker || sw.tool.docker ) && !( test || ci.role.test )'
+}
+
+node(selector) {
 
     // our docker images
     def osImage
     def bldImage
-    //def pkgImage
 
     // prepare run parameters
     String mountParams = "-v ${env.WORKSPACE}/build:/build"
@@ -23,12 +30,12 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             def commit = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             def infoArg = ""
             infoArg += " --build-arg commit=\"$commit\""
-            infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER} with Debian ${params.DEBIAN}\""
+            infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER} with Debian ${params.DEBIAN} on ${params.DOCKER_ARCH}\""
             infoArg += " --build-arg DEBIAN_RELEASE=\"${params.DEBIAN}\""
             infoArg += " --build-arg ARCH=\"${params.DOCKER_ARCH}\""
-            osImage  = docker.build("ev3dev-lang-java:jdk-${params.DEBIAN}", "${infoArg} ${env.WORKSPACE}/system")
-            bldImage = docker.build("ev3dev-lang-java:jdk-build",            "${infoArg} ${env.WORKSPACE}/scripts")
-         // pkgImage = docker.build("ev3dev-lang-java:jdk-package",          "${infoArg} ${env.WORKSPACE}/packaging")
+            infoArg += " --build-arg BUILD_TYPE=\"${params.BUILD_TYPE}\""
+            osImage  = docker.build("ev3dev-lang-java:jdk-${params.BUILD_TYPE}-${params.DEBIAN}",  "${infoArg}  -f ${env.WORKSPACE}/system/Dockerfile.${params.BUILD_TYPE}  ${env.WORKSPACE}/system")
+            bldImage = docker.build("ev3dev-lang-java:jdk-${params.BUILD_TYPE}-build",             "${infoArg}                                                              ${env.WORKSPACE}/scripts")
         }
         stage("JDK download") {
             bldImage.inside("${mountParams} ${envParams}") {
@@ -53,23 +60,15 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             archiveArtifacts artifacts: "build/jmods-${params.JDKPLATFORM_VALUE}.tar.gz", fingerprint: true
         }
 
-        //stage("JDK debpkg") {
-        //    sh "docker run --rm ${mountParams} ev3dev-lang-java:jdk-package"
-        //    archiveArtifacts artifacts: "build/debian.zip", fingerprint: false
-        //}
     } finally {
         stage ('Cleanup') {
             // clean up workspace
-            //pkgImage.inside("${mountParams}") {
-            //    try { sh "sudo rm -rf /build/*" } catch(err) {}
-            //}
             bldImage.inside("${mountParams}") {
                 try { sh "sudo rm -rf /build/*" } catch(err) {}
             }
             try { sh "rm -rf ${env.WORKSPACE}/build" } catch(err) {}
 
             // clean up docker images
-            //try { sh "docker rmi ${pkgImage.id} 2>/dev/null" } catch (err) {}
             try { sh "docker rmi ${bldImage.id} 2>/dev/null" } catch (err) {}
             try { sh "docker rmi ${osImage.id} 2>/dev/null"  } catch (err) {}
             cleanWs()

@@ -161,9 +161,16 @@ elif [ "$JDKVER" == "11" ]; then
   JAVA_SCM="hg_zip"
   PATCHVER="jdk11"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-11.0.3+7"
-  HOSTJDK_FILE="$BUILDDIR/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
-  HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+  if [ "$BUILDER_TYPE" = "native" ]; then
+    # yaay, tested sflt JDK11
+    HOSTJDK="$BUILDDIR/zulu11.31.16-ca-jdk11.0.3-linux_aarch32sf"
+    HOSTJDK_FILE="$BUILDDIR/zulu11.31.16-ca-jdk11.0.3-linux_aarch32sf.tar.gz"
+    HOSTJDK_URL="http://cdn.azul.com/zulu-embedded/bin/zulu11.31.16-ca-jdk11.0.3-linux_aarch32sf.tar.gz"
+  else
+    HOSTJDK="$BUILDDIR/jdk-11.0.3+7"
+    HOSTJDK_FILE="$BUILDDIR/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+  fi
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
@@ -177,9 +184,16 @@ elif [ "$JDKVER" == "12" ]; then
   JAVA_SCM="hg_zip"
   PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-11.0.3+7"
-  HOSTJDK_FILE="$BUILDDIR/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
-  HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+  if [ "$BUILDER_TYPE" = "native" ]; then
+    # yaay, tested sflt JDK11
+    HOSTJDK="$BUILDDIR/zulu11.31.16-ca-jdk11.0.3-linux_aarch32sf"
+    HOSTJDK_FILE="$BUILDDIR/zulu11.31.16-ca-jdk11.0.3-linux_aarch32sf.tar.gz"
+    HOSTJDK_URL="http://cdn.azul.com/zulu-embedded/bin/zulu11.31.16-ca-jdk11.0.3-linux_aarch32sf.tar.gz"
+  else
+    HOSTJDK="$BUILDDIR/jdk-11.0.3+7"
+    HOSTJDK_FILE="$BUILDDIR/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.3_7.tar.gz"
+  fi
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
@@ -196,9 +210,17 @@ elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
   JAVA_SCM="hg_zip"
   PATCHVER="jdk13"
   AUTOGEN_STYLE="v2"
-  HOSTJDK="$BUILDDIR/jdk-12+33"
-  HOSTJDK_FILE="$BUILDDIR/OpenJDK12U-jdk_x64_linux_hotspot_12_33.tar.gz"
-  HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12%2B33/OpenJDK12U-jdk_x64_linux_hotspot_12_33.tar.gz"
+  if [ "$BUILDER_TYPE" = "native" ]; then
+    # dogfooding; I'm not entirely happy with it, but I don't know of other sflt JDK12
+    HOSTJDK="$BUILDDIR/jdk-ev3"
+    HOSTJDK_RENAME_FROM="$BUILDDIR/jdk"
+    HOSTJDK_FILE="$BUILDDIR/jdk-ev3.tar.gz"
+    HOSTJDK_URL="https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+  else
+    HOSTJDK="$BUILDDIR/jdk-12+33"
+    HOSTJDK_FILE="$BUILDDIR/OpenJDK12U-jdk_x64_linux_hotspot_12_33.tar.gz"
+    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk12-binaries/releases/download/jdk-12%2B33/OpenJDK12U-jdk_x64_linux_hotspot_12_33.tar.gz"
+  fi
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
@@ -218,5 +240,23 @@ else
   echo "JDKVER=12" >&2
   echo "JDKVER=13" >&2
   echo "JDKVER=tip" >&2
+  exit 1
+fi
+
+if [ -z "$BUILDER_TYPE" ] || [ "$BUILDER_TYPE" = "cross" ]; then
+  AR=arm-linux-gnueabi-gcc-ar
+  NM=arm-linux-gnueabi-gcc-nm
+  TARGET_FLAGS="--openjdk-target=arm-linux-gnueabi"
+  BOOTCYCLE=no
+elif [ "$BUILDER_TYPE" = "native" ]; then
+  AR=gcc-ar
+  NM=gcc-nm
+  TARGET_FLAGS=""
+  BOOTCYCLE=yes
+else
+  echo "Error! Please specify valid builder type." >&2
+  echo "Acceptable values:" >&2
+  echo "BUILDER_TYPE=native" >&2
+  echo "BUILDER_TYPE=cross" >&2
   exit 1
 fi

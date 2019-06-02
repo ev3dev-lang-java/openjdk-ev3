@@ -55,7 +55,7 @@ echo "[BUILD] Configuring Java for target '$JDKPLATFORM'"
 if [ "$JDKPLATFORM" == "ev3" ]; then
   LIBFFI_LIBS=-lffi_pic \
   bash ./configure --with-boot-jdk="$HOSTJDK" \
-                   --openjdk-target=arm-linux-gnueabi \
+                   $TARGET_FLAGS \
                    --with-abi-profile="$HOTSPOT_ABI" \
                    --enable-headless-only \
                    --with-freetype-lib=/usr/lib/arm-linux-gnueabi \
@@ -76,12 +76,17 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-libpng=system \
                    --with-zlib=system \
                    --with-lcms=system \
-                   AR="arm-linux-gnueabi-gcc-ar" \
-                   NM="arm-linux-gnueabi-gcc-nm" \
+                   AR="$AR" \
+                   NM="$NM" \
                    BUILD_AR="gcc-ar" \
                    BUILD_NM="gcc-nm"
 fi
 
 # start the build
 echo "[BUILD] Building Java"
-make clean images
+make clean
+if [ "$BOOTCYCLE" = "yes" ]; then
+  make bootcycle-images
+else
+  make images
+fi
