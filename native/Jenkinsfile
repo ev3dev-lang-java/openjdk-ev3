@@ -25,6 +25,8 @@ node('( linux || sw.os.linux ) && ( armv7l || aarch64 || armv8 ) && ( docker || 
             infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER} with Debian ${params.DEBIAN}\" on ${params.DOCKER_ARCH}"
             infoArg += " --build-arg DEBIAN_RELEASE=\"${params.DEBIAN}\""
             infoArg += " --build-arg ARCH=\"${params.DOCKER_ARCH}\""
+            sh "docker --version"
+            sh "docker build --help"
             osImage  = docker.build("ev3dev-lang-java:jdk-native-${params.DEBIAN}", "${infoArg} ${env.WORKSPACE}/native/system")
             bldImage = docker.build("ev3dev-lang-java:jdk-native-build",            "${infoArg} ${env.WORKSPACE}/native/scripts")
         }
