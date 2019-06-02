@@ -41,7 +41,9 @@ PKG="jri-${DEB_JRI_MAJOR}-${DEB_JRI_PLATFORM}"
 PKGVER="${DEB_JRI_MAJOR}.${DEB_JRI_MINOR}.${DEB_JRI_PATCH}~${DEB_JRI_BUILD}"
 PKGNAME="${PKG}_${PKGVER}"
 DATE=$(LC_ALL=C date -R)
-DISTRO=stable
+if [ ! -z "$DISTRO" ]; then
+    DISTRO=stable
+fi
 
 PKGDIR="/build/pkg/$PKGNAME"
 
