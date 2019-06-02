@@ -260,3 +260,7 @@ else
   echo "BUILDER_TYPE=cross" >&2
   exit 1
 fi
+
+if [ "$BOOTCYCLE" = yes ]; then
+  IMAGEDIR="$IMAGEDIR/../bootcycle-build/images"
+fi

@@ -13,11 +13,14 @@ rm -rf ./jri
 
 # build ev3 runtime image
 echo "[ZIP] Building JRI"
+if [ "$BOOTCYCLE" = yes ] && [ -f "$IMAGEDIR/jdk/bin/jlink" ]; then
+  echo "[ZIP]  using bootcycle'd jlink"
+  JLINK_EXE="$IMAGEDIR/jdk/bin/jlink"
 if [ -f "../buildjdk/jdk/bin/jlink" ]; then
-   echo "[ZIP]  using bundled jlink"
+  echo "[ZIP]  using bundled jlink"
   JLINK_EXE="../buildjdk/jdk/bin/jlink"
 else
-   echo "[ZIP]  using external jlink"
+  echo "[ZIP]  using external jlink"
   JLINK_EXE="$HOSTJDK/bin/jlink"
 fi
 
