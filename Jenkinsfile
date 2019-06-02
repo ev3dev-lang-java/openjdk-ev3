@@ -26,9 +26,9 @@ node('( linux || sw.os.linux ) && ( x64 || x86_64 || x86 || hw.arch.x86 ) && ( d
             infoArg += " --build-arg extra=\"Jenkins ${env.JOB_NAME}#${env.BUILD_NUMBER} with Debian ${params.DEBIAN}\""
             infoArg += " --build-arg DEBIAN_RELEASE=\"${params.DEBIAN}\""
             infoArg += " --build-arg ARCH=\"${params.DOCKER_ARCH}\""
-            osImage  = docker.build("ev3dev-lang-java:jdk-${params.DEBIAN}", "${infoArg} -f system/Dockerfile    ./system")
-            bldImage = docker.build("ev3dev-lang-java:jdk-build",            "${infoArg} -f scripts/Dockerfile   ./scripts")
-         // pkgImage = docker.build("ev3dev-lang-java:jdk-package",          "${infoArg} -f packaging/Dockerfile ./packaging")
+            osImage  = docker.build("ev3dev-lang-java:jdk-${params.DEBIAN}", "${infoArg} ${env.WORKSPACE}/system")
+            bldImage = docker.build("ev3dev-lang-java:jdk-build",            "${infoArg} ${env.WORKSPACE}/scripts")
+         // pkgImage = docker.build("ev3dev-lang-java:jdk-package",          "${infoArg} ${env.WORKSPACE}/packaging")
         }
         stage("JDK download") {
             bldImage.inside("${mountParams} ${envParams}") {
