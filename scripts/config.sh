@@ -251,7 +251,7 @@ if [ -z "$BUILDER_TYPE" ] || [ "$BUILDER_TYPE" = "cross" ]; then
 elif [ "$BUILDER_TYPE" = "native" ]; then
   AR=gcc-ar
   NM=gcc-nm
-  TARGET_FLAGS=""
+  TARGET_FLAGS="--build=arm-linux-gnueabi --host=arm-linux-gnueabi --target=arm-linux-gnueabi"
   BOOTCYCLE=yes
 else
   echo "Error! Please specify valid builder type." >&2
