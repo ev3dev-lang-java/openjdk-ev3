@@ -1,6 +1,8 @@
 ARG DEBIAN_RELEASE=stretch
 ARG ARCH=armel
 FROM ev3dev/debian-$DEBIAN_RELEASE-$ARCH-qemu-minbase
+ARG DEBIAN_RELEASE
+ARG ARCH
 
 # this is a customized version of ev3dev-stretch-cross image
 

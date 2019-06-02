@@ -1,1 +1,1 @@
-../../system/compiler.sudoers
+compiler ALL=(ALL) NOPASSWD:ALL

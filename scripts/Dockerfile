@@ -1,5 +1,6 @@
 ARG DEBIAN_RELEASE=stretch
 FROM ev3dev-lang-java:jdk-$DEBIAN_RELEASE
+ARG DEBIAN_RELEASE
 
 ARG commit=unknown
 ENV BUILDER_COMMIT=${commit}
