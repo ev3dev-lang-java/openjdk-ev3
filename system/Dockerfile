@@ -1,18 +1,20 @@
-FROM debian:buster
+ARG DEBIAN_RELEASE=stretch
+ARG ARCH=armel
+FROM debian:$DEBIAN_RELEASE
 
 # this is a customized version of ev3dev-stretch-cross image
 
 # setup repositories and install required packages
-COPY apt.sources.list.debian /etc/apt/sources.list
+COPY sources.list.$DEBIAN_RELEASE /etc/apt/sources.list
 COPY ev3dev-archive-keyring.gpg /etc/apt/trusted.gpg.d/
-RUN dpkg --add-architecture armel && \
+RUN dpkg --add-architecture $ARCH && \
     apt-get -qq update && \
     DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
         bash-completion \
         ca-certificates \
         cmake \
         build-essential \
-        crossbuild-essential-armel \
+        crossbuild-essential-$ARCH \
         gdb-multiarch \
         less \
         man-db \
@@ -24,22 +26,22 @@ RUN dpkg --add-architecture armel && \
         vim \
         wget \
         xz-utils \
-        libcups2-dev:armel       \
-        libfreetype6-dev:armel   \
-        libfontconfig1-dev:armel \
-        libasound2-dev:armel     \
-        libx11-dev:armel         \
-        libxext-dev:armel        \
-        libxrender-dev:armel     \
-        libxrandr-dev:armel      \
-        libxtst-dev:armel        \
-        libxt-dev:armel          \
-        libffi-dev:armel         \
-        libpng-dev:armel         \
-        libjpeg-dev:armel        \
-        libgif-dev:armel         \
-        liblcms2-dev:armel       \
-        zlib1g-dev:armel         \
+        libcups2-dev:$ARCH       \
+        libfreetype6-dev:$ARCH   \
+        libfontconfig1-dev:$ARCH \
+        libasound2-dev:$ARCH     \
+        libx11-dev:$ARCH         \
+        libxext-dev:$ARCH        \
+        libxrender-dev:$ARCH     \
+        libxrandr-dev:$ARCH      \
+        libxtst-dev:$ARCH        \
+        libxt-dev:$ARCH          \
+        libffi-dev:$ARCH         \
+        libpng-dev:$ARCH         \
+        libjpeg-dev:$ARCH        \
+        libgif-dev:$ARCH         \
+        liblcms2-dev:$ARCH       \
+        zlib1g-dev:$ARCH         \
         systemtap                \
         systemtap-sdt-dev        \
         curl \
@@ -59,7 +61,11 @@ RUN dpkg --add-architecture armel && \
         mercurial \
         git \
         zlib1g-dev && \
-    wget http://ftp.debian.org/debian/pool/main/s/systemtap/systemtap-sdt-dev_4.0-1_armel.deb -O /tmp/systemtap.deb && \
+    ( if [ "$DEBIAN_RELEASE" = "stretch" ]; then \
+        wget http://ftp.debian.org/debian/pool/main/s/systemtap/systemtap-sdt-dev_3.1-2_$ARCH.deb -O /tmp/systemtap.deb; \
+      elseif [ "$DEBIAN_RELEASE" = "buster" ]; then \
+        wget http://ftp.debian.org/debian/pool/main/s/systemtap/systemtap-sdt-dev_4.0-1_$ARCH.deb -O /tmp/systemtap.deb; \
+      fi ) && \
     dpkg-deb -x /tmp/systemtap.deb / && \
     rm -rf /tmp/systemtap.deb /var/lib/apt/lists/*
 
