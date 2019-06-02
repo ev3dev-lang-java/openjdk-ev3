@@ -65,7 +65,7 @@ RUN dpkg --add-architecture $ARCH && \
         zlib1g-dev && \
     ( if [ "$DEBIAN_RELEASE" = "stretch" ]; then \
         wget http://ftp.debian.org/debian/pool/main/s/systemtap/systemtap-sdt-dev_3.1-2_$ARCH.deb -O /tmp/systemtap.deb; \
-      elseif [ "$DEBIAN_RELEASE" = "buster" ]; then \
+      elif [ "$DEBIAN_RELEASE" = "buster" ]; then \
         wget http://ftp.debian.org/debian/pool/main/s/systemtap/systemtap-sdt-dev_4.0-1_$ARCH.deb -O /tmp/systemtap.deb; \
       fi ) && \
     dpkg-deb -x /tmp/systemtap.deb / && \
