@@ -4,6 +4,8 @@ set -e
 cd "$(dirname ${BASH_SOURCE[0]})"
 source config.sh
 
+tree "$JDKDIR/build"
+
 # enter images directory
 cd "$IMAGEDIR"
 
