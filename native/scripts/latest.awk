@@ -1,0 +1,1 @@
+../../scripts/latest.awk
