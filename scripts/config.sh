@@ -71,22 +71,22 @@ fi
 ##
 
 # invalid or unset VM
-if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ] && [ "$JDKVM" != "minimal" ]; then
+if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ] && [ "$JDKVM" != "minimal" ] && [ "$JDKVM" != "custom" ]; then
   echo "Error! Please specify JDK VM to compile via the JDKVM environment variable." >&2
   echo "Acceptable values:" >&2
   echo "JDKVM=client" >&2
   echo "JDKVM=minimal" >&2
   echo "JDKVM=zero" >&2
+  echo "JDKVM=custom" >&2
   exit 1
 fi
 
 HOTSPOT_VARIANT="--with-jvm-variants=$JDKVM"
-if [ "$JDKPLATFORM" = "ev3" ]; then
-  if [ "$HOTSPOT_VARIANT" = "minimal" ]; then
-    HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=cds,compiler1,jfr,jvmti,management,nmt,serialgc,services,vm-structs,minimal"
-  else
-    HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=cds,compiler1,jfr,jvmti,management,nmt,serialgc,services,vm-structs"
-  fi
+if [ "$JDKVM" = "minimal" ]; then
+  # link-time-opt is automatic on minimal for ARM, see /make/autoconf/hotspot.m4
+  HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=cds,compiler1,jfr,jvmti,management,nmt,serialgc,services,vm-structs,minimal"
+elif [ "$JDKVM" = "custom" ]; then
+  HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=cds,compiler1,jfr,jvmti,management,nmt,serialgc,services,vm-structs"
 fi
 
 VENDOR_FLAGS="              --with-vendor-name=ev3dev-lang-java "
