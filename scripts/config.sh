@@ -80,7 +80,10 @@ if [ "$JDKVM" != "zero" ] && [ "$JDKVM" != "client" ] && [ "$JDKVM" != "minimal"
   exit 1
 fi
 
-HOTSPOT_VARIANT="$JDKVM"
+HOTSPOT_VARIANT="--with-jvm-variants=$JDKVM"
+if [ "$HOTSPOT_VARIANT" = "minimal" ]; then
+    HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=cds,compiler1,jfr,jvmti,management,nmt,serialgc,services,vm-structs,minimal"
+fi
 VENDOR_FLAGS="              --with-vendor-name=ev3dev-lang-java "
 VENDOR_FLAGS="$VENDOR_FLAGS --with-vendor-url=https://github.com/ev3dev-lang-java/ev3dev-lang-java/ "
 VENDOR_FLAGS="$VENDOR_FLAGS --with-vendor-bug-url=https://github.com/ev3dev-lang-java/ev3dev-lang-java/issues/new "
