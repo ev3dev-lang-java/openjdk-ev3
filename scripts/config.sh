@@ -84,7 +84,7 @@ fi
 HOTSPOT_VARIANT="--with-jvm-variants=$JDKVM"
 if [ "$JDKVM" = "minimal" ]; then
   # link-time-opt is automatic on minimal for ARM, see /make/autoconf/hotspot.m4
-  HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=cds,compiler1,serialgc,minimal"
+  HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=cds,compiler1,serialgc,minimal --disable-dtrace"
   if [ "$JDKDEBUG" != "release" ]; then
     echo "[CONFIGURATION] WARNING: minimal doesn't properly generate all debug symbols." >&2
   fi
