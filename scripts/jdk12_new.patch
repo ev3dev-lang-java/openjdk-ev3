@@ -1,6 +1,6 @@
-diff -Naur original/make/autoconf/hotspot.m4 built/make/autoconf/hotspot.m4
---- original/make/autoconf/hotspot.m4	2019-02-19 17:25:11.000000000 +0100
-+++ built/make/autoconf/hotspot.m4	2019-06-05 16:37:28.845105502 +0200
+diff -Naur old/make/autoconf/hotspot.m4 new2/make/autoconf/hotspot.m4
+--- old/make/autoconf/hotspot.m4	2019-05-19 14:14:09.000000000 +0000
++++ new2/make/autoconf/hotspot.m4	2019-06-05 15:07:40.700134108 +0000
 @@ -299,6 +299,11 @@
      HOTSPOT_TARGET_CPU_DEFINE="ARM32"
    fi
@@ -13,9 +13,9 @@ diff -Naur original/make/autoconf/hotspot.m4 built/make/autoconf/hotspot.m4
    # Verify that dependencies are met for explicitly set features.
    if HOTSPOT_CHECK_JVM_FEATURE(jvmti) && ! HOTSPOT_CHECK_JVM_FEATURE(services); then
      AC_MSG_ERROR([Specified JVM feature 'jvmti' requires feature 'services'])
-diff -Naur original/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp built/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
---- original/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-02-19 17:25:11.000000000 +0100
-+++ built/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-06-05 16:31:06.083394061 +0200
+diff -Naur old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp new2/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
+--- old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-05-19 14:14:09.000000000 +0000
++++ new2/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-06-05 15:07:40.700134108 +0000
 @@ -774,7 +774,7 @@
    bool is_oop = type == T_OBJECT || type == T_ARRAY;
    LIR_Opr result = new_register(type);
@@ -70,23 +70,9 @@ diff -Naur original/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp built/src/hotspo
      return;
    }
    __ load(address, result, info, lir_patch_none);
-diff -Naur original/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp built/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp
---- original/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp	2019-02-19 17:25:11.000000000 +0100
-+++ built/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp	2019-04-01 21:53:13.000000000 +0200
-@@ -91,7 +91,9 @@
- 
- void ThreadLocalAllocBuffer::insert_filler() {
-   assert(end() != NULL, "Must not be retired");
--  Universe::heap()->fill_with_dummy_object(top(), hard_end(), true);
-+  if (top() != hard_end()) {
-+    Universe::heap()->fill_with_dummy_object(top(), hard_end(), true);
-+  }
- }
- 
- void ThreadLocalAllocBuffer::make_parsable() {
-diff -Naur original/src/hotspot/share/memory/metaspaceShared.cpp built/src/hotspot/share/memory/metaspaceShared.cpp
---- original/src/hotspot/share/memory/metaspaceShared.cpp	2019-02-19 17:25:11.000000000 +0100
-+++ built/src/hotspot/share/memory/metaspaceShared.cpp	2019-06-05 14:53:09.000000000 +0200
+diff -Naur old/src/hotspot/share/memory/metaspaceShared.cpp new2/src/hotspot/share/memory/metaspaceShared.cpp
+--- old/src/hotspot/share/memory/metaspaceShared.cpp	2019-05-19 14:14:09.000000000 +0000
++++ new2/src/hotspot/share/memory/metaspaceShared.cpp	2019-06-05 15:07:40.704134164 +0000
 @@ -66,6 +66,7 @@
  #include "utilities/bitMap.hpp"
  #include "utilities/defaultStream.hpp"
@@ -95,9 +81,9 @@ diff -Naur original/src/hotspot/share/memory/metaspaceShared.cpp built/src/hotsp
  #if INCLUDE_G1GC
  #include "gc/g1/g1CollectedHeap.hpp"
  #endif
-diff -Naur original/src/hotspot/share/oops/constantPool.cpp built/src/hotspot/share/oops/constantPool.cpp
---- original/src/hotspot/share/oops/constantPool.cpp	2019-02-19 17:25:11.000000000 +0100
-+++ built/src/hotspot/share/oops/constantPool.cpp	2019-06-03 09:26:28.000000000 +0200
+diff -Naur old/src/hotspot/share/oops/constantPool.cpp new2/src/hotspot/share/oops/constantPool.cpp
+--- old/src/hotspot/share/oops/constantPool.cpp	2019-05-19 14:14:09.000000000 +0000
++++ new2/src/hotspot/share/oops/constantPool.cpp	2019-06-05 15:07:40.708134220 +0000
 @@ -406,8 +406,12 @@
  }
  

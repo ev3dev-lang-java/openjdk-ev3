@@ -1,6 +1,6 @@
-diff -Naur original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp
---- original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-02-19 17:25:11.000000000 +0100
-+++ built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-06-05 09:48:19.000000000 +0200
+diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp
+--- old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-05-19 14:14:09.000000000 +0000
++++ new/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-06-05 15:07:42.308156815 +0000
 @@ -2795,91 +2795,387 @@
    }
  }
@@ -453,9 +453,9 @@ diff -Naur original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp built/src/hotspo
  }
  
  #undef __
-diff -Naur original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp
---- original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-02-19 17:25:11.000000000 +0100
-+++ built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-06-03 11:09:03.000000000 +0200
+diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp new/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp
+--- old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-05-19 14:14:09.000000000 +0000
++++ new/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-06-05 15:07:42.308156815 +0000
 @@ -51,6 +51,11 @@
    // Restores 4 given registers from reserved argument area.
    void restore_from_reserved_area(Register r1, Register r2, Register r3, Register r4);
@@ -468,9 +468,9 @@ diff -Naur original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp built/src/hotspo
    enum {
      _call_stub_size = 16,
      _call_aot_stub_size = 0,
-diff -Naur original/src/hotspot/cpu/arm/vm_version_arm_32.cpp built/src/hotspot/cpu/arm/vm_version_arm_32.cpp
---- original/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-02-19 17:25:11.000000000 +0100
-+++ built/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-06-03 12:00:03.000000000 +0200
+diff -Naur old/src/hotspot/cpu/arm/vm_version_arm_32.cpp new/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+--- old/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-05-19 14:14:09.000000000 +0000
++++ new/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-06-05 15:07:42.308156815 +0000
 @@ -237,10 +237,10 @@
  
    // ARM doesn't have special instructions for these but ldrex/ldrexd
