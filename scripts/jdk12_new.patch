@@ -98,3 +98,16 @@ diff -Naur old/src/hotspot/share/oops/constantPool.cpp new2/src/hotspot/share/oo
    // We might not find the index for jsr292 call.
    return (i < 0) ? _no_index_sentinel : i;
  }
+--- old/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp 2019-04-01 19:26:25.000000000 +0200
++++ new2/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp  2019-06-05 19:05:54.207753410 +0200
+@@ -91,7 +91,9 @@
+ 
+ void ThreadLocalAllocBuffer::insert_filler() {
+   assert(end() != NULL, "Must not be retired");
+-  Universe::heap()->fill_with_dummy_object(top(), hard_end(), true);
++  if (top() < hard_end()) {
++    Universe::heap()->fill_with_dummy_object(top(), hard_end(), true);
++  }
+ }
+ 
+ void ThreadLocalAllocBuffer::make_parsable() {
