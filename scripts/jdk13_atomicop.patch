@@ -1,0 +1,488 @@
+diff -Naur original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp
+--- original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-02-19 17:25:11.000000000 +0100
++++ built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-06-05 09:48:19.000000000 +0200
+@@ -2795,91 +2795,387 @@
+   }
+ }
+ 
+-void LIR_Assembler::atomic_op(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
+-  assert(src->is_address(), "sanity");
++void LIR_Assembler::atomic_op_native32(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
+   Address addr = as_Address(src->as_address_ptr());
++  Label retry;
+ 
+-  if (code == lir_xchg) {
++  __ bind(retry);
++  // I. load original value
++  Register dst = dest->as_register();
++  Register new_val = noreg;
++  __ ldrex(dst, addr);
++
++  // II. determine new value
++  if (code == lir_xadd) {
++    Register tmp_reg = tmp->as_register();
++    if (data->is_constant()) {
++      assert_different_registers(dst, tmp_reg);
++      __ add_32(tmp_reg, dst, data->as_constant_ptr()->as_jint());
++    } else {
++      assert_different_registers(dst, tmp_reg, data->as_register());
++      __ add_32(tmp_reg, dst, data->as_register());
++    }
++    new_val = tmp_reg;
+   } else {
+-    assert (!data->is_oop(), "xadd for oops");
++    if (UseCompressedOops && data->is_oop()) {
++      new_val = tmp->as_pointer_register();
++    } else {
++      new_val = data->as_register();
++    }
++    assert_different_registers(dst, new_val);
+   }
+ 
+-  __ membar(MacroAssembler::Membar_mask_bits(MacroAssembler::StoreStore | MacroAssembler::LoadStore), Rtemp);
++  // III. try to store new value
++  __ strex(Rtemp, new_val, addr);
++
++  // IV. retry if failed
++  __ cbnz_32(Rtemp, retry);
++}
+ 
++void LIR_Assembler::atomic_op_helper32(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
++  // On armv5 platforms we must use the Linux kernel helper
++  // function for atomic cas operations since ldrex/strex is
++  // not supported.
++  //
++  // This is a special routine at a fixed address 0xffff0fc0
++  //
++  // input:
++  //  r0 = oldval, r1 = newval, r2 = ptr, lr = return adress
++  // output:
++  //  r0 = 0 carry set on success
++  //  r0 != 0 carry clear on failure
++  //
++  // r3, ip and flags are clobbered
++  //
++
++  // r0 - old value for kuser_cmpxchg & return value
++  // r1 - new value for kuser_cmpxchg
++  // r2 - pointer to memory location
++  // r3 - for indirect calling to kuser_cmpxchg
++  // r4 - register for the delta in xadd (optional)
++  // r12 - old value for return
++
++  RegisterSet rSaved;
++  Register rFrom;
++  Register rTo;
+   Label retry;
+-  __ bind(retry);
++  bool register_imm = false;
++  jint imm;
+ 
+-  if (data->type() == T_INT || data->is_oop()) {
+-    Register dst = dest->as_register();
+-    Register new_val = noreg;
+-    __ ldrex(dst, addr);
+-    if (code == lir_xadd) {
+-      Register tmp_reg = tmp->as_register();
+-      if (data->is_constant()) {
+-        assert_different_registers(dst, tmp_reg);
+-        __ add_32(tmp_reg, dst, data->as_constant_ptr()->as_jint());
++  if (code == lir_xchg) {
++    rSaved = RegisterSet(R0, R3) | RegisterSet(LR);
++    rFrom = data->as_register();
++    rTo = R1;
++  } else if (code == lir_xadd) {
++    if (data->is_constant()) {
++      imm = data->as_constant_ptr()->as_jint();
++
++      if (Assembler::is_arith_imm_in_range(imm)) {
++        rSaved = RegisterSet(R0, R3) | RegisterSet(LR);
++        rFrom = noreg;
++        rTo = noreg;
+       } else {
+-        assert_different_registers(dst, tmp_reg, data->as_register());
+-        __ add_32(tmp_reg, dst, data->as_register());
++        rSaved = RegisterSet(R0, R4) | RegisterSet(LR);
++        rFrom = noreg;
++        rTo = R4;
++        register_imm = true;
+       }
+-      new_val = tmp_reg;
+     } else {
+-      if (UseCompressedOops && data->is_oop()) {
+-        new_val = tmp->as_pointer_register();
+-      } else {
+-        new_val = data->as_register();
+-      }
+-      assert_different_registers(dst, new_val);
++      rSaved = RegisterSet(R0, R4) | RegisterSet(LR);
++      rFrom = data->as_register();
++      rTo = R4;
+     }
+-    __ strex(Rtemp, new_val, addr);
++  }
+ 
+-  } else if (data->type() == T_LONG) {
+-    Register dst_lo = dest->as_register_lo();
+-    Register new_val_lo = noreg;
+-    Register dst_hi = dest->as_register_hi();
+-
+-    assert(dst_hi->encoding() == dst_lo->encoding() + 1, "non aligned register pair");
+-    assert((dst_lo->encoding() & 0x1) == 0, "misaligned register pair");
+-
+-    __ bind(retry);
+-    __ ldrexd(dst_lo, addr);
+-    if (code == lir_xadd) {
+-      Register tmp_lo = tmp->as_register_lo();
+-      Register tmp_hi = tmp->as_register_hi();
+-
+-      assert(tmp_hi->encoding() == tmp_lo->encoding() + 1, "non aligned register pair");
+-      assert((tmp_lo->encoding() & 0x1) == 0, "misaligned register pair");
+-
+-      if (data->is_constant()) {
+-        jlong c = data->as_constant_ptr()->as_jlong();
+-        assert((jlong)((jint)c) == c, "overflow");
+-        assert_different_registers(dst_lo, dst_hi, tmp_lo, tmp_hi);
+-        __ adds(tmp_lo, dst_lo, (jint)c);
+-        __ adc(tmp_hi, dst_hi, 0);
+-      } else {
+-        Register new_val_lo = data->as_register_lo();
+-        Register new_val_hi = data->as_register_hi();
+-        __ adds(tmp_lo, dst_lo, new_val_lo);
+-        __ adc(tmp_hi, dst_hi, new_val_hi);
+-        assert_different_registers(dst_lo, dst_hi, tmp_lo, tmp_hi, new_val_lo, new_val_hi);
+-      }
+-      new_val_lo = tmp_lo;
++  // I. save necessary registers
++  __ push(rSaved);
++
++  // II. handle argument storage
++  if (rFrom != rTo && rFrom != noreg) {
++    __ push(rFrom);
++  }
++  leal(src, LIR_OprFact::single_cpu_address(2));
++  if (rFrom != rTo && rFrom != noreg) {
++    __ pop(rTo);
++  }
++  if (register_imm) {
++    __ mov_slow(rTo, imm);
++  }
++
++  __ bind(retry);
++
++  // III. load & persist original value
++  __ ldr_u32(R12, Address(R2));
++  __ mov(R0, R12);
++
++  // IV. determine new value
++  if (code == lir_xadd) {
++    if (data->is_constant() && !register_imm) {
++      __ add_32(R1, R0, data->as_constant_ptr()->as_jint());
+     } else {
+-      new_val_lo = data->as_register_lo();
+-      Register new_val_hi = data->as_register_hi();
++      __ add_32(R1, R0, R4);
++    }
++  }
++
++  // V. call to kuser_cmpxchg, retry if call failed
++  __ mvn(R3, 0xf000);
++  __ mov(LR, PC);
++  __ sub(PC, R3, 0x3f);
++  __ b(retry, cc);
++
++  // VI. persist old value, pop registers
++  __ pop(rSaved);
++
++  // VII. commit old value to the destination register
++  Register rDest = dest->as_register();
++  if (rDest != R12)
++    __ mov(rDest, R12);
++}
++
++void LIR_Assembler::atomic_op_native64(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
++  Address addr = as_Address(src->as_address_ptr());
++  Label retry;
++
++  // I. determine destination registers
++  Register dst_lo = dest->as_register_lo();
++  Register new_val_lo = noreg;
++  Register dst_hi = dest->as_register_hi();
++
++  assert(dst_hi->encoding() == dst_lo->encoding() + 1, "non aligned register pair");
++  assert((dst_lo->encoding() & 0x1) == 0, "misaligned register pair");
+ 
+-      assert_different_registers(dst_lo, dst_hi, new_val_lo, new_val_hi);
+-      assert(new_val_hi->encoding() == new_val_lo->encoding() + 1, "non aligned register pair");
+-      assert((new_val_lo->encoding() & 0x1) == 0, "misaligned register pair");
++  __ bind(retry);
++
++  // II. load current value
++  __ ldrexd(dst_lo, addr);
++
++  // III. determine new value
++  if (code == lir_xadd) {
++    Register tmp_lo = tmp->as_register_lo();
++    Register tmp_hi = tmp->as_register_hi();
++
++    assert(tmp_hi->encoding() == tmp_lo->encoding() + 1, "non aligned register pair");
++    assert((tmp_lo->encoding() & 0x1) == 0, "misaligned register pair");
++
++    if (data->is_constant()) {
++      jlong c = data->as_constant_ptr()->as_jlong();
++      assert((jlong)((jint)c) == c, "overflow");
++      assert_different_registers(dst_lo, dst_hi, tmp_lo, tmp_hi);
++      __ adds(tmp_lo, dst_lo, (jint)c);
++      __ adc(tmp_hi, dst_hi, 0);
++    } else {
++      Register new_val_lo = data->as_register_lo();
++      Register new_val_hi = data->as_register_hi();
++      __ adds(tmp_lo, dst_lo, new_val_lo);
++      __ adc(tmp_hi, dst_hi, new_val_hi);
++      assert_different_registers(dst_lo, dst_hi, tmp_lo, tmp_hi, new_val_lo, new_val_hi);
+     }
+-    __ strexd(Rtemp, new_val_lo, addr);
++    new_val_lo = tmp_lo;
+   } else {
+-    ShouldNotReachHere();
++    new_val_lo = data->as_register_lo();
++    Register new_val_hi = data->as_register_hi();
++
++    assert_different_registers(dst_lo, dst_hi, new_val_lo, new_val_hi);
++    assert(new_val_hi->encoding() == new_val_lo->encoding() + 1, "non aligned register pair");
++    assert((new_val_lo->encoding() & 0x1) == 0, "misaligned register pair");
+   }
+ 
++  // IV. try to store new value
++  __ strexd(Rtemp, new_val_lo, addr);
++
++  // V. retry if failed
+   __ cbnz_32(Rtemp, retry);
+-  __ membar(MacroAssembler::Membar_mask_bits(MacroAssembler::StoreLoad | MacroAssembler::StoreStore), Rtemp);
++}
++
++void LIR_Assembler::atomic_op_helper64(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
++  // On armv5 platforms we must use the Linux kernel helper
++  // function for atomic cas64 operations since ldrexd/strexd is
++  // not supported.
++  //
++  // This is a special routine at a fixed address 0xffff0f60
++  //
++  // input:
++  //  r0 = (long long *)oldval, r1 = (long long *)newval,
++  //  r2 = ptr, lr = return adress
++  // output:
++  //  r0 = 0 carry set on success
++  //  r0 != 0 carry clear on failure
++  //
++  // r3, and flags are clobbered
++  //
++
++  // register layout:
++  // r0 - pointer to oldval, return value
++  // r1 - pointer to newval
++  // r2 - pointer to memory location
++  // r3 - register for indirect jump to kuser_cmpxchg64
++  // r4, r5 - temporary storage for moving oldval and calculating newval
++  // r6, r7 - storage for offset/xchg value (optional)
++  // r12 - pointer to stack block containing newval, oldval & persisted offset/xchg value
++
++  // stack layout:
++  // r12+0:  expected oldval
++  // r12+8:  calculated newval
++  // r12+16: delta/xchg value (optional)
++
++  // I. determine registers and offsets
++  Label loop;
++  Register dst_lo = dest->as_register_lo();
++  Register dst_hi = dest->as_register_hi();
++  Register dat_lo = noreg;
++  Register dat_hi = noreg;
++  jlong imm = 0;
++  bool register_imm = false;
++  RegisterSet saved;
++  int stack_space;
+ 
++  if (code == lir_xadd && data->is_constant()) {
++    imm = data->as_constant_ptr()->as_jlong();
++
++    if (imm < INT_MAX && imm > INT_MIN && Assembler::is_arith_imm_in_range(imm)) {
++      saved = RegisterSet(R0, R5) | RegisterSet(LR);
++    } else {
++      saved = RegisterSet(R0, R7) | RegisterSet(LR);
++      register_imm = true;
++    }
++
++    stack_space = 2*8+4;
++    assert_different_registers(dst_lo, dst_hi, R12);
++    assert(dst_hi == dst_lo + 1, "illegal pair register");
++  } else {
++    saved = RegisterSet(R0, R7) | RegisterSet(LR);
++    stack_space = 3*8+4;
++
++    dat_lo = data->as_register_lo();
++    dat_hi = data->as_register_hi();
++
++    assert_different_registers(dst_lo, dst_hi, R12, dat_lo, dat_hi);
++    assert(dst_hi == dst_lo + 1, "illegal pair register");
++    assert(dat_hi == dat_lo + 1, "illegal pair register");
++  }
++
++  // determine register order
++#if VM_LITTLE_ENDIAN
++  Register rOldNew_lo = R4;
++  Register rOldNew_hi = R5;
++  Register rData_lo = R6;
++  Register rData_hi = R7;
++#else
++  Register rOldNew_lo = R5;
++  Register rOldNew_hi = R4;
++  Register rData_lo = R7;
++  Register rData_hi = R6;
++#endif
++
++  // save registers
++  __ push(saved);
++
++  // allocate aligned stack block
++  __ sub(SP, SP, stack_space);
++  __ add(R12, SP, 4);
++  __ bic(R12, R12, 0x7);
++
++  // put delta/xchg value in its place
++  if (dat_lo != noreg) {
++    __ strd(dat_lo, Address(R12, 16));
++  }
++
++  // prepare arguments for kuser_cmpxchg64 calls - only r1 and r2 preserved
++  leal(src, LIR_OprFact::single_cpu_address(2));
++  __ add(R1, R12, 8);
++
++  // load offset/xchg value from stack
++  if (dat_lo != noreg) {
++    __ ldrd(R6, Address(R12, 16));
++  }
++
++  // or, install it using the known immediate
++  if (register_imm) {
++    __ mov_slow(rData_lo, (jint)(imm & 0xFFFFFFFF));
++    __ mov_slow(rData_hi, (jint)(imm >> 32));
++  }
++
++  __ bind(loop);
++  // r0 is overwritten after first iteration, put the value always in
++  __ mov(R0, R12);
++
++  // load and store the current value
++  __ ldrd(R4, Address(R2));
++  __ strd(R4, Address(R12));
++
++  // determine the new value
++  if (code == lir_xadd) {
++    if (dat_lo == noreg && !register_imm) {
++      __ adds(rOldNew_lo, rOldNew_lo, imm);
++      __ adc( rOldNew_hi, rOldNew_hi, 0);
++    } else {
++      __ adds(rOldNew_lo, rOldNew_lo, rData_lo);
++      __ adc( rOldNew_hi, rOldNew_hi, rData_hi);
++    }
++  } else {
++    __ mov(rOldNew_lo, rData_lo);
++    __ mov(rOldNew_hi, rData_hi);
++  }
++  // store the new value
++  __ strd(R4, Address(R12, 8));
++
++  // call kernel helper at 0xffff0f60, try again on failure
++  __ mvn(R3, 0xf000);
++  __ mov(LR, PC);
++  __ sub(PC, R3, 0x9f);
++  __ b(loop, cc);
++
++  // restore registers
++  __ pop(saved);
++
++  // upload stored old value to destination registers
++  __ ldrd(dst_lo, Address(R12, 0));
++
++  // put stack back to its original state
++  __ add(SP, SP, stack_space);
++}
++
++void LIR_Assembler::atomic_op(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
++  assert(src->is_address(), "sanity check - atomic operand must have an address target");
++  BasicType type = src->type();
++  bool is_oop = type == T_OBJECT || type == T_ARRAY;
++
++  if (code == lir_xadd) {
++    assert (!is_oop, "xadd for oops does not make sense");
++  }
++
++  if (is_oop && UseCompressedOops) {
++    __ stop("Atomic xchg/xadd for compressed oops not supported on 32bit ARM");
++  }
++
++  __ membar(MacroAssembler::Membar_mask_bits(MacroAssembler::StoreStore | MacroAssembler::LoadStore), Rtemp);
++
++  if (data->type() == T_INT || is_oop) { // -- 32bit xchg/xadd --
++
++    if (VM_Version::supports_ldrex()) { // ARMv6/ARMv7
++      atomic_op_native32(code, src, data, dest, tmp);
++
++    } else if (VM_Version::supports_kuser_cmpxchg32()) { // ARMv5
++      atomic_op_helper32(code, src, data, dest, tmp);
++
++    } else {
++      __ stop("Atomic add/xchg(jint) unsupported on this platform");
++    }
++  } else if (data->type() == T_LONG) { // -- 64bit xadd/xchg --
++
++    if (VM_Version::supports_ldrexd()) { // ARMv7
++      atomic_op_native64(code, src, data, dest, tmp);
++
++    } else if (VM_Version::supports_kuser_cmpxchg64()) { // ARMv5/ARMv6
++      atomic_op_helper64(code, src, data, dest, tmp);
++
++    } else {
++      __ stop("Atomic add/xchg(jlong) unsupported on this platform");
++    }
++  } else {
++    ShouldNotReachHere();
++  }
++  __ membar(MacroAssembler::Membar_mask_bits(MacroAssembler::StoreLoad | MacroAssembler::StoreStore), Rtemp);
+ }
+ 
+ #undef __
+diff -Naur original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp
+--- original/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-02-19 17:25:11.000000000 +0100
++++ built/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-06-03 11:09:03.000000000 +0200
+@@ -51,6 +51,11 @@
+   // Restores 4 given registers from reserved argument area.
+   void restore_from_reserved_area(Register r1, Register r2, Register r3, Register r4);
+ 
++  void atomic_op_helper32(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp);
++  void atomic_op_helper64(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp);
++  void atomic_op_native32(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp);
++  void atomic_op_native64(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp);
++
+   enum {
+     _call_stub_size = 16,
+     _call_aot_stub_size = 0,
+diff -Naur original/src/hotspot/cpu/arm/vm_version_arm_32.cpp built/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+--- original/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-02-19 17:25:11.000000000 +0100
++++ built/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-06-03 12:00:03.000000000 +0200
+@@ -237,10 +237,10 @@
+ 
+   // ARM doesn't have special instructions for these but ldrex/ldrexd
+   // enable shorter instruction sequences that the ones based on cas.
+-  _supports_atomic_getset4 = supports_ldrex();
+-  _supports_atomic_getadd4 = supports_ldrex();
+-  _supports_atomic_getset8 = supports_ldrexd();
+-  _supports_atomic_getadd8 = supports_ldrexd();
++  _supports_atomic_getset4 = supports_ldrex() || supports_kuser_cmpxchg32();
++  _supports_atomic_getadd4 = supports_ldrex() || supports_kuser_cmpxchg32();
++  _supports_atomic_getset8 = supports_ldrexd() || supports_kuser_cmpxchg64();
++  _supports_atomic_getadd8 = supports_ldrexd() || supports_kuser_cmpxchg64();
+ 
+ #ifdef COMPILER2
+   assert(_supports_cx8 && _supports_atomic_getset4 && _supports_atomic_getadd4

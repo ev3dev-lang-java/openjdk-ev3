@@ -111,6 +111,16 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_lib.patch"
   fi
 
+  # new patches from building openjdk 12
+  if [ -f "$SCRIPTDIR/${PATCHVER}_new.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_new.patch"
+  fi
+
+  # (potentially unnecessary) optimization of the LIR_Assembler::atomic_op
+  if [ -f "$SCRIPTDIR/${PATCHVER}_atomicop.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_atomicop.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 

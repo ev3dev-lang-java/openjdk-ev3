@@ -1,0 +1,114 @@
+diff -Naur original/make/autoconf/hotspot.m4 built/make/autoconf/hotspot.m4
+--- original/make/autoconf/hotspot.m4	2019-02-19 17:25:11.000000000 +0100
++++ built/make/autoconf/hotspot.m4	2019-06-05 16:37:28.845105502 +0200
+@@ -299,6 +299,11 @@
+     HOTSPOT_TARGET_CPU_DEFINE="ARM32"
+   fi
+ 
++  if test "x$OPENJDK_BUILD_CPU" = xarm; then
++    HOTSPOT_BUILD_CPU=arm_32
++    HOTSPOT_BUILD_CPU_DEFINE="ARM32"
++  fi
++
+   # Verify that dependencies are met for explicitly set features.
+   if HOTSPOT_CHECK_JVM_FEATURE(jvmti) && ! HOTSPOT_CHECK_JVM_FEATURE(services); then
+     AC_MSG_ERROR([Specified JVM feature 'jvmti' requires feature 'services'])
+diff -Naur original/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp built/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
+--- original/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-02-19 17:25:11.000000000 +0100
++++ built/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-06-05 16:31:06.083394061 +0200
+@@ -774,7 +774,7 @@
+   bool is_oop = type == T_OBJECT || type == T_ARRAY;
+   LIR_Opr result = new_register(type);
+   value.load_item();
+-  assert(type == T_INT || is_oop LP64_ONLY( || type == T_LONG ), "unexpected type");
++  assert(type == T_INT || is_oop || type == T_LONG, "unexpected type");
+   LIR_Opr tmp = (UseCompressedOops && is_oop) ? new_pointer_register() : LIR_OprFact::illegalOpr;
+   __ xchg(addr, value.result(), result, tmp);
+   return result;
+@@ -783,7 +783,7 @@
+ LIR_Opr LIRGenerator::atomic_add(BasicType type, LIR_Opr addr, LIRItem& value) {
+   LIR_Opr result = new_register(type);
+   value.load_item();
+-  assert(type == T_INT LP64_ONLY( || type == T_LONG), "unexpected type");
++  assert(type == T_INT || type == T_LONG, "unexpected type");
+   LIR_Opr tmp = new_register(type);
+   __ xadd(addr, value.result(), result, tmp);
+   return result;
+@@ -1310,9 +1310,14 @@
+                                         CodeEmitInfo* info) {
+   if (value->is_double_cpu()) {
+     assert(address->index()->is_illegal(), "should have a constant displacement");
+-    LIR_Opr tmp = new_pointer_register();
+-    add_large_constant(address->base(), address->disp(), tmp);
+-    __ volatile_store_mem_reg(value, new LIR_Address(tmp, (intx)0, address->type()), info);
++    LIR_Opr src;
++    if (address->disp() == 0) {
++      src = address->base();
++    } else {
++      src = new_pointer_register();
++      add_large_constant(address->base(), address->disp(), src);
++    }
++    __ volatile_store_mem_reg(value, new LIR_Address(src, (intx)0, address->type()), info);
+     return;
+   }
+   __ store(value, address, info, lir_patch_none);
+@@ -1322,9 +1327,14 @@
+                                        CodeEmitInfo* info) {
+   if (result->is_double_cpu()) {
+     assert(address->index()->is_illegal(), "should have a constant displacement");
+-    LIR_Opr tmp = new_pointer_register();
+-    add_large_constant(address->base(), address->disp(), tmp);
+-    __ volatile_load_mem_reg(new LIR_Address(tmp, (intx)0, address->type()), result, info);
++    LIR_Opr src;
++    if (address->disp() == 0) {
++      src = address->base();
++    } else {
++      src = new_pointer_register();
++      add_large_constant(address->base(), address->disp(), src);
++    }
++    __ volatile_load_mem_reg(new LIR_Address(src, (intx)0, address->type()), result, info);
+     return;
+   }
+   __ load(address, result, info, lir_patch_none);
+diff -Naur original/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp built/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp
+--- original/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp	2019-02-19 17:25:11.000000000 +0100
++++ built/src/hotspot/share/gc/shared/threadLocalAllocBuffer.cpp	2019-04-01 21:53:13.000000000 +0200
+@@ -91,7 +91,9 @@
+ 
+ void ThreadLocalAllocBuffer::insert_filler() {
+   assert(end() != NULL, "Must not be retired");
+-  Universe::heap()->fill_with_dummy_object(top(), hard_end(), true);
++  if (top() != hard_end()) {
++    Universe::heap()->fill_with_dummy_object(top(), hard_end(), true);
++  }
+ }
+ 
+ void ThreadLocalAllocBuffer::make_parsable() {
+diff -Naur original/src/hotspot/share/memory/metaspaceShared.cpp built/src/hotspot/share/memory/metaspaceShared.cpp
+--- original/src/hotspot/share/memory/metaspaceShared.cpp	2019-02-19 17:25:11.000000000 +0100
++++ built/src/hotspot/share/memory/metaspaceShared.cpp	2019-06-05 14:53:09.000000000 +0200
+@@ -66,6 +66,7 @@
+ #include "utilities/bitMap.hpp"
+ #include "utilities/defaultStream.hpp"
+ #include "utilities/hashtable.inline.hpp"
++#include "gc/shared/softRefPolicy.hpp"
+ #if INCLUDE_G1GC
+ #include "gc/g1/g1CollectedHeap.hpp"
+ #endif
+diff -Naur original/src/hotspot/share/oops/constantPool.cpp built/src/hotspot/share/oops/constantPool.cpp
+--- original/src/hotspot/share/oops/constantPool.cpp	2019-02-19 17:25:11.000000000 +0100
++++ built/src/hotspot/share/oops/constantPool.cpp	2019-06-03 09:26:28.000000000 +0200
+@@ -406,8 +406,12 @@
+ }
+ 
+ int ConstantPool::cp_to_object_index(int cp_index) {
++  Array<u2> *map = reference_map();
++  if (map == 0)
++    return _no_index_sentinel;
++
+   // this is harder don't do this so much.
+-  int i = reference_map()->find(cp_index);
++  int i = map->find(cp_index);
+   // We might not find the index for jsr292 call.
+   return (i < 0) ? _no_index_sentinel : i;
+ }
