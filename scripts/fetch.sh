@@ -121,6 +121,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_atomicop.patch"
   fi
 
+  # error from gtest
+  if [ -f "$SCRIPTDIR/${PATCHVER}_8216493.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_8216493.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
