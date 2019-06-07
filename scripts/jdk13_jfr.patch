@@ -1,0 +1,26 @@
+--- jdk/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp	2019-04-01 19:26:25.000000000 +0200
++++ new/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp	2019-06-07 20:01:24.873537575 +0200
+@@ -89,17 +89,17 @@
+ void JfrChunkWriter::write_header(intptr_t metadata_offset) {
+   assert(this->is_valid(), "invariant");
+   // Chunk size
+-  this->write_be_at_offset(size_written(), CHUNK_SIZE_OFFSET);
++  this->write_be_at_offset((u8)size_written(), CHUNK_SIZE_OFFSET);
+   // initial checkpoint event offset
+-  this->write_be_at_offset(_chunkstate->previous_checkpoint_offset(), CHUNK_SIZE_OFFSET + (1 * FILEHEADER_SLOT_SIZE));
++  this->write_be_at_offset((u8)_chunkstate->previous_checkpoint_offset(), CHUNK_SIZE_OFFSET + (1 * FILEHEADER_SLOT_SIZE));
+   // metadata event offset
+-  this->write_be_at_offset(metadata_offset, CHUNK_SIZE_OFFSET + (2 * FILEHEADER_SLOT_SIZE));
++  this->write_be_at_offset((u8)metadata_offset, CHUNK_SIZE_OFFSET + (2 * FILEHEADER_SLOT_SIZE));
+   // start of chunk in nanos since epoch
+-  this->write_be_at_offset(_chunkstate->previous_start_nanos(), CHUNK_SIZE_OFFSET + (3 * FILEHEADER_SLOT_SIZE));
++  this->write_be_at_offset((u8)_chunkstate->previous_start_nanos(), CHUNK_SIZE_OFFSET + (3 * FILEHEADER_SLOT_SIZE));
+   // duration of chunk in nanos
+-  this->write_be_at_offset(_chunkstate->last_chunk_duration(), CHUNK_SIZE_OFFSET + (4 * FILEHEADER_SLOT_SIZE));
++  this->write_be_at_offset((u8)_chunkstate->last_chunk_duration(), CHUNK_SIZE_OFFSET + (4 * FILEHEADER_SLOT_SIZE));
+   // start of chunk in ticks
+-  this->write_be_at_offset(_chunkstate->previous_start_ticks(), CHUNK_SIZE_OFFSET + (5 * FILEHEADER_SLOT_SIZE));
++  this->write_be_at_offset((u8)_chunkstate->previous_start_ticks(), CHUNK_SIZE_OFFSET + (5 * FILEHEADER_SLOT_SIZE));
+ }
+ 
+ void JfrChunkWriter::set_chunk_path(const char* chunk_path) {

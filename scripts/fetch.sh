@@ -131,6 +131,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_bkpt.patch"
   fi
 
+  # invalid written JFR files
+  if [ -f "$SCRIPTDIR/${PATCHVER}_jfr.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_jfr.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
