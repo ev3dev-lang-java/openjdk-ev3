@@ -126,6 +126,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_8216493.patch"
   fi
 
+  # breakpoint
+  if [ -f "$SCRIPTDIR/${PATCHVER}_bkpt.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_bkpt.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 

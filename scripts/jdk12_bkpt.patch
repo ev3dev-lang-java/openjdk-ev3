@@ -1,0 +1,44 @@
+--- jdk/src/hotspot/os/linux/os_linux.cpp	2019-04-01 19:26:25.000000000 +0200
++++ new/src/hotspot/os/linux/os_linux.cpp	2019-06-07 17:11:46.863413620 +0200
+@@ -93,6 +93,7 @@
+ # include <sys/utsname.h>
+ # include <sys/socket.h>
+ # include <sys/wait.h>
++# include <sys/ptrace.h>
+ # include <pwd.h>
+ # include <poll.h>
+ # include <fcntl.h>
+@@ -423,8 +424,17 @@
+   BREAKPOINT;
+ }
+ 
+-extern "C" void breakpoint() {
+-  // use debugger to set breakpoint here
++extern "C" {
++
++  volatile bool do_breakpoint = true;
++
++  void breakpoint() {
++    // use debugger to set breakpoint here
++    if (do_breakpoint && ptrace(PTRACE_TRACEME, 0, 0, 0) == -1) {
++      raise(SIGTRAP);
++    }
++  }
++
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////
+--- jdk/src/hotspot/cpu/arm/globalDefinitions_arm.hpp	2019-04-01 19:26:25.000000000 +0200
++++ new/src/hotspot/cpu/arm/globalDefinitions_arm.hpp	2019-06-07 17:12:00.723455747 +0200
+@@ -52,11 +52,4 @@
+ #define AD_MD_HPP              "adfiles/ad_arm_32.hpp"
+ #define C1_LIRGENERATOR_MD_HPP "c1_LIRGenerator_arm.hpp"
+ 
+-#ifdef TARGET_COMPILER_gcc
+-#ifdef ARM32
+-#undef BREAKPOINT
+-#define BREAKPOINT __asm__ volatile ("bkpt")
+-#endif
+-#endif
+-
+ #endif // CPU_ARM_VM_GLOBALDEFINITIONS_ARM_HPP
