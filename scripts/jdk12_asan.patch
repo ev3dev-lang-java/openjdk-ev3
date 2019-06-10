@@ -1,0 +1,22 @@
+
+# HG changeset patch
+# User aeubanks
+# Date 1557535662 25200
+# Node ID c2551d161358461385e68faf3753938b4c2fb78a
+# Parent  ea4774a27d9fd49198cdba97ab5e0c85cf7fd966
+8223667: ASAN build broken
+Reviewed-by: erikj, manc
+
+diff -r ea4774a27d9f -r c2551d161358 make/autoconf/spec.gmk.in
+--- a/make/autoconf/spec.gmk.in	Wed May 08 15:36:10 2019 -0700
++++ b/make/autoconf/spec.gmk.in	Fri May 10 17:47:42 2019 -0700
+@@ -395,7 +395,7 @@
+ export ASAN_ENABLED:=@ASAN_ENABLED@
+ export DEVKIT_LIB_DIR:=@DEVKIT_LIB_DIR@
+ ifeq ($(ASAN_ENABLED), yes)
+-  export ASAN_OPTIONS="handle_segv=0 detect_leaks=0"
++  export ASAN_OPTIONS=handle_segv=0 detect_leaks=0
+   ifneq ($(DEVKIT_LIB_DIR),)
+     export LD_LIBRARY_PATH:=$(LD_LIBRARY_PATH):$(DEVKIT_LIB_DIR)
+   endif
+

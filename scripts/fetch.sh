@@ -136,6 +136,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_jfr.patch"
   fi
 
+  # ASAN build broken
+  if [ -f "$SCRIPTDIR/${PATCHVER}_asan.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_asan.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
