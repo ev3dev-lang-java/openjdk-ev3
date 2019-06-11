@@ -1,0 +1,40 @@
+--- jdk/src/hotspot/share/classfile/javaClasses.hpp	2019-06-11 11:58:37.346723978 +0200
++++ new/src/hotspot/share/classfile/javaClasses.hpp	2019-06-11 11:57:17.888537968 +0200
+@@ -241,7 +241,7 @@
+   static int _module_offset;
+   static int _component_mirror_offset;
+ 
+-  static bool offsets_computed;
++  static int offsets_computed;
+   static int classRedefinedCount_offset;
+ 
+   static GrowableArray<Klass*>* _fixup_mirror_list;
+@@ -1256,7 +1256,7 @@
+ class java_lang_ClassLoader : AllStatic {
+  private:
+   static int _loader_data_offset;
+-  static bool offsets_computed;
++  static int offsets_computed;
+   static int parent_offset;
+   static int parallelCapable_offset;
+   static int name_offset;
+--- jdk/src/hotspot/share/classfile/javaClasses.cpp	2019-06-11 11:58:32.906601944 +0200
++++ new/src/hotspot/share/classfile/javaClasses.cpp	2019-06-11 12:01:36.691643088 +0200
+@@ -1514,7 +1514,7 @@
+   return mirror;
+ }
+ 
+-bool java_lang_Class::offsets_computed = false;
++int  java_lang_Class::offsets_computed = false;
+ int  java_lang_Class::classRedefinedCount_offset = -1;
+ 
+ #define CLASS_FIELDS_DO(macro) \
+@@ -3807,7 +3807,7 @@
+ 
+ // Support for java_lang_ClassLoader
+ 
+-bool java_lang_ClassLoader::offsets_computed = false;
++int  java_lang_ClassLoader::offsets_computed = false;
+ int  java_lang_ClassLoader::_loader_data_offset = -1;
+ int  java_lang_ClassLoader::parallelCapable_offset = -1;
+ int  java_lang_ClassLoader::name_offset = -1;

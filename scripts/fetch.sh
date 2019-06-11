@@ -146,6 +146,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_kuser.patch"
   fi
 
+  # out-of-bounds read found by ASAN
+  if [ -f "$SCRIPTDIR/${PATCHVER}_class.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_class.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
