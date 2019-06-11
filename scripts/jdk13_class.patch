@@ -1,5 +1,14 @@
 --- jdk/src/hotspot/share/classfile/javaClasses.hpp	2019-06-11 11:58:37.346723978 +0200
-+++ new/src/hotspot/share/classfile/javaClasses.hpp	2019-06-11 11:57:17.888537968 +0200
++++ new/src/hotspot/share/classfile/javaClasses.hpp	2019-06-11 14:28:34.783394706 +0200
+@@ -96,7 +96,7 @@
+   static int hash_offset;
+   static int coder_offset;
+ 
+-  static bool initialized;
++  static int initialized;
+ 
+   static Handle basic_create(int length, bool byte_arr, TRAPS);
+ 
 @@ -241,7 +241,7 @@
    static int _module_offset;
    static int _component_mirror_offset;
@@ -19,7 +28,16 @@
    static int parallelCapable_offset;
    static int name_offset;
 --- jdk/src/hotspot/share/classfile/javaClasses.cpp	2019-06-11 11:58:32.906601944 +0200
-+++ new/src/hotspot/share/classfile/javaClasses.cpp	2019-06-11 12:01:36.691643088 +0200
++++ new/src/hotspot/share/classfile/javaClasses.cpp	2019-06-11 14:27:19.637401594 +0200
+@@ -161,7 +161,7 @@
+ int java_lang_String::hash_offset   = 0;
+ int java_lang_String::coder_offset  = 0;
+ 
+-bool java_lang_String::initialized  = false;
++int java_lang_String::initialized  = false;
+ 
+ bool java_lang_String::is_instance(oop obj) {
+   return is_instance_inlined(obj);
 @@ -1514,7 +1514,7 @@
    return mirror;
  }
