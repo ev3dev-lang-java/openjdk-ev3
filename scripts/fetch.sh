@@ -141,6 +141,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_asan.patch"
   fi
 
+  # SIGSEGV when reading from __kuser_helper_version and ASAN is enabled
+  if [ -f "$SCRIPTDIR/${PATCHVER}_kuser.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_kuser.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
