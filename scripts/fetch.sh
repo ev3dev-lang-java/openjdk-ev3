@@ -156,6 +156,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_asan2.patch"
   fi
 
+  # unaligned atomic read causes segfault in test/hotspot/jtreg/vmTestbase/nsk/jvmti/CompiledMethodUnload/compmethunload001/TestDescription.java
+  if [ -f "$SCRIPTDIR/${PATCHVER}_cds.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_cds.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
