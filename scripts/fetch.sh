@@ -151,6 +151,11 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_class.patch"
   fi
 
+  # ASAN catches non-bug segfaults when testing
+  if [ -f "$SCRIPTDIR/${PATCHVER}_asan2.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_asan2.patch"
+  fi
+
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
 
