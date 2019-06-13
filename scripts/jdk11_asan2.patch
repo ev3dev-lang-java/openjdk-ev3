@@ -1,0 +1,12 @@
+diff --git a/make/RunTests.gmk b/make/RunTests.gmk
+index 1ffe73566..ed4d6d68f 100644
+--- a/make/RunTests.gmk
++++ b/make/RunTests.gmk
+@@ -550,6 +550,7 @@ define SetupRunJtregTestBody
+   endif
+ 
+   $1_JTREG_BASIC_OPTIONS += -e:TEST_IMAGE_GRAAL_DIR=${TEST_IMAGE_DIR}/hotspot/jtreg/graal
++  $1_JTREG_BASIC_OPTIONS += -e:ASAN_OPTIONS="handle_segv=0 detect_leaks=0"
+ 
+   ifneq ($$(JTREG_FAILURE_HANDLER_OPTIONS), )
+     $1_JTREG_LAUNCHER_OPTIONS += -Djava.library.path="$(JTREG_FAILURE_HANDLER_DIR)"

@@ -1,0 +1,22 @@
+diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
+index 616d31560..0bbf74a1f 100644
+--- a/src/hotspot/share/memory/metaspaceShared.cpp
++++ b/src/hotspot/share/memory/metaspaceShared.cpp
+@@ -132,7 +132,7 @@ private:
+ public:
+   DumpRegion(const char* name) : _name(name), _base(NULL), _top(NULL), _end(NULL), _is_packed(false) {}
+ 
+-  char* allocate(size_t num_bytes, size_t alignment=BytesPerWord) {
++  char* allocate(size_t num_bytes, size_t alignment=BytesPerLong) {
+     char* p = (char*)align_up(_top, alignment);
+     char* newtop = p + align_up(num_bytes, alignment);
+     expand_top_to(newtop);
+@@ -1124,7 +1124,7 @@ public:
+     address obj = ref->obj();
+     int bytes = ref->size() * BytesPerWord;
+     char* p;
+-    size_t alignment = BytesPerWord;
++    size_t alignment = BytesPerLong;
+     char* oldtop;
+     char* newtop;
+ 

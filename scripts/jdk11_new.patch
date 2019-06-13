@@ -1,7 +1,8 @@
-diff -Naur old/make/autoconf/hotspot.m4 new/make/autoconf/hotspot.m4
---- old/make/autoconf/hotspot.m4	2019-05-21 18:53:27.000000000 +0000
-+++ new/make/autoconf/hotspot.m4	2019-06-06 09:48:27.493813162 +0000
-@@ -312,6 +312,11 @@
+diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
+index 1d4c710be..da6f3711c 100644
+--- a/make/autoconf/hotspot.m4
++++ b/make/autoconf/hotspot.m4
+@@ -312,6 +312,11 @@ AC_DEFUN_ONCE([HOTSPOT_SETUP_JVM_FEATURES],
      HOTSPOT_TARGET_CPU_ARCH=arm
    fi
  
@@ -13,10 +14,11 @@ diff -Naur old/make/autoconf/hotspot.m4 new/make/autoconf/hotspot.m4
    # Verify that dependencies are met for explicitly set features.
    if HOTSPOT_CHECK_JVM_FEATURE(jvmti) && ! HOTSPOT_CHECK_JVM_FEATURE(services); then
      AC_MSG_ERROR([Specified JVM feature 'jvmti' requires feature 'services'])
-diff -Naur old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp new/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
---- old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-05-21 18:53:27.000000000 +0000
-+++ new/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp	2019-06-06 09:48:27.493813162 +0000
-@@ -1009,7 +1009,7 @@
+diff --git a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
+index 342c1c347..ac86ecfbd 100644
+--- a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
++++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
+@@ -1009,7 +1009,7 @@ LIR_Opr LIRGenerator::atomic_xchg(BasicType type, LIR_Opr addr, LIRItem& value)
    bool is_oop = type == T_OBJECT || type == T_ARRAY;
    LIR_Opr result = new_register(type);
    value.load_item();
@@ -25,7 +27,7 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp new/src/hotspot/cpu/a
    LIR_Opr tmp = (UseCompressedOops && is_oop) ? new_pointer_register() : LIR_OprFact::illegalOpr;
    __ xchg(addr, value.result(), result, tmp);
    return result;
-@@ -1018,7 +1018,7 @@
+@@ -1018,7 +1018,7 @@ LIR_Opr LIRGenerator::atomic_xchg(BasicType type, LIR_Opr addr, LIRItem& value)
  LIR_Opr LIRGenerator::atomic_add(BasicType type, LIR_Opr addr, LIRItem& value) {
    LIR_Opr result = new_register(type);
    value.load_item();
@@ -34,7 +36,7 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp new/src/hotspot/cpu/a
    LIR_Opr tmp = new_register(type);
    __ xadd(addr, value.result(), result, tmp);
    return result;
-@@ -1559,9 +1559,14 @@
+@@ -1559,9 +1559,14 @@ void LIRGenerator::volatile_field_store(LIR_Opr value, LIR_Address* address,
  #ifndef AARCH64
    if (value->is_double_cpu()) {
      assert(address->index()->is_illegal(), "should have a constant displacement");
@@ -52,7 +54,7 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp new/src/hotspot/cpu/a
      return;
    }
  #endif // !AARCH64
-@@ -1574,9 +1579,14 @@
+@@ -1574,9 +1579,14 @@ void LIRGenerator::volatile_field_load(LIR_Address* address, LIR_Opr result,
  #ifndef AARCH64
    if (result->is_double_cpu()) {
      assert(address->index()->is_illegal(), "should have a constant displacement");
@@ -70,9 +72,10 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp new/src/hotspot/cpu/a
      return;
    }
  #endif // !AARCH64
-diff -Naur old/src/hotspot/share/memory/metaspaceShared.cpp new/src/hotspot/share/memory/metaspaceShared.cpp
---- old/src/hotspot/share/memory/metaspaceShared.cpp	2019-05-21 18:53:27.000000000 +0000
-+++ new/src/hotspot/share/memory/metaspaceShared.cpp	2019-06-06 09:48:27.497813215 +0000
+diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
+index fa11a5564..616d31560 100644
+--- a/src/hotspot/share/memory/metaspaceShared.cpp
++++ b/src/hotspot/share/memory/metaspaceShared.cpp
 @@ -62,6 +62,7 @@
  #include "utilities/align.hpp"
  #include "utilities/defaultStream.hpp"
@@ -81,10 +84,11 @@ diff -Naur old/src/hotspot/share/memory/metaspaceShared.cpp new/src/hotspot/shar
  #if INCLUDE_G1GC
  #include "gc/g1/g1Allocator.inline.hpp"
  #include "gc/g1/g1CollectedHeap.hpp"
-diff -Naur old/src/hotspot/share/oops/constantPool.cpp new/src/hotspot/share/oops/constantPool.cpp
---- old/src/hotspot/share/oops/constantPool.cpp	2019-05-21 18:53:27.000000000 +0000
-+++ new/src/hotspot/share/oops/constantPool.cpp	2019-06-06 09:48:27.501813268 +0000
-@@ -400,8 +400,12 @@
+diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
+index 35593fefc..0c8c96bc6 100644
+--- a/src/hotspot/share/oops/constantPool.cpp
++++ b/src/hotspot/share/oops/constantPool.cpp
+@@ -400,8 +400,12 @@ void ConstantPool::remove_unshareable_info() {
  }
  
  int ConstantPool::cp_to_object_index(int cp_index) {

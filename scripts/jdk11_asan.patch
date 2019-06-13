@@ -1,0 +1,13 @@
+diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
+index a0d1df988..df3d0ecfc 100644
+--- a/make/autoconf/spec.gmk.in
++++ b/make/autoconf/spec.gmk.in
+@@ -371,7 +371,7 @@ GCOV_ENABLED=@GCOV_ENABLED@
+ export ASAN_ENABLED:=@ASAN_ENABLED@
+ export DEVKIT_LIB_DIR:=@DEVKIT_LIB_DIR@
+ ifeq ($(ASAN_ENABLED), yes)
+-  export ASAN_OPTIONS="handle_segv=0 detect_leaks=0"
++  export ASAN_OPTIONS=handle_segv=0 detect_leaks=0
+   ifneq ($(DEVKIT_LIB_DIR),)
+     export LD_LIBRARY_PATH:=$(LD_LIBRARY_PATH):$(DEVKIT_LIB_DIR)
+   endif
