@@ -11,6 +11,11 @@ if (params.BUILD_TYPE == "native") {
 
 node(selector) {
 
+    if (params.DISABLED) {
+        currentBuild.result = 'SUCCESS'
+        return
+    }
+
     // our docker images
     def osImage
     def bldImage
