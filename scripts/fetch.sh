@@ -6,17 +6,25 @@ source config.sh
 
 if [ ! -d "$JDKDIR" ]; then
 
+  #################
+  # HG zip method #
+  #################
   if [ "$JAVA_SCM" == "hg_zip" ]; then
     cd "$BUILDDIR"
 
     # Identify latest HG tag
-    JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | grep -v -- '-ga' | tail -n 1 | cut -d " " -f 2)"
+    JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | \
+                    grep -v -- '-ga' | \
+                    tail -n 1 | \
+                    cut -d " " -f 2)"
 
     # select URL for latest tag in given repo
     if [ "$JDKVER" == "tip" ]; then
       JAVA_DST="tip.tar.bz2"
+      SUFFIX="ev3dirty"
     else
       JAVA_DST="$JAVA_TAG.tar.bz2"
+      SUFFIX="ev3"
     fi
     JAVA_URL="$HG_BASE_URL/archive/$JAVA_DST"
 
@@ -61,24 +69,42 @@ if [ ! -d "$JDKDIR" ]; then
       bash ./get_source.sh
     fi
 
-    if [ "$JDKVER" == "tip" ]; then
-      SUFFIX="ev3dirty"
-    else
-      SUFFIX="ev3"
-    fi
-    JAVA_VERSION="$(echo "$JAVA_TAG" | sed -E "s/^.*jdk-//;s/-ga/$GA_REPLACE/")-$SUFFIX"
+    JAVA_VERSION="$(echo "$JAVA_TAG" | sed -E "s/^.*jdk-//")-$SUFFIX"
     JAVA_COMMIT="$(cat ./.hg_archival.txt | grep "node:" | sed -E 's/^node: //')"
 
+  #####################
+  # Git mirror method #
+  #####################
   elif [ "$JAVA_SCM" == "git" ]; then
-    latestTag="$($SCRIPTDIR/latest.awk "$JAVA_REPO")"
-    JAVA_VERSION="$(echo "$latestTag" | sed 's/jdk-//')-ev3"
+    cd "$BUILDDIR"
 
-    # clone the root project
+    # Identify latest Git tag
+    JAVA_TAG="$(git ls-remote --ref "$JAVA_REPO" | \
+                    grep 'refs/tags/' | \
+                    sort -Vk2 | \
+                    grep -v -- '-ga' | \
+                    tail -n 1 | \
+                    cut -f 2 | \
+                    sed 's|refs/tags/||')"
+
+    # select git clone target
+    if [ "$JDKVER" == "tip" ]; then
+      JAVA_TARGET="master"
+      SUFFIX="ev3dirty"
+    else
+      JAVA_TARGET="$JAVA_TAG"
+      SUFFIX="ev3"
+    fi
+
+    # download it
     echo "[FETCH] Cloning Java repo from Git"
-    git clone --depth "1" --branch "$latestTag" "$JAVA_REPO" "$JDKDIR"
+    git clone --depth "1" --branch "$JAVA_TARGET" "$JAVA_REPO" "$JDKDIR"
+
+    # no get_source.sh is necessary
 
     # enter the jdk repo
     cd "$JDKDIR"
+    JAVA_VERSION="$(echo "$JAVA_TAG" | sed -E "s/^.*jdk-//")-$SUFFIX"
     JAVA_COMMIT="$(git rev-parse HEAD)"
   fi
 

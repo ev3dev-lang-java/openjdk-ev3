@@ -144,8 +144,8 @@ VENDOR_FLAGS="$VENDOR_FLAGS --with-vendor-vm-bug-url=https://github.com/ev3dev-l
 
 # OpenJDK 9
 if [ "$JDKVER" == "9" ]; then
-  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk9u.git"
   JAVA_SCM="git"
+  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk9u.git"
   PATCHVER="jdk9"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./common/autoconf/autogen.sh"
@@ -156,13 +156,12 @@ if [ "$JDKVER" == "9" ]; then
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
-  GA_REPLACE="+0"
   VENDOR_FLAGS=
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
-  HG_BASE_URL="https://hg.openjdk.java.net/jdk-updates/jdk10u"
-  JAVA_SCM="hg_zip"
+  JAVA_SCM="git"
+  JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk10u.git"
   PATCHVER="jdk10"
   AUTOGEN_STYLE="v1"
   AUTOGEN_PATH="./make/autoconf/autogen.sh"
@@ -173,13 +172,12 @@ elif [ "$JDKVER" == "10" ]; then
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
-  GA_REPLACE="+0"
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
   # download latest tag
-  HG_BASE_URL="https://hg.openjdk.java.net/jdk-updates/jdk11u"
-  JAVA_SCM="hg_zip"
+  JAVA_SCM="git"
+  JAVA_REPO="https://github.com/openjdk/jdk11u.git"
   PATCHVER="jdk11"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
@@ -196,13 +194,12 @@ elif [ "$JDKVER" == "11" ]; then
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
   SOFTFLOAT_FLAGS=
-  GA_REPLACE="+9"
 
-# OpenJDK 12/Master+dev
+# OpenJDK 12
 elif [ "$JDKVER" == "12" ]; then
   # download latest tag
-  HG_BASE_URL="https://hg.openjdk.java.net/jdk-updates/jdk12u"
-  JAVA_SCM="hg_zip"
+  JAVA_SCM="git"
+  JAVA_REPO="https://github.com/openjdk/jdk12u.git"
   PATCHVER="jdk12"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
@@ -222,13 +219,12 @@ elif [ "$JDKVER" == "12" ]; then
   if [ "$JDKPLATFORM" == "ev3" ]; then
     SFLT_NEEDED=true
   fi
-  GA_REPLACE="+0"
 
 # OpenJDK 13/Master+dev
 elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
   # download tip or latest tag
-  HG_BASE_URL="https://hg.openjdk.java.net/jdk/jdk"
-  JAVA_SCM="hg_zip"
+  JAVA_SCM="git"
+  JAVA_REPO="https://github.com/openjdk/jdk.git"
   PATCHVER="jdk13"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
@@ -236,7 +232,7 @@ elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
     HOSTJDK="$BUILDDIR/jdk-ev3"
     HOSTJDK_RENAME_FROM="$BUILDDIR/jdk"
     HOSTJDK_FILE="$BUILDDIR/jdk-ev3.tar.gz"
-    HOSTJDK_URL="https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+    HOSTJDK_URL="https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux_native/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
   else
     HOSTJDK="$BUILDDIR/jdk-12+33"
     HOSTJDK_FILE="$BUILDDIR/OpenJDK12U-jdk_x64_linux_hotspot_12_33.tar.gz"
@@ -249,7 +245,6 @@ elif [ "$JDKVER" == "13" ] || [ "$JDKVER" == "tip" ]; then
   if [ "$JDKPLATFORM" == "ev3" ]; then
     SFLT_NEEDED=true
   fi
-  GA_REPLACE="+0"
 
 # invalid or unset version
 else
