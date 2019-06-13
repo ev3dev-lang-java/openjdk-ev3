@@ -7,18 +7,21 @@ Builds for older boards should work on newer boards, the performance might just 
 
 ## Build Status
 
-| OpenJDK version  | Platform | OS             | Type   | VM     | Status                                        |
-|------------------|----------|----------------|--------|--------|-----------------------------------------------|
-| OpenJDK 11       | EV3      | ev3dev-stretch | native | C1 JIT | [![openjdk11_build_ev3_linux_native][1]][2]   |
-| OpenJDK 12       | EV3      | ev3dev-buster  | native | C1 JIT | [![openjdk12_build_ev3_linux_native][3]][4]   |
-| OpenJDK 13 (dev) | EV3      | ev3dev-buster  | native | C1 JIT | [![openjdk13_build_ev3_linux_native][5]][6]   |
+| OpenJDK version  | Platform | OS             | Type   | VM     | Status                                             |
+|------------------|----------|----------------|--------|--------|----------------------------------------------------|
+| OpenJDK 11       | EV3      | ev3dev-stretch | native | C1 JIT | [![openjdk11_build_ev3_linux_native][1]][2]        |
+| OpenJDK 11       | EV3      | ev3dev-buster  | native | C1 JIT | [![openjdk11_build_ev3_linux_native_next][3]][4]   |
+| OpenJDK 12       | EV3      | ev3dev-buster  | native | C1 JIT | [![openjdk12_build_ev3_linux_native][5]][6]        |
+| OpenJDK 13 (dev) | EV3      | ev3dev-buster  | native | C1 JIT | [![openjdk13_build_ev3_linux_native][7]][8]        |
 
 [1]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk11_build_ev3_linux_native/badge/icon
 [2]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk11_build_ev3_linux_native/
-[3]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux_native/badge/icon
-[4]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux_native/
-[5]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk13_build_ev3_linux_native/badge/icon
-[6]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk13_build_ev3_linux_native/
+[3]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk11_build_ev3_linux_native_next/badge/icon
+[4]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk11_build_ev3_linux_native_next/
+[5]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux_native/badge/icon
+[6]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk12_build_ev3_linux_native/
+[7]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk13_build_ev3_linux_native/badge/icon
+[8]: https://ci.adoptopenjdk.net/view/ev3dev/job/openjdk13_build_ev3_linux_native/
 
 
 ## Components
