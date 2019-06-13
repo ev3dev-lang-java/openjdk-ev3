@@ -13,16 +13,15 @@ if [ ! -d "$JDKDIR" ]; then
     cd "$BUILDDIR"
 
     # Identify latest HG tag
-    JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | \
-                    grep -v -- '-ga' | \
-                    tail -n 1 | \
-                    cut -d " " -f 2)"
-
     # select URL for latest tag in given repo
     if [ "$JDKVER" == "tip" ]; then
+      JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | cut -d " " -f2 | \
+                      sort -V | grep -v -- '-ga' | tail -n1)"
       JAVA_DST="tip.tar.bz2"
-      SUFFIX="ev3dirty"
+      SUFFIX="ev3-unstable"
     else
+      JAVA_TAG="$(wget -nv "$HG_BASE_URL/raw-file/tip/.hgtags" -O - | cut -d " " -f2 | \
+                      sort -V | grep -B1 -- '-ga' | tail -n2 | head -n1)"
       JAVA_DST="$JAVA_TAG.tar.bz2"
       SUFFIX="ev3"
     fi
@@ -79,19 +78,15 @@ if [ ! -d "$JDKDIR" ]; then
     cd "$BUILDDIR"
 
     # Identify latest Git tag
-    JAVA_TAG="$(git ls-remote --ref "$JAVA_REPO" | \
-                    grep 'refs/tags/' | \
-                    sort -Vk2 | \
-                    grep -v -- '-ga' | \
-                    tail -n 1 | \
-                    cut -f 2 | \
-                    sed 's|refs/tags/||')"
-
     # select git clone target
     if [ "$JDKVER" == "tip" ]; then
+      JAVA_TAG="$(git ls-remote --ref "$JAVA_REPO" | cut -f2 | grep 'refs/tags/' | sed 's|refs/tags/||' | \
+                      sort -V | grep -v -- '-ga' | tail -n1)"
       JAVA_TARGET="master"
-      SUFFIX="ev3-unreleased"
+      SUFFIX="ev3-unstable"
     else
+      JAVA_TAG="$(git ls-remote --ref "$JAVA_REPO" | cut -f2 | grep 'refs/tags/' | sed 's|refs/tags/||' | \
+                      sort -V | grep -B1 -- '-ga' | tail -n2 | head -n1)"
       JAVA_TARGET="$JAVA_TAG"
       SUFFIX="ev3"
     fi
