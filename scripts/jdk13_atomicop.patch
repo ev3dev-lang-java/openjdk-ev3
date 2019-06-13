@@ -1,7 +1,8 @@
-diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp
---- old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-06-05 15:24:03.000000000 +0000
-+++ new3/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp	2019-06-05 15:33:37.038534872 +0000
-@@ -2799,91 +2799,387 @@
+diff --git a/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp b/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp
+index 60233ea23..400c1b94f 100644
+--- a/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp
++++ b/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp
+@@ -2799,91 +2799,387 @@ void LIR_Assembler::peephole(LIR_List* lir) {
    }
  }
  
@@ -42,11 +43,11 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
 -  __ membar(MacroAssembler::Membar_mask_bits(MacroAssembler::StoreStore | MacroAssembler::LoadStore), Rtemp);
 +  // III. try to store new value
 +  __ strex(Rtemp, new_val, addr);
-+
+ 
 +  // IV. retry if failed
 +  __ cbnz_32(Rtemp, retry);
 +}
- 
++
 +void LIR_Assembler::atomic_op_helper32(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
 +  // On armv5 platforms we must use the Linux kernel helper
 +  // function for atomic cas operations since ldrex/strex is
@@ -120,8 +121,7 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
 +      rTo = R4;
      }
 -    __ strex(Rtemp, new_val, addr);
-+  }
- 
+-
 -  } else if (data->type() == T_LONG) {
 -    Register dst_lo = dest->as_register_lo();
 -    Register new_val_lo = noreg;
@@ -153,6 +153,8 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
 -        assert_different_registers(dst_lo, dst_hi, tmp_lo, tmp_hi, new_val_lo, new_val_hi);
 -      }
 -      new_val_lo = tmp_lo;
++  }
++
 +  // I. save necessary registers
 +  __ push(rSaved);
 +
@@ -203,7 +205,10 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
 +void LIR_Assembler::atomic_op_native64(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
 +  Address addr = as_Address(src->as_address_ptr());
 +  Label retry;
-+
+ 
+-      assert_different_registers(dst_lo, dst_hi, new_val_lo, new_val_hi);
+-      assert(new_val_hi->encoding() == new_val_lo->encoding() + 1, "non aligned register pair");
+-      assert((new_val_lo->encoding() & 0x1) == 0, "misaligned register pair");
 +  // I. determine destination registers
 +  Register dst_lo = dest->as_register_lo();
 +  Register new_val_lo = noreg;
@@ -211,10 +216,7 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
 +
 +  assert(dst_hi->encoding() == dst_lo->encoding() + 1, "non aligned register pair");
 +  assert((dst_lo->encoding() & 0x1) == 0, "misaligned register pair");
- 
--      assert_different_registers(dst_lo, dst_hi, new_val_lo, new_val_hi);
--      assert(new_val_hi->encoding() == new_val_lo->encoding() + 1, "non aligned register pair");
--      assert((new_val_lo->encoding() & 0x1) == 0, "misaligned register pair");
++
 +  __ bind(retry);
 +
 +  // II. load current value
@@ -260,7 +262,7 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
    __ cbnz_32(Rtemp, retry);
 -  __ membar(MacroAssembler::Membar_mask_bits(MacroAssembler::StoreLoad | MacroAssembler::StoreStore), Rtemp);
 +}
-+
+ 
 +void LIR_Assembler::atomic_op_helper64(LIR_Code code, LIR_Opr src, LIR_Opr data, LIR_Opr dest, LIR_Opr tmp) {
 +  // On armv5 platforms we must use the Linux kernel helper
 +  // function for atomic cas64 operations since ldrexd/strexd is
@@ -302,7 +304,7 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
 +  bool register_imm = false;
 +  RegisterSet saved;
 +  int stack_space;
- 
++
 +  if (code == lir_xadd && data->is_constant()) {
 +    imm = data->as_constant_ptr()->as_jlong();
 +
@@ -453,9 +455,10 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.cpp new3/src/hotspot/cpu/
  }
  
  #undef __
-diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp new3/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp
---- old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-06-05 15:24:03.000000000 +0000
-+++ new3/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp	2019-06-05 15:33:37.038534872 +0000
+diff --git a/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp b/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp
+index 4cd1f0d08..223ee9dfa 100644
+--- a/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp
++++ b/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp
 @@ -51,6 +51,11 @@
    // Restores 4 given registers from reserved argument area.
    void restore_from_reserved_area(Register r1, Register r2, Register r3, Register r4);
@@ -468,10 +471,11 @@ diff -Naur old/src/hotspot/cpu/arm/c1_LIRAssembler_arm.hpp new3/src/hotspot/cpu/
    enum {
      _call_stub_size = 16,
      _call_aot_stub_size = 0,
-diff -Naur old/src/hotspot/cpu/arm/vm_version_arm_32.cpp new3/src/hotspot/cpu/arm/vm_version_arm_32.cpp
---- old/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-06-05 15:24:03.000000000 +0000
-+++ new3/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-06-05 15:33:37.042534930 +0000
-@@ -260,10 +260,10 @@
+diff --git a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+index 33371bf70..5318cc2a3 100644
+--- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp
++++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+@@ -260,10 +260,10 @@ void VM_Version::initialize() {
  
    // ARM doesn't have special instructions for these but ldrex/ldrexd
    // enable shorter instruction sequences that the ones based on cas.

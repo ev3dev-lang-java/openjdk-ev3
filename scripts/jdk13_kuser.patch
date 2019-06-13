@@ -1,8 +1,10 @@
---- jdk/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-06-06 14:23:36.238603688 +0200
-+++ new/src/hotspot/cpu/arm/vm_version_arm_32.cpp	2019-06-11 09:39:16.692997962 +0200
-@@ -104,13 +104,19 @@
- extern "C" address check_vfp_fault_instr;
+diff --git a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+index 5318cc2a3..fafdb91ff 100644
+--- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp
++++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
+@@ -120,13 +120,19 @@ extern "C" address check_vfp_fault_instr;
  extern "C" address check_simd_fault_instr;
+ extern "C" address check_mp_ext_fault_instr;
  
 +static const volatile int * const kuser_ver_ptr = (int*)KUSER_HELPER_VERSION_ADDR;
 +

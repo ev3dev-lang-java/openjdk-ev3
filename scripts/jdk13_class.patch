@@ -1,36 +1,9 @@
---- jdk/src/hotspot/share/classfile/javaClasses.hpp	2019-06-11 11:58:37.346723978 +0200
-+++ new/src/hotspot/share/classfile/javaClasses.hpp	2019-06-11 14:28:34.783394706 +0200
-@@ -96,7 +96,7 @@
-   static int hash_offset;
-   static int coder_offset;
- 
--  static bool initialized;
-+  static int initialized;
- 
-   static Handle basic_create(int length, bool byte_arr, TRAPS);
- 
-@@ -241,7 +241,7 @@
-   static int _module_offset;
-   static int _component_mirror_offset;
- 
--  static bool offsets_computed;
-+  static int offsets_computed;
-   static int classRedefinedCount_offset;
- 
-   static GrowableArray<Klass*>* _fixup_mirror_list;
-@@ -1256,7 +1256,7 @@
- class java_lang_ClassLoader : AllStatic {
-  private:
-   static int _loader_data_offset;
--  static bool offsets_computed;
-+  static int offsets_computed;
-   static int parent_offset;
-   static int parallelCapable_offset;
-   static int name_offset;
---- jdk/src/hotspot/share/classfile/javaClasses.cpp	2019-06-11 11:58:32.906601944 +0200
-+++ new/src/hotspot/share/classfile/javaClasses.cpp	2019-06-11 14:27:19.637401594 +0200
-@@ -161,7 +161,7 @@
- int java_lang_String::hash_offset   = 0;
+diff --git a/src/hotspot/share/classfile/javaClasses.cpp b/src/hotspot/share/classfile/javaClasses.cpp
+index 5e59acc38..6b8fa0103 100644
+--- a/src/hotspot/share/classfile/javaClasses.cpp
++++ b/src/hotspot/share/classfile/javaClasses.cpp
+@@ -164,7 +164,7 @@ int java_lang_String::hash_offset   = 0;
+ int java_lang_String::hashIsZero_offset = 0;
  int java_lang_String::coder_offset  = 0;
  
 -bool java_lang_String::initialized  = false;
@@ -38,7 +11,7 @@
  
  bool java_lang_String::is_instance(oop obj) {
    return is_instance_inlined(obj);
-@@ -1514,7 +1514,7 @@
+@@ -1536,7 +1536,7 @@ oop java_lang_Class::primitive_mirror(BasicType t) {
    return mirror;
  }
  
@@ -47,7 +20,7 @@
  int  java_lang_Class::classRedefinedCount_offset = -1;
  
  #define CLASS_FIELDS_DO(macro) \
-@@ -3807,7 +3807,7 @@
+@@ -3863,7 +3863,7 @@ oop java_security_AccessControlContext::create(objArrayHandle context, bool isPr
  
  // Support for java_lang_ClassLoader
  
@@ -56,3 +29,34 @@
  int  java_lang_ClassLoader::_loader_data_offset = -1;
  int  java_lang_ClassLoader::parallelCapable_offset = -1;
  int  java_lang_ClassLoader::name_offset = -1;
+diff --git a/src/hotspot/share/classfile/javaClasses.hpp b/src/hotspot/share/classfile/javaClasses.hpp
+index 4a279f57d..09e9d247f 100644
+--- a/src/hotspot/share/classfile/javaClasses.hpp
++++ b/src/hotspot/share/classfile/javaClasses.hpp
+@@ -97,7 +97,7 @@ class java_lang_String : AllStatic {
+   static int hashIsZero_offset;
+   static int coder_offset;
+ 
+-  static bool initialized;
++  static int initialized;
+ 
+   static Handle basic_create(int length, bool byte_arr, TRAPS);
+ 
+@@ -252,7 +252,7 @@ class java_lang_Class : AllStatic {
+   static int _name_offset;
+   static int _source_file_offset;
+ 
+-  static bool offsets_computed;
++  static int offsets_computed;
+   static int classRedefinedCount_offset;
+ 
+   static GrowableArray<Klass*>* _fixup_mirror_list;
+@@ -1267,7 +1267,7 @@ class java_security_AccessControlContext: AllStatic {
+ class java_lang_ClassLoader : AllStatic {
+  private:
+   static int _loader_data_offset;
+-  static bool offsets_computed;
++  static int offsets_computed;
+   static int parent_offset;
+   static int parallelCapable_offset;
+   static int name_offset;

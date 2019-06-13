@@ -1,9 +1,11 @@
---- jdk/make/RunTests.gmk	2019-04-01 19:26:25.000000000 +0200
-+++ new/make/RunTests.gmk	2019-06-12 10:54:26.919968395 +0200
-@@ -844,6 +844,7 @@
-   endif
+diff --git a/make/RunTests.gmk b/make/RunTests.gmk
+index a58e086c9..993363196 100644
+--- a/make/RunTests.gmk
++++ b/make/RunTests.gmk
+@@ -883,6 +883,7 @@ define SetupRunJtregTestBody
  
-   $1_JTREG_BASIC_OPTIONS += -e:TEST_IMAGE_GRAAL_DIR=${TEST_IMAGE_DIR}/hotspot/jtreg/graal
+   $1_JTREG_BASIC_OPTIONS += -e:TEST_IMAGE_DIR=$(TEST_IMAGE_DIR)
+   $1_JTREG_BASIC_OPTIONS += -e:TEST_IMAGE_GRAAL_DIR=$(TEST_IMAGE_DIR)/hotspot/jtreg/graal
 +  $1_JTREG_BASIC_OPTIONS += -e:ASAN_OPTIONS="handle_segv=0 detect_leaks=0"
  
    ifneq ($$(JTREG_FAILURE_HANDLER_OPTIONS), )
