@@ -90,7 +90,7 @@ if [ ! -d "$JDKDIR" ]; then
     # select git clone target
     if [ "$JDKVER" == "tip" ]; then
       JAVA_TARGET="master"
-      SUFFIX="ev3dirty"
+      SUFFIX="ev3-unreleased"
     else
       JAVA_TARGET="$JAVA_TAG"
       SUFFIX="ev3"
