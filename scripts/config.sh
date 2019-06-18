@@ -96,7 +96,9 @@ elif [ "$JDKVM" = "custom" ]; then
   fi
 elif [ "$JDKVM" = "client" ]; then
   if [ "$HOTSPOT_DEBUG" = "release" ]; then
-    HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=link-time-opt"
+    if [ "$JDKVER" -gt 11 ]; then
+      HOTSPOT_VARIANT="$HOTSPOT_VARIANT --with-jvm-features=link-time-opt"
+    fi
   else
     HOTSPOT_VARIANT="$HOTSPOT_VARIANT"
   fi
