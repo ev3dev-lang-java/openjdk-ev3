@@ -152,11 +152,6 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_jfr.patch"
   fi
 
-  # SIGSEGV when reading from __kuser_helper_version and ASAN is enabled
-  if [ -f "$SCRIPTDIR/${PATCHVER}_kuser.patch" ]; then
-    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_kuser.patch"
-  fi
-
   # unaligned atomic read causes segfault in test/hotspot/jtreg/vmTestbase/nsk/jvmti/CompiledMethodUnload/compmethunload001/TestDescription.java
   if [ -f "$SCRIPTDIR/${PATCHVER}_cds.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_cds.patch"
