@@ -137,11 +137,6 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_new.patch"
   fi
 
-  # (potentially unnecessary) optimization of the LIR_Assembler::atomic_op
-  if [ -f "$SCRIPTDIR/${PATCHVER}_atomicop.patch" ]; then
-    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_atomicop.patch"
-  fi
-
   # error from gtest
   if [ -f "$SCRIPTDIR/${PATCHVER}_8216493.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_8216493.patch"
