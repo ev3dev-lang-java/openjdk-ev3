@@ -137,11 +137,6 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_new.patch"
   fi
 
-  # error from gtest
-  if [ -f "$SCRIPTDIR/${PATCHVER}_8216493.patch" ]; then
-    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_8216493.patch"
-  fi
-
   # use standard breakpoint functionality on ARM
   if [ -f "$SCRIPTDIR/${PATCHVER}_bkpt.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_bkpt.patch"

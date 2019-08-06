@@ -1,6 +1,8 @@
---- jdk/src/hotspot/share/memory/metaspaceShared.cpp	2019-06-06 14:23:36.000000000 +0200
-+++ new/src/hotspot/share/memory/metaspaceShared.cpp	2019-06-12 15:28:08.423443309 +0200
-@@ -143,7 +143,7 @@
+diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
+index bed831d7a..95ec1044d 100644
+--- a/src/hotspot/share/memory/metaspaceShared.cpp
++++ b/src/hotspot/share/memory/metaspaceShared.cpp
+@@ -143,7 +143,7 @@ private:
  public:
    DumpRegion(const char* name) : _name(name), _base(NULL), _top(NULL), _end(NULL), _is_packed(false) {}
  
@@ -9,7 +11,7 @@
      char* p = (char*)align_up(_top, alignment);
      char* newtop = p + align_up(num_bytes, alignment);
      expand_top_to(newtop);
-@@ -1139,7 +1139,7 @@
+@@ -1139,7 +1139,7 @@ public:
      address obj = ref->obj();
      int bytes = ref->size() * BytesPerWord;
      char* p;
@@ -18,7 +20,7 @@
      char* oldtop;
      char* newtop;
  
-@@ -1157,7 +1157,7 @@
+@@ -1157,7 +1157,7 @@ public:
          Klass* klass = (Klass*)obj;
          if (klass->is_instance_klass()) {
            SystemDictionaryShared::validate_before_archiving(InstanceKlass::cast(klass));

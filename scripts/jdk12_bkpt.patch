@@ -1,6 +1,8 @@
---- jdk/src/hotspot/cpu/arm/globalDefinitions_arm.hpp	2019-04-01 19:26:25.000000000 +0200
-+++ new/src/hotspot/cpu/arm/globalDefinitions_arm.hpp	2019-06-07 17:12:00.723455747 +0200
-@@ -52,11 +52,4 @@
+diff --git a/src/hotspot/cpu/arm/globalDefinitions_arm.hpp b/src/hotspot/cpu/arm/globalDefinitions_arm.hpp
+index 07a367c32..10e97dfb8 100644
+--- a/src/hotspot/cpu/arm/globalDefinitions_arm.hpp
++++ b/src/hotspot/cpu/arm/globalDefinitions_arm.hpp
+@@ -52,11 +52,4 @@ const bool HaveVFP = true;
  #define AD_MD_HPP              "adfiles/ad_arm_32.hpp"
  #define C1_LIRGENERATOR_MD_HPP "c1_LIRGenerator_arm.hpp"
  

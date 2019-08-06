@@ -1,7 +1,9 @@
---- jdk/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp	2019-04-01 19:26:25.000000000 +0200
-+++ new/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp	2019-06-07 20:01:24.873537575 +0200
-@@ -89,17 +89,17 @@
- void JfrChunkWriter::write_header(intptr_t metadata_offset) {
+diff --git a/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp b/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp
+index cbd539568..aa5f9b5f5 100644
+--- a/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp
++++ b/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp
+@@ -88,17 +88,17 @@ size_t JfrChunkWriter::close(int64_t metadata_offset) {
+ void JfrChunkWriter::write_header(int64_t metadata_offset) {
    assert(this->is_valid(), "invariant");
    // Chunk size
 -  this->write_be_at_offset(size_written(), CHUNK_SIZE_OFFSET);
