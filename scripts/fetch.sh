@@ -152,11 +152,6 @@ if [ ! -d "$JDKDIR" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_jfr.patch"
   fi
 
-  # ASAN build broken
-  if [ -f "$SCRIPTDIR/${PATCHVER}_asan.patch" ]; then
-    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_asan.patch"
-  fi
-
   # SIGSEGV when reading from __kuser_helper_version and ASAN is enabled
   if [ -f "$SCRIPTDIR/${PATCHVER}_kuser.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_kuser.patch"
@@ -165,11 +160,6 @@ if [ ! -d "$JDKDIR" ]; then
   # out-of-bounds read found by ASAN
   if [ -f "$SCRIPTDIR/${PATCHVER}_class.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_class.patch"
-  fi
-
-  # ASAN catches non-bug segfaults when testing
-  if [ -f "$SCRIPTDIR/${PATCHVER}_asan2.patch" ]; then
-    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_asan2.patch"
   fi
 
   # unaligned atomic read causes segfault in test/hotspot/jtreg/vmTestbase/nsk/jvmti/CompiledMethodUnload/compmethunload001/TestDescription.java
