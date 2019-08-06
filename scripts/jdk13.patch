@@ -1,5 +1,5 @@
 diff --git a/doc/building.html b/doc/building.html
-index 4b3a39bc3..5b064265d 100644
+index cb19d10c0..02882eb76 100644
 --- a/doc/building.html
 +++ b/doc/building.html
 @@ -58,6 +58,7 @@
@@ -10,7 +10,7 @@ index 4b3a39bc3..5b064265d 100644
  </ul></li>
  <li><a href="#build-tools-requirements">Build Tools Requirements</a><ul>
  <li><a href="#autoconf">Autoconf</a></li>
-@@ -428,6 +429,13 @@ CC: Sun C++ 5.13 SunOS_i386 151846-10 2015/10/30</code></pre>
+@@ -425,6 +426,13 @@ CC: Sun C++ 5.13 SunOS_i386 151846-10 2015/10/30</code></pre>
  <li>To install on an rpm-based Linux, try running <code>sudo yum install libffi-devel</code>.</li>
  </ul>
  <p>Use <code>--with-libffi=&lt;path&gt;</code> if <code>configure</code> does not properly locate your libffi files.</p>
@@ -24,7 +24,7 @@ index 4b3a39bc3..5b064265d 100644
  <h2 id="build-tools-requirements">Build Tools Requirements</h2>
  <h3 id="autoconf">Autoconf</h3>
  <p>The JDK requires <a href="http://www.gnu.org/software/autoconf">Autoconf</a> on all platforms. At least version 2.69 is required.</p>
-@@ -499,6 +507,7 @@ CC: Sun C++ 5.13 SunOS_i386 151846-10 2015/10/30</code></pre>
+@@ -496,6 +504,7 @@ CC: Sun C++ 5.13 SunOS_i386 151846-10 2015/10/30</code></pre>
  <li><code>--with-x=&lt;path&gt;</code> - Set the path to <a href="#x11">X11</a></li>
  <li><code>--with-alsa=&lt;path&gt;</code> - Set the path to <a href="#alsa">ALSA</a></li>
  <li><code>--with-libffi=&lt;path&gt;</code> - Set the path to <a href="#libffi">libffi</a></li>
@@ -33,7 +33,7 @@ index 4b3a39bc3..5b064265d 100644
  </ul>
  <p>Certain third-party libraries used by the JDK (libjpeg, giflib, libpng, lcms and zlib) are included in the JDK repository. The default behavior of the JDK build is to use the included (&quot;bundled&quot;) versions of libjpeg, giflib, libpng and lcms. For zlib, the system lib (if present) is used except on Windows and AIX. However the bundled libraries may be replaced by an external version. To do so, specify <code>system</code> as the <code>&lt;source&gt;</code> option in these arguments. (The default is <code>bundled</code>).</p>
 diff --git a/doc/building.md b/doc/building.md
-index 4bfb6e6b0..0beae208d 100644
+index 55d25643f..31422ee5b 100644
 --- a/doc/building.md
 +++ b/doc/building.md
 @@ -555,6 +555,32 @@ Hotspot.
@@ -280,7 +280,7 @@ index 5f16f08b2..db485dd5f 100644
    LIB_SETUP_BUNDLED_LIBS
    LIB_SETUP_MISC_LIBS
 diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
-index 130b97218..296d50610 100644
+index 7b5eb5b19..846d3bb99 100644
 --- a/make/autoconf/spec.gmk.in
 +++ b/make/autoconf/spec.gmk.in
 @@ -367,6 +367,9 @@ FONTCONFIG_CFLAGS:=@FONTCONFIG_CFLAGS@
@@ -318,10 +318,10 @@ index ad27c929f..16dc8266e 100644
  # Optionally copy libffi.so.? into the the image
  
 diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
-index 1df121bc7..109de3d9d 100644
+index f6e0adfc1..6856910e9 100644
 --- a/make/hotspot/lib/CompileJvm.gmk
 +++ b/make/hotspot/lib/CompileJvm.gmk
-@@ -49,6 +49,7 @@ JVM_LDFLAGS += \
+@@ -51,6 +51,7 @@ JVM_ASFLAGS += $(EXTRA_ASFLAGS)
  
  JVM_LIBS += \
      $(JVM_LIBS_FEATURES) \

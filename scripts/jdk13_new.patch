@@ -1,5 +1,5 @@
 diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
-index c0c1b997c..4caf31386 100644
+index 075eb1f7f..643df6351 100644
 --- a/make/autoconf/hotspot.m4
 +++ b/make/autoconf/hotspot.m4
 @@ -313,6 +313,11 @@ AC_DEFUN_ONCE([HOTSPOT_SETUP_JVM_FEATURES],
@@ -85,7 +85,7 @@ index f028781ba..9bd39a865 100644
  #include "gc/g1/g1CollectedHeap.hpp"
  #endif
 diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
-index 090a422f1..00c382424 100644
+index 174f9a668..3bd1e45e7 100644
 --- a/src/hotspot/share/oops/constantPool.cpp
 +++ b/src/hotspot/share/oops/constantPool.cpp
 @@ -414,8 +414,12 @@ void ConstantPool::remove_unshareable_info() {
