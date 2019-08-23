@@ -47,8 +47,9 @@ if [ ! -d "$JDKDIR" ]; then
       fi
 
     else
-      echo "Error: unknown VERSION_POLICY: \"$VERSION_POLICY\". Please fix config.sh." >&2
-      exit 1
+    # * Direct model: for JDK9/JDK10; specify the revision directly
+      JAVA_TARGET="$VERSION_POLICY"
+      SUFFIX="ev3"
     fi
 
     # download it

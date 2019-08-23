@@ -147,7 +147,7 @@ VENDOR_FLAGS="$VENDOR_FLAGS --with-vendor-vm-bug-url=https://github.com/ev3dev-l
 
 # OpenJDK 9
 if [ "$JDKVER" == "9" ]; then
-  VERSION_POLICY="latest_general_availability"
+  VERSION_POLICY="jdk-9.0.4+11"
   JAVA_SCM="git"
   JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk9u.git"
   PATCHVER="jdk9"
@@ -171,7 +171,7 @@ if [ "$JDKVER" == "9" ]; then
 
 # OpenJDK 10
 elif [ "$JDKVER" == "10" ]; then
-  VERSION_POLICY="latest_general_availability"
+  VERSION_POLICY="jdk-10.0.2+13"
   JAVA_SCM="git"
   JAVA_REPO="https://github.com/AdoptOpenJDK/openjdk-jdk10u.git"
   PATCHVER="jdk10"
