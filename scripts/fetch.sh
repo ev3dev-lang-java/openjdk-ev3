@@ -48,7 +48,8 @@ if [ ! -d "$JDKDIR" ]; then
 
     else
     # * Direct model: for JDK9/JDK10; specify the revision directly
-      JAVA_TARGET="$VERSION_POLICY"
+      JAVA_TAG="$VERSION_POLICY"
+      JAVA_TARGET="$JAVA_TAG"
       SUFFIX="ev3"
     fi
 
