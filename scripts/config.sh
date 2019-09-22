@@ -281,11 +281,16 @@ elif [ "$JDKVER" == "13" ]; then
     SFLT_NEEDED=true
   fi
 
-# OpenJDK Master+dev
-elif [ "$JDKVER" == "tip" ]; then
-  VERSION_POLICY="latest_tag"
+# OpenJDK Loom & Master+dev
+elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
+  if [ "$JDKVER" == "loom" ]; then
+    VERSION_POLICY="latest_commit"
+    JAVA_REPO="https://github.com/openjdk/loom.git"
+  else
+    VERSION_POLICY="latest_tag"
+    JAVA_REPO="https://github.com/openjdk/jdk.git"
+  fi
   JAVA_SCM="git"
-  JAVA_REPO="https://github.com/openjdk/jdk.git"
   PATCHVER="jdk13"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
@@ -321,6 +326,7 @@ else
   echo "JDKVER=11" >&2
   echo "JDKVER=12" >&2
   echo "JDKVER=13" >&2
+  echo "JDKVER=loom" >&2
   echo "JDKVER=tip" >&2
   exit 1
 fi
