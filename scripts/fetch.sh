@@ -58,6 +58,11 @@ if [ ! -d "$JDKDIR" ]; then
       SUFFIX="$VERSION_SUFFIX"
     fi
 
+    # override branch
+    if [ ! -z "$JAVA_BRANCH" ]; then
+      JAVA_TARGET="$JAVA_BRANCH"
+    fi
+
     # download it
     echo "[FETCH] Cloning Java repo from Git"
     echo "[FETCH] - repo url:   $JAVA_REPO"
