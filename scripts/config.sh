@@ -285,6 +285,7 @@ elif [ "$JDKVER" == "13" ]; then
 elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
   if [ "$JDKVER" == "loom" ]; then
     VERSION_POLICY="latest_commit"
+    VERSION_SUFFIX="ev3-loom-experimental"
     JAVA_REPO="https://github.com/openjdk/loom.git"
   else
     VERSION_POLICY="latest_tag"

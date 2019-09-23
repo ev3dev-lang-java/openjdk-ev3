@@ -53,6 +53,11 @@ if [ ! -d "$JDKDIR" ]; then
       SUFFIX="ev3"
     fi
 
+    # override version suffix
+    if [ ! -z "$VERSION_SUFFIX" ]; then
+      SUFFIX="$VERSION_SUFFIX"
+    fi
+
     # download it
     echo "[FETCH] Cloning Java repo from Git"
     git clone --depth "1" --branch "$JAVA_TARGET" "$JAVA_REPO" "$JDKDIR"
