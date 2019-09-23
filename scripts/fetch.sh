@@ -60,6 +60,8 @@ if [ ! -d "$JDKDIR" ]; then
 
     # download it
     echo "[FETCH] Cloning Java repo from Git"
+    echo "[FETCH] - repo url:   $JAVA_REPO"
+    echo "[FETCH] - branch/tag: $JAVA_TARGET"
     git clone --depth "1" --branch "$JAVA_TARGET" "$JAVA_REPO" "$JDKDIR"
 
     # no get_source.sh is necessary
@@ -73,6 +75,8 @@ if [ ! -d "$JDKDIR" ]; then
   # build metadata
   echo "# ev3dev-lang-java openjdk build metadata"  >"$BUILDDIR/metadata"
   echo "JAVA_ORIGIN=\"$JAVA_SCM\""                 >>"$BUILDDIR/metadata"
+  echo "JAVA_REPO=\"$JAVA_REPO\""                  >>"$BUILDDIR/metadata"
+  echo "JAVA_BRANCH=\"$JAVA_TARGET\""              >>"$BUILDDIR/metadata"
   echo "JAVA_COMMIT=\"$JAVA_COMMIT\""              >>"$BUILDDIR/metadata"
   echo "JAVA_VERSION=\"$JAVA_VERSION\""            >>"$BUILDDIR/metadata"
   echo "CONFIG_VM=\"$JDKVM\""                      >>"$BUILDDIR/metadata"
@@ -83,41 +87,52 @@ if [ ! -d "$JDKDIR" ]; then
   echo "BUILDER_COMMIT=\"$BUILDER_COMMIT\""        >>"$BUILDDIR/metadata"
   echo "BUILDER_EXTRA=\"$BUILDER_EXTRA\""          >>"$BUILDDIR/metadata"
 
-
   echo "[FETCH] Build metadata: "
   cat "$BUILDDIR/metadata"
   echo
+
+  PATCHES=""
 
   # apply the EV3-specific patches
   echo "[FETCH] Patching the source tree"
   if [ -f "$SCRIPTDIR/${PATCHVER}.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}.patch"
+    PATCHES="$PATCHES main"
   fi
 
   # debian library path
   if [ -f "$SCRIPTDIR/${PATCHVER}_lib.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_lib.patch"
+    PATCHES="$PATCHES lib"
   fi
 
   # new patches from building openjdk 12
   if [ -f "$SCRIPTDIR/${PATCHVER}_new.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_new.patch"
+    PATCHES="$PATCHES new"
   fi
 
   # use standard breakpoint functionality on ARM
   if [ -f "$SCRIPTDIR/${PATCHVER}_bkpt.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_bkpt.patch"
+    PATCHES="$PATCHES bkpt"
   fi
 
   # invalid written JFR files
   if [ -f "$SCRIPTDIR/${PATCHVER}_jfr.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_jfr.patch"
+    PATCHES="$PATCHES jfr"
   fi
 
   # unaligned atomic read causes segfault in test/hotspot/jtreg/vmTestbase/nsk/jvmti/CompiledMethodUnload/compmethunload001/TestDescription.java
   if [ -f "$SCRIPTDIR/${PATCHVER}_cds.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_cds.patch"
+    PATCHES="$PATCHES cds"
   fi
+
+  # write patches to metadata
+  echo "[FETCH] Patches applied: $PATCHES"
+  echo "JAVA_PATCHES=\"$PATCHES\"" >>"$BUILDDIR/metadata"
 
   # store mercurial revision
   echo "$JAVA_COMMIT" > "$JDKDIR/.src-rev"
