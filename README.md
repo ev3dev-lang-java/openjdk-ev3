@@ -39,6 +39,11 @@ Builds for older boards should work on newer boards, the performance might just 
 [archive]: https://github.com/ev3dev-lang-java/openjdk-ev3-archive
 
 
+## Overview & documentation
+
+See https://docs.google.com/document/d/1rsBDU68_ETXm9b_Lb4b6oPVBbNwT9f4xEua2w3-Pm6A/edit?usp=sharing
+
+
 ## Components
 The build process produces these files:
 
