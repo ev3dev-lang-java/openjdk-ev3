@@ -252,7 +252,7 @@ elif [ "$JDKVER" == "12" ]; then
 
 # OpenJDK 13
 elif [ "$JDKVER" == "13" ]; then
-  VERSION_POLICY="latest_tag"
+  VERSION_POLICY="latest_general_availability"
   JAVA_SCM="git"
   JAVA_REPO="https://github.com/openjdk/jdk13.git"
   PATCHVER="jdk13"
