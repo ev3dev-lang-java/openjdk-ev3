@@ -76,6 +76,8 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --with-libpng=system \
                    --with-zlib=system \
                    --with-lcms=system \
+                   --with-extra-cflags="-fno-tree-pre" \
+                   --with-extra-cxxflags="-fno-tree-pre" \
                    AR="$AR" \
                    NM="$NM" \
                    BUILD_AR="gcc-ar" \
