@@ -1,0 +1,35 @@
+diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
+index b0b8b8f5a..2f9cbcd0a 100644
+--- a/src/hotspot/share/memory/metaspaceShared.cpp
++++ b/src/hotspot/share/memory/metaspaceShared.cpp
+@@ -1213,7 +1213,7 @@ public:
+     address obj = ref->obj();
+     int bytes = ref->size() * BytesPerWord;
+     char* p;
+-    size_t alignment = BytesPerWord;
++    size_t alignment = BytesPerLong;
+     char* oldtop;
+     char* newtop;
+ 
+@@ -1231,7 +1231,7 @@ public:
+         Klass* klass = (Klass*)obj;
+         if (klass->is_instance_klass()) {
+           SystemDictionaryShared::validate_before_archiving(InstanceKlass::cast(klass));
+-          _rw_region.allocate(sizeof(address), BytesPerWord);
++          _rw_region.allocate(sizeof(u8), alignment);
+         }
+       }
+       p = _rw_region.allocate(bytes, alignment);
+diff --git a/src/hotspot/share/memory/metaspaceShared.hpp b/src/hotspot/share/memory/metaspaceShared.hpp
+index 43d69975b..f1236659b 100644
+--- a/src/hotspot/share/memory/metaspaceShared.hpp
++++ b/src/hotspot/share/memory/metaspaceShared.hpp
+@@ -60,7 +60,7 @@ public:
+   DumpRegion(const char* name) : _name(name), _base(NULL), _top(NULL), _end(NULL), _is_packed(false) {}
+ 
+   char* expand_top_to(char* newtop);
+-  char* allocate(size_t num_bytes, size_t alignment=BytesPerWord);
++  char* allocate(size_t num_bytes, size_t alignment=BytesPerLong);
+ 
+   void append_intptr_t(intptr_t n) {
+     assert(is_aligned(_top, sizeof(intptr_t)), "bad alignment");
