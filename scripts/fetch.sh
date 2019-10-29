@@ -141,6 +141,12 @@ if [ ! -d "$JDKDIR" ]; then
     PATCHES="$PATCHES cds"
   fi
 
+  # generic broken build
+  if [ -f "$SCRIPTDIR/${PATCHVER}_klassinline.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_klassinline.patch"
+    PATCHES="$PATCHES klassinline"
+  fi
+
   # write patches to metadata
   echo "[FETCH] Patches applied: $PATCHES"
   echo "JAVA_PATCHES=\"$PATCHES\"" >>"$BUILDDIR/metadata"
