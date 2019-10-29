@@ -105,6 +105,12 @@ if [ ! -d "$JDKDIR" ]; then
     PATCHES="$PATCHES main"
   fi
 
+  # replacement for softfloat patch
+  if [ -f "$SCRIPTDIR/${PATCHVER}_nosflt.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_nosflt.patch"
+    PATCHES="$PATCHES nosflt"
+  fi
+
   # debian library path
   if [ -f "$SCRIPTDIR/${PATCHVER}_lib.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_lib.patch"
