@@ -147,13 +147,6 @@ else
 fi
 
 
-if [ ! -d "$SFLTDIR" ] && [ "$SFLT_NEEDED" == "true" ]; then
-  # clone the root project
-  echo "[FETCH] Cloning SoftFloat repo"
-  git clone --depth 1 "$SFLTREPO" "$SFLTDIR"
-fi
-
-
 if [ -d "$ABLDDIR" ]; then
   rm -rf "$ABLDDIR"
 fi

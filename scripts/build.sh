@@ -5,13 +5,6 @@ cd "$(dirname ${BASH_SOURCE[0]})"
 source config.sh
 source "$BUILDDIR/metadata"
 
-if [ "$SFLT_NEEDED" == "true" ]; then
-  echo "[BUILD] Building softfloat support"
-  cd "$SFLTBUILD"
-  make
-  make DESTDIR="$SFLTPFX" install
-fi
-
 cd "$JDKDIR"
 
 # refresh patched build system
@@ -34,7 +27,6 @@ fi
 #   - Force softfloat runtime:  -D__SOFTFP__
 # Fix the "internal" string:   --with-version-string="<version>"
 # Use correct JNI path:        --with-jni-libpath=<dir1>:<dir2>...
-# Use softfloat libraries:     --with-softfloat-lib=<softfloat.a> --with-softfloat-include=<dirname softfloat.h>
 # Use AdoptOpenJDK CA certs:   --with-cacerts-file=<path>
 # Use correct debug level      --with-debug-level=<level>
 # Help to find freetype:       --with-freetype-lib=/usr/lib/arm-linux-gnueabi
@@ -65,7 +57,6 @@ if [ "$JDKPLATFORM" == "ev3" ]; then
                    --disable-warnings-as-errors \
                    --with-version-string="$JAVA_VERSION" \
                    $JNI_PATH_FLAGS \
-                   $SOFTFLOAT_FLAGS \
                    $VENDOR_FLAGS \
                    --with-cacerts-file="$CACERTFILE" \
                    --with-debug-level=$HOTSPOT_DEBUG \
