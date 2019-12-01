@@ -105,6 +105,12 @@ if [ ! -d "$JDKDIR" ]; then
     PATCHES="$PATCHES main"
   fi
 
+  # replacement for softfloat patch
+  if [ -f "$SCRIPTDIR/${PATCHVER}_nosflt.patch" ]; then
+    patch -p1 -i "$SCRIPTDIR/${PATCHVER}_nosflt.patch"
+    PATCHES="$PATCHES nosflt"
+  fi
+
   # debian library path
   if [ -f "$SCRIPTDIR/${PATCHVER}_lib.patch" ]; then
     patch -p1 -i "$SCRIPTDIR/${PATCHVER}_lib.patch"
@@ -144,13 +150,6 @@ if [ ! -d "$JDKDIR" ]; then
 
 else
   echo "[FETCH] Directory for JDK repository exists, assuming everything has been done already." 2>&1
-fi
-
-
-if [ ! -d "$SFLTDIR" ] && [ "$SFLT_NEEDED" == "true" ]; then
-  # clone the root project
-  echo "[FETCH] Cloning SoftFloat repo"
-  git clone --depth 1 "$SFLTREPO" "$SFLTDIR"
 fi
 
 

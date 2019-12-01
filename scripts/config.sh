@@ -6,14 +6,6 @@ SCRIPTDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 BUILDDIR="/build"
 # jdk repository directory
 JDKDIR="$BUILDDIR/jdk"
-# softfloat repository directory
-SFLTDIR="$BUILDDIR/sflt"
-# softfloat repository
-SFLTREPO="https://github.com/ev3dev-lang-java/softfloat-openjdk.git"
-# softfloat build directory
-SFLTBUILD="$SFLTDIR/build/Linux-ARM-VFPv2-GCC-OpenJDK"
-# softfloat license
-SFLTPFX="$SFLTDIR/output"
 # openjdk-build repo dir
 ABLDDIR="$BUILDDIR/openjdk-build"
 # openjdk-build repo
@@ -166,7 +158,6 @@ if [ "$JDKVER" == "9" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
-  SOFTFLOAT_FLAGS=
   VENDOR_FLAGS=
 
 # OpenJDK 10
@@ -189,7 +180,6 @@ elif [ "$JDKVER" == "10" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
-  SOFTFLOAT_FLAGS=
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
@@ -217,7 +207,6 @@ elif [ "$JDKVER" == "11" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-normal-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm926ejs
   JNI_PATH_FLAGS=
-  SOFTFLOAT_FLAGS=
 
 # OpenJDK 12
 elif [ "$JDKVER" == "12" ]; then
@@ -245,10 +234,6 @@ elif [ "$JDKVER" == "12" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
-  SOFTFLOAT_FLAGS="--with-sflt=$SFLTPFX"
-  if [ "$JDKPLATFORM" == "ev3" ]; then
-    SFLT_NEEDED=true
-  fi
 
 # OpenJDK 13
 elif [ "$JDKVER" == "13" ]; then
@@ -276,10 +261,6 @@ elif [ "$JDKVER" == "13" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
-  SOFTFLOAT_FLAGS="--with-sflt=$SFLTPFX"
-  if [ "$JDKPLATFORM" == "ev3" ]; then
-    SFLT_NEEDED=true
-  fi
 
 # OpenJDK Loom & Master+dev
 elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
@@ -314,10 +295,6 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
-  SOFTFLOAT_FLAGS="--with-sflt=$SFLTPFX"
-  if [ "$JDKPLATFORM" == "ev3" ]; then
-    SFLT_NEEDED=true
-  fi
 
 # invalid or unset version
 else
