@@ -15,10 +15,10 @@ index 075eb1f7f..643df6351 100644
    if HOTSPOT_CHECK_JVM_FEATURE(jvmti) && ! HOTSPOT_CHECK_JVM_FEATURE(services); then
      AC_MSG_ERROR([Specified JVM feature 'jvmti' requires feature 'services'])
 diff --git a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
-index 0c4d0e0fe..2f7044349 100644
+index 871944852..1a93874ae 100644
 --- a/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
 +++ b/src/hotspot/cpu/arm/c1_LIRGenerator_arm.cpp
-@@ -775,7 +775,7 @@ LIR_Opr LIRGenerator::atomic_xchg(BasicType type, LIR_Opr addr, LIRItem& value)
+@@ -774,7 +774,7 @@ LIR_Opr LIRGenerator::atomic_xchg(BasicType type, LIR_Opr addr, LIRItem& value)
    bool is_oop = type == T_OBJECT || type == T_ARRAY;
    LIR_Opr result = new_register(type);
    value.load_item();
@@ -27,7 +27,7 @@ index 0c4d0e0fe..2f7044349 100644
    LIR_Opr tmp = (UseCompressedOops && is_oop) ? new_pointer_register() : LIR_OprFact::illegalOpr;
    __ xchg(addr, value.result(), result, tmp);
    return result;
-@@ -784,7 +784,7 @@ LIR_Opr LIRGenerator::atomic_xchg(BasicType type, LIR_Opr addr, LIRItem& value)
+@@ -783,7 +783,7 @@ LIR_Opr LIRGenerator::atomic_xchg(BasicType type, LIR_Opr addr, LIRItem& value)
  LIR_Opr LIRGenerator::atomic_add(BasicType type, LIR_Opr addr, LIRItem& value) {
    LIR_Opr result = new_register(type);
    value.load_item();
@@ -36,7 +36,7 @@ index 0c4d0e0fe..2f7044349 100644
    LIR_Opr tmp = new_register(type);
    __ xadd(addr, value.result(), result, tmp);
    return result;
-@@ -1311,9 +1311,14 @@ void LIRGenerator::volatile_field_store(LIR_Opr value, LIR_Address* address,
+@@ -1310,9 +1310,14 @@ void LIRGenerator::volatile_field_store(LIR_Opr value, LIR_Address* address,
                                          CodeEmitInfo* info) {
    if (value->is_double_cpu()) {
      assert(address->index()->is_illegal(), "should have a constant displacement");
@@ -54,7 +54,7 @@ index 0c4d0e0fe..2f7044349 100644
      return;
    }
    __ store(value, address, info, lir_patch_none);
-@@ -1323,9 +1328,14 @@ void LIRGenerator::volatile_field_load(LIR_Address* address, LIR_Opr result,
+@@ -1322,9 +1327,14 @@ void LIRGenerator::volatile_field_load(LIR_Address* address, LIR_Opr result,
                                         CodeEmitInfo* info) {
    if (result->is_double_cpu()) {
      assert(address->index()->is_illegal(), "should have a constant displacement");
@@ -85,7 +85,7 @@ index f028781ba..9bd39a865 100644
  #include "gc/g1/g1CollectedHeap.hpp"
  #endif
 diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
-index 174f9a668..3bd1e45e7 100644
+index 090a422f1..00c382424 100644
 --- a/src/hotspot/share/oops/constantPool.cpp
 +++ b/src/hotspot/share/oops/constantPool.cpp
 @@ -414,8 +414,12 @@ void ConstantPool::remove_unshareable_info() {
