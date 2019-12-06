@@ -15,10 +15,10 @@ index a4b67f09f..15f6f94db 100644
    ifeq ($(OPENJDK_TARGET_CPU_BITS), 64)
      RC_DESC := 64-Bit$(SPACE)
 diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
-index 4a7986e46..ea530bbce 100644
+index 2cccc9767..35a62ca1b 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
 +++ b/src/hotspot/os/linux/os_linux.cpp
-@@ -406,10 +406,10 @@ void os::init_system_properties_values() {
+@@ -408,10 +408,10 @@ void os::init_system_properties_values() {
    //        1: ...
    //        ...
    //        7: The default directories, normally /lib and /usr/lib.

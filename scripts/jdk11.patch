@@ -1,8 +1,8 @@
 diff --git a/make/autoconf/flags-other.m4 b/make/autoconf/flags-other.m4
-index ffd093ee1..0bb8172bc 100644
+index dbbeaf11c..985b06cbd 100644
 --- a/make/autoconf/flags-other.m4
 +++ b/make/autoconf/flags-other.m4
-@@ -121,6 +121,10 @@ AC_DEFUN([FLAGS_SETUP_ASFLAGS_CPU_DEP],
+@@ -119,6 +119,10 @@ AC_DEFUN([FLAGS_SETUP_ASFLAGS_CPU_DEP],
    # Misuse EXTRA_CFLAGS to mimic old behavior
    $2JVM_ASFLAGS="$JVM_BASIC_ASFLAGS ${$2EXTRA_CFLAGS}"
  
@@ -14,7 +14,7 @@ index ffd093ee1..0bb8172bc 100644
  ])
  
 diff --git a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
-index 472e7a638..a7a7b8467 100644
+index 1ffc43726..159a329b8 100644
 --- a/make/autoconf/flags.m4
 +++ b/make/autoconf/flags.m4
 @@ -34,7 +34,7 @@ m4_include([flags-other.m4])
@@ -37,7 +37,7 @@ index 472e7a638..a7a7b8467 100644
        ARM_FLOAT_TYPE=vfp-sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-index 53d6d17de..f52495086 100644
+index 53d6d17de..00abcbaf7 100644
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
 +++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
 @@ -498,7 +498,7 @@ class Assembler : public AbstractAssembler  {

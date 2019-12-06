@@ -73,10 +73,10 @@ index 342c1c347..ac86ecfbd 100644
    }
  #endif // !AARCH64
 diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
-index 2b82d1305..3a577827f 100644
+index f20f5305c..40c5f7be1 100644
 --- a/src/hotspot/share/memory/metaspaceShared.cpp
 +++ b/src/hotspot/share/memory/metaspaceShared.cpp
-@@ -62,6 +62,7 @@
+@@ -63,6 +63,7 @@
  #include "utilities/align.hpp"
  #include "utilities/defaultStream.hpp"
  #include "utilities/hashtable.inline.hpp"
@@ -85,7 +85,7 @@ index 2b82d1305..3a577827f 100644
  #include "gc/g1/g1Allocator.inline.hpp"
  #include "gc/g1/g1CollectedHeap.hpp"
 diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
-index e531669ee..ced9bd611 100644
+index 6ebf9513b..543fff64b 100644
 --- a/src/hotspot/share/oops/constantPool.cpp
 +++ b/src/hotspot/share/oops/constantPool.cpp
 @@ -400,8 +400,12 @@ void ConstantPool::remove_unshareable_info() {

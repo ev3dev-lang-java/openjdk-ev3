@@ -1,5 +1,5 @@
 diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-index 53d6d17de..f52495086 100644
+index 00abcbaf7..f52495086 100644
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
 +++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
 @@ -1239,10 +1239,11 @@ extern int  __aeabi_dcmpgt(double, double);
