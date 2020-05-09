@@ -301,7 +301,7 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
     JAVA_REPO="https://github.com/openjdk/jdk.git"
   fi
   JAVA_SCM="git"
-  PATCHVER="jdk14"
+  PATCHVER="jdk15"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
     HOSTJDK="$BUILDDIR/jdk-ev3"
