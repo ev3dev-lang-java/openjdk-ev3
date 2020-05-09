@@ -13,7 +13,8 @@ Builds for older boards should work on newer boards, the performance might just 
 | OpenJDK 10        | EV3      | x86→ARM | C1 JIT | [archived][archive]     | N/A                     |
 | OpenJDK 11        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][1]][2]   | [![-> jenkins][3]][4]   |
 | OpenJDK 12        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][5]][6]   | [![-> jenkins][7]][8]   |
-| OpenJDK 13 (ea)   | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][9]][10]  | [![-> jenkins][11]][12] |
+| OpenJDK 13        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][9]][10]  | [![-> jenkins][11]][12] |
+| OpenJDK 14        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][17]][18] | [![-> jenkins][19]][20] |
 | OpenJDK tip (dev) | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][13]][14] | [![-> jenkins][15]][16] |
 
 [1]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-11/badge/icon
@@ -35,6 +36,11 @@ Builds for older boards should work on newer boards, the performance might just 
 [14]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-bleeding/
 [15]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-bleeding/badge/icon
 [16]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-bleeding/
+
+[17]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-14/badge/icon
+[17]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-14/
+[19]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-14/badge/icon
+[20]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-14/
 
 [archive]: https://github.com/ev3dev-lang-java/openjdk-ev3-archive
 
@@ -66,7 +72,7 @@ To see which modules are included in our case, take a look at the `JRI_MODULES` 
 TARGET_WORKSPACE="$(pwd)/build" # 10 GB of free space should be sufficient, probably less
 TARGET_DEBIAN_VERSION="stretch" # stretch or buster
 TARGET_OPENJDK_VERSION="11" # 9, 10 - retired, may not be working
-                            # 11, 12, 13 - most likely working
+                            # 11, 12, 13, 14 - most likely working
                             # loom or tip - experimental, may be broken
 
 # clone repository
