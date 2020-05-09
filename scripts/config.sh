@@ -332,6 +332,7 @@ else
   echo "JDKVER=11" >&2
   echo "JDKVER=12" >&2
   echo "JDKVER=13" >&2
+  echo "JDKVER=14" >&2
   echo "JDKVER=loom" >&2
   echo "JDKVER=tip" >&2
   exit 1
