@@ -26,4 +26,5 @@ VOLUME /build
 
 USER compiler
 WORKDIR /opt/jdkpkg
-CMD ["/usr/bin/qemu-arm-static", "/bin/bash", "/opt/jdkpkg/package.sh"]
+ENTRYPOINT ["/usr/bin/qemu-arm-static", "/bin/bash", "-c"]
+CMD ["/opt/jdkpkg/package.sh"]
