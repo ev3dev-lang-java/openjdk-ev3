@@ -19,10 +19,11 @@ node(selector) {
     // our docker images
     def osImage
     def bldImage
+    def pkgImage
 
     // prepare run parameters
     String mountParams = "-v ${env.WORKSPACE}/build:/build"
-    String envParams = "-e JDKVER=${params.JDKVER_VALUE} -e JDKVM=${params.JDKVM_VALUE} -e JDKPLATFORM=${params.JDKPLATFORM_VALUE} -e AUTOBUILD=1"
+    String envParams = "-e JDKVER=${params.JDKVER_VALUE} -e JDKVM=${params.JDKVM_VALUE} -e JDKPLATFORM=${params.JDKPLATFORM_VALUE} -e AUTOBUILD=1 -e JAVA_PACKAGE_REVISION=-1"
 
     try {
         // clean and prepare
@@ -41,6 +42,7 @@ node(selector) {
             infoArg += " --build-arg BUILD_TYPE=\"${params.BUILD_TYPE}\""
             osImage  = docker.build("ev3dev-lang-java:jdk-${params.BUILD_TYPE}-${params.DEBIAN}",  "${infoArg}  -f ${env.WORKSPACE}/system/Dockerfile.${params.BUILD_TYPE}  ${env.WORKSPACE}/system")
             bldImage = docker.build("ev3dev-lang-java:jdk-${params.BUILD_TYPE}-build",             "${infoArg}                                                              ${env.WORKSPACE}/scripts")
+            pkgImage = docker.build("ev3dev-lang-java:jdk-package",                                "${infoArg}                                                              ${env.WORKSPACE}/packaging")
         }
         stage("JDK download") {
             bldImage.inside("${mountParams} ${envParams}") {
@@ -65,17 +67,28 @@ node(selector) {
             archiveArtifacts artifacts: "build/jmods-${params.JDKPLATFORM_VALUE}.tar.gz", fingerprint: true
         }
 
+        stage("JDK debpkg") {
+            pkgImage.inside("${mountParams} ${envParams}") {
+                sh "/opt/jdkpkg/package.sh"
+            }
+            archiveArtifacts artifacts: "build/pkg/*", fingerprint: false
+        }
+
     } finally {
         stage ('Cleanup') {
             // clean up workspace
+            pkgImage.inside("${mountParams}") {
+                try { sh "sudo rm -rf /build/*" } catch(err) {}
+            }
             bldImage.inside("${mountParams}") {
                 try { sh "sudo rm -rf /build/*" } catch(err) {}
             }
             try { sh "rm -rf ${env.WORKSPACE}/build" } catch(err) {}
 
             // clean up docker images
+            try { sh "docker rmi ${pkgImage.id} 2>/dev/null" } catch (err) {}
             try { sh "docker rmi ${bldImage.id} 2>/dev/null" } catch (err) {}
-            try { sh "docker rmi ${osImage.id} 2>/dev/null"  } catch (err) {}
+            try { sh "docker rmi ${osImage.id}  2>/dev/null"  } catch (err) {}
             cleanWs()
         }
     }
