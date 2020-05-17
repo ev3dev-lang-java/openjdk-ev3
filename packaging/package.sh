@@ -65,3 +65,4 @@ cd "$PKGDIR"
 debuild -b -us -uc --no-sign --buildinfo-option="-O"
 cd /build
 rm -rf "$PKGDIR"
+rm -rf "$PKGDIR.orig.tar.xz"
