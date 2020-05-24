@@ -16,7 +16,7 @@ CACERTFILE="$ABLDDIR/security/cacerts"
 JAVA_TMP="$BUILDDIR/jdk_tmp"
 TARBALL_MAX_DOWNLOADS=10
 
-JRI_MODULES="java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool"
+JRI_MODULES="java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool,jdk.crypto.ec"
 
 JTREG="$BUILDDIR/jtreg"
 JTREG_URL="https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"
