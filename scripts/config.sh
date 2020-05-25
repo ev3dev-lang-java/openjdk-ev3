@@ -265,7 +265,7 @@ elif [ "$JDKVER" == "13" ]; then
 # OpenJDK 14
 elif [ "$JDKVER" == "14" ]; then
   VERSION_POLICY="latest_general_availability"
-  JAVA_REPO="https://github.com/openjdk/jdk14.git"
+  JAVA_REPO="https://github.com/openjdk/jdk14u.git"
   JAVA_SCM="git"
   PATCHVER="jdk14"
   AUTOGEN_STYLE="v2"
