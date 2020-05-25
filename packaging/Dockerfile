@@ -13,7 +13,8 @@ RUN apt-get -qq update && \
         devscripts debhelper fakeroot \
         zip unzip \
         gnupg dctrl-tools dput \
-        liblcms2-2
+        liblcms2-2 \
+        pigz xz-utils
 
 # prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler
