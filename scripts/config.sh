@@ -262,9 +262,9 @@ elif [ "$JDKVER" == "13" ]; then
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
 
-# OpenJDK 14 ea
+# OpenJDK 14
 elif [ "$JDKVER" == "14" ]; then
-  VERSION_POLICY="latest_tag"
+  VERSION_POLICY="latest_general_availability"
   JAVA_REPO="https://github.com/openjdk/jdk14.git"
   JAVA_SCM="git"
   PATCHVER="jdk14"
