@@ -38,7 +38,7 @@ Builds for older boards should work on newer boards, the performance might just 
 [16]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-bleeding/
 
 [17]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-14/badge/icon
-[17]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-14/
+[18]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-14/
 [19]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-14/badge/icon
 [20]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-14/
 
