@@ -239,7 +239,7 @@ elif [ "$JDKVER" == "12" ]; then
 elif [ "$JDKVER" == "13" ]; then
   VERSION_POLICY="latest_general_availability"
   JAVA_SCM="git"
-  JAVA_REPO="https://github.com/openjdk/jdk13.git"
+  JAVA_REPO="https://github.com/openjdk/jdk13u.git"
   PATCHVER="jdk13"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
