@@ -26,9 +26,6 @@ COPY *.awk *.patch *.sh /opt/jdkpkg/
 COPY debian/ /opt/jdkpkg/debian/
 RUN chmod +x /opt/jdkpkg/*.sh
 
-# this directory should be mounted
-VOLUME /build
-
 USER compiler
 WORKDIR /opt/jdkpkg
 CMD ["/bin/bash", "-c", "/opt/jdkpkg/package.sh"]
