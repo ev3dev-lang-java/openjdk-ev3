@@ -337,9 +337,9 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
     HOSTJDK_FILE="$BUILDDIR/jdk-ev3.tar.gz"
     # stretch and buster have different versions
     if [ "$BUILDER_DISTRO" = "stretch" ]; then
-      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/stretch-14/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/stretch-15/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
     else
-      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/buster-14/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/buster-15/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
     fi
   else
     # same for both stretch & buster
