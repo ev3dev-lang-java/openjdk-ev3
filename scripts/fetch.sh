@@ -166,3 +166,9 @@ fi
 # clone the root project
 echo "[FETCH] Cloning openjdk-build repo"
 git clone --depth 1 "$ABLDREPO" "$ABLDDIR"
+
+if [ ! -f "$CACERTFILE" ]; then
+  echo "[FETCH] Generating CA certificate database"
+  cd "$(dirname "$CACERTFILE")"
+  ./mk-cacerts.sh --keytool "$HOSTJDK/bin/keytool"
+fi
