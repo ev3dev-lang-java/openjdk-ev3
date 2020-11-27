@@ -17,10 +17,17 @@ if [ "$NUM_OF_FIELDS" -eq 0 ]; then
     export DEB_JRI_MAJOR=$DEB_JRI_PREFIX
     export DEB_JRI_MINOR=0
     export DEB_JRI_PATCH=0
+    export DEB_JRI_SUBPATCH=""
 elif [ "$NUM_OF_FIELDS" -eq 2 ]; then
     export DEB_JRI_MAJOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 1)
     export DEB_JRI_MINOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 2)
     export DEB_JRI_PATCH=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 3)
+    export DEB_JRI_SUBPATCH=""
+elif [ "$NUM_OF_FIELDS" -eq 3 ]; then
+    export DEB_JRI_MAJOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 1)
+    export DEB_JRI_MINOR=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 2)
+    export DEB_JRI_PATCH=$(echo "$DEB_JRI_PREFIX" | cut -d . -f 3)
+    export DEB_JRI_SUBPATCH=".$(echo "$DEB_JRI_PREFIX" | cut -d . -f 4)"
 else
     echo "Unsupported version string: $JAVA_VERSION" 1>&2
     exit 1
@@ -38,7 +45,7 @@ if [ -z "$DEB_JRI_PATCH" ]; then
 fi
 
 PKG="jri-${DEB_JRI_MAJOR}-${DEB_JRI_PLATFORM}"
-PKGVER="${DEB_JRI_MAJOR}.${DEB_JRI_MINOR}.${DEB_JRI_PATCH}~${DEB_JRI_BUILD}"
+PKGVER="${DEB_JRI_MAJOR}.${DEB_JRI_MINOR}.${DEB_JRI_PATCH}${DEB_JRI_SUBPATCH}~${DEB_JRI_BUILD}"
 PKGNAME="${PKG}_${PKGVER}"
 DATE=$(LC_ALL=C date -R)
 if [ -z "$DISTRO" ]; then
