@@ -1,8 +1,8 @@
 diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
-index 1d4c710be..da6f3711c 100644
+index d598b9897..8c1038d2a 100644
 --- a/make/autoconf/hotspot.m4
 +++ b/make/autoconf/hotspot.m4
-@@ -312,6 +312,11 @@ AC_DEFUN_ONCE([HOTSPOT_SETUP_JVM_FEATURES],
+@@ -326,6 +326,11 @@ AC_DEFUN_ONCE([HOTSPOT_SETUP_JVM_FEATURES],
      HOTSPOT_TARGET_CPU_ARCH=arm
    fi
  
@@ -73,11 +73,11 @@ index 342c1c347..ac86ecfbd 100644
    }
  #endif // !AARCH64
 diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
-index f20f5305c..40c5f7be1 100644
+index 8403ae7e1..63e3f1e65 100644
 --- a/src/hotspot/share/memory/metaspaceShared.cpp
 +++ b/src/hotspot/share/memory/metaspaceShared.cpp
-@@ -63,6 +63,7 @@
- #include "utilities/align.hpp"
+@@ -64,6 +64,7 @@
+ #include "utilities/bitMap.hpp"
  #include "utilities/defaultStream.hpp"
  #include "utilities/hashtable.inline.hpp"
 +#include "gc/shared/softRefPolicy.hpp"
@@ -85,10 +85,10 @@ index f20f5305c..40c5f7be1 100644
  #include "gc/g1/g1Allocator.inline.hpp"
  #include "gc/g1/g1CollectedHeap.hpp"
 diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
-index 6ebf9513b..543fff64b 100644
+index 914b63bea..a87863d93 100644
 --- a/src/hotspot/share/oops/constantPool.cpp
 +++ b/src/hotspot/share/oops/constantPool.cpp
-@@ -400,8 +400,12 @@ void ConstantPool::remove_unshareable_info() {
+@@ -405,8 +405,12 @@ void ConstantPool::remove_unshareable_info() {
  }
  
  int ConstantPool::cp_to_object_index(int cp_index) {

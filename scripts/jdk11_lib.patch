@@ -1,8 +1,8 @@
 diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
-index a4b67f09f..15f6f94db 100644
+index 2bcff9c7b..c8d470c0c 100644
 --- a/make/hotspot/lib/CompileJvm.gmk
 +++ b/make/hotspot/lib/CompileJvm.gmk
-@@ -129,6 +129,11 @@ ifeq ($(OPENJDK_TARGET_OS)-$(OPENJDK_TARGET_CPU), solaris-sparcv9)
+@@ -131,6 +131,11 @@ ifeq ($(OPENJDK_TARGET_OS)-$(OPENJDK_TARGET_CPU), solaris-sparcv9)
    endif
  endif
  
@@ -15,7 +15,7 @@ index a4b67f09f..15f6f94db 100644
    ifeq ($(OPENJDK_TARGET_CPU_BITS), 64)
      RC_DESC := 64-Bit$(SPACE)
 diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
-index 2cccc9767..35a62ca1b 100644
+index c4ed288f1..306a39068 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
 +++ b/src/hotspot/os/linux/os_linux.cpp
 @@ -408,10 +408,10 @@ void os::init_system_properties_values() {
