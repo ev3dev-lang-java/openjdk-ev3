@@ -342,9 +342,9 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
     fi
   else
     # same for both stretch & buster
-    HOSTJDK="$BUILDDIR/jdk-14.0.1+7"
-    HOSTJDK_FILE="$BUILDDIR/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
-    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.1%2B7/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
+    HOSTJDK="$BUILDDIR/jdk-15.0.1+9"
+    HOSTJDK_FILE="$BUILDDIR/OpenJDK15U-jdk_x64_linux_hotspot_15.0.1_9.tar.gz"
+    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-15.0.1%2B9/OpenJDK15U-jdk_x64_linux_hotspot_15.0.1_9.tar.gz"
   fi
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
