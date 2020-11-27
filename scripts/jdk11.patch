@@ -14,7 +14,7 @@ index dbbeaf11c..985b06cbd 100644
  ])
  
 diff --git a/make/autoconf/flags.m4 b/make/autoconf/flags.m4
-index 1ffc43726..159a329b8 100644
+index 0d2141daf..ff64434db 100644
 --- a/make/autoconf/flags.m4
 +++ b/make/autoconf/flags.m4
 @@ -34,7 +34,7 @@ m4_include([flags-other.m4])
@@ -37,7 +37,7 @@ index 1ffc43726..159a329b8 100644
        ARM_FLOAT_TYPE=vfp-sflt
        ARM_ARCH_TYPE_FLAGS='-march=armv5t -marm'
 diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
-index 53d6d17de..00abcbaf7 100644
+index e05653b17..ac9f39c9e 100644
 --- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
 +++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
 @@ -498,7 +498,7 @@ class Assembler : public AbstractAssembler  {
@@ -50,10 +50,10 @@ index 53d6d17de..00abcbaf7 100644
        if(preserve_tmp) {
          reg = Rtemp;
 diff --git a/src/hotspot/cpu/arm/vm_version_arm_32.cpp b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-index df0fb2ecf..f15dabd45 100644
+index 7d3f369eb..a613e52c1 100644
 --- a/src/hotspot/cpu/arm/vm_version_arm_32.cpp
 +++ b/src/hotspot/cpu/arm/vm_version_arm_32.cpp
-@@ -303,6 +303,15 @@ void VM_Version::initialize() {
+@@ -305,6 +305,15 @@ void VM_Version::initialize() {
      FLAG_SET_DEFAULT(UseUnalignedAccesses, false);
    }
  
