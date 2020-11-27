@@ -323,12 +323,13 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
     VERSION_SUFFIX="ev3-loom-experimental"
     JAVA_REPO="https://github.com/openjdk/loom.git"
     JAVA_BRANCH="fibers"
+    PATCHVER="loom"
   else
     VERSION_POLICY="latest_tag"
     JAVA_REPO="https://github.com/openjdk/jdk.git"
+    PATCHVER="jdk15"
   fi
   JAVA_SCM="git"
-  PATCHVER="jdk15"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
     HOSTJDK="$BUILDDIR/jdk-ev3"
