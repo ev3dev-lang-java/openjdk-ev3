@@ -1,0 +1,20 @@
+diff --git a/src/hotspot/cpu/arm/assembler_arm_32.hpp b/src/hotspot/cpu/arm/assembler_arm_32.hpp
+index dd04ad1ab..d43e29e5a 100644
+--- a/src/hotspot/cpu/arm/assembler_arm_32.hpp
++++ b/src/hotspot/cpu/arm/assembler_arm_32.hpp
+@@ -1248,10 +1248,11 @@ extern int  __aeabi_dcmpgt(double, double);
+ 
+ // Imported code from glibc soft-fp bundle for
+ // calculation accuracy improvement. See CR 6757269.
+-extern double __aeabi_fadd_glibc(float, float);
+-extern double __aeabi_fsub_glibc(float, float);
+-extern double __aeabi_dadd_glibc(double, double);
+-extern double __aeabi_dsub_glibc(double, double);
++#define __aeabi_fadd_glibc __aeabi_fadd
++#define __aeabi_fsub_glibc __aeabi_fsub
++#define __aeabi_dadd_glibc __aeabi_dadd
++#define __aeabi_dsub_glibc __aeabi_dsub
++
+ };
+ #endif // __SOFTFP__
+ 

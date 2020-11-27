@@ -323,12 +323,13 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
     VERSION_SUFFIX="ev3-loom-experimental"
     JAVA_REPO="https://github.com/openjdk/loom.git"
     JAVA_BRANCH="fibers"
+    PATCHVER="loom"
   else
     VERSION_POLICY="latest_tag"
     JAVA_REPO="https://github.com/openjdk/jdk.git"
+    PATCHVER="jdk15"
   fi
   JAVA_SCM="git"
-  PATCHVER="jdk15"
   AUTOGEN_STYLE="v2"
   if [ "$BUILDER_TYPE" = "native" ]; then
     HOSTJDK="$BUILDDIR/jdk-ev3"
@@ -342,9 +343,9 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
     fi
   else
     # same for both stretch & buster
-    HOSTJDK="$BUILDDIR/jdk-14.0.1+7"
-    HOSTJDK_FILE="$BUILDDIR/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
-    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.1%2B7/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
+    HOSTJDK="$BUILDDIR/jdk-15.0.1+9"
+    HOSTJDK_FILE="$BUILDDIR/OpenJDK15U-jdk_x64_linux_hotspot_15.0.1_9.tar.gz"
+    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-15.0.1%2B9/OpenJDK15U-jdk_x64_linux_hotspot_15.0.1_9.tar.gz"
   fi
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
