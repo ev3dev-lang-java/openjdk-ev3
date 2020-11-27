@@ -1,8 +1,8 @@
 diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
-index 20d7f53d3..4f6130b62 100644
+index 57a97b5c2..448156667 100644
 --- a/src/hotspot/share/memory/metaspaceShared.cpp
 +++ b/src/hotspot/share/memory/metaspaceShared.cpp
-@@ -1221,7 +1221,7 @@ public:
+@@ -1311,7 +1311,7 @@ public:
      address obj = ref->obj();
      int bytes = ref->size() * BytesPerWord;
      char* p;
@@ -11,7 +11,7 @@ index 20d7f53d3..4f6130b62 100644
      char* oldtop;
      char* newtop;
  
-@@ -1239,7 +1239,7 @@ public:
+@@ -1329,7 +1329,7 @@ public:
          Klass* klass = (Klass*)obj;
          if (klass->is_instance_klass()) {
            SystemDictionaryShared::validate_before_archiving(InstanceKlass::cast(klass));
@@ -21,10 +21,10 @@ index 20d7f53d3..4f6130b62 100644
        }
        p = _rw_region.allocate(bytes, alignment);
 diff --git a/src/hotspot/share/memory/metaspaceShared.hpp b/src/hotspot/share/memory/metaspaceShared.hpp
-index 4a4ee709f..57af38f19 100644
+index 326522c4a..4c5e54b4d 100644
 --- a/src/hotspot/share/memory/metaspaceShared.hpp
 +++ b/src/hotspot/share/memory/metaspaceShared.hpp
-@@ -70,7 +70,7 @@ public:
+@@ -71,7 +71,7 @@ public:
    DumpRegion(const char* name) : _name(name), _base(NULL), _top(NULL), _end(NULL), _is_packed(false) {}
  
    char* expand_top_to(char* newtop);
