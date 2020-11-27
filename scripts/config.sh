@@ -289,6 +289,33 @@ elif [ "$JDKVER" == "14" ]; then
   HOTSPOT_ABI=arm-sflt
   JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
 
+# OpenJDK 15
+elif [ "$JDKVER" == "15" ]; then
+  VERSION_POLICY="latest_general_availability"
+  JAVA_REPO="https://github.com/openjdk/jdk15u.git"
+  JAVA_SCM="git"
+  PATCHVER="jdk15"
+  AUTOGEN_STYLE="v2"
+  if [ "$BUILDER_TYPE" = "native" ]; then
+    HOSTJDK="$BUILDDIR/jdk-ev3"
+    HOSTJDK_RENAME_FROM="$BUILDDIR/jdk"
+    HOSTJDK_FILE="$BUILDDIR/jdk-ev3.tar.gz"
+    # stretch and buster have different versions
+    if [ "$BUILDER_DISTRO" = "stretch" ]; then
+      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/stretch-14/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+    else
+      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/buster-14/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+    fi
+  else
+    # same for both stretch & buster
+    HOSTJDK="$BUILDDIR/jdk-14.0.1+7"
+    HOSTJDK_FILE="$BUILDDIR/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
+    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.1%2B7/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
+  fi
+  IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
+  HOTSPOT_ABI=arm-sflt
+  JNI_PATH_FLAGS="--with-jni-libpath=/usr/lib/$DEB_HOST_MULTIARCH/jni:/lib/$DEB_HOST_MULTIARCH:/usr/lib/$DEB_HOST_MULTIARCH:/usr/lib/jni:/lib:/usr/lib"
+
 # OpenJDK Loom & Master+dev
 elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
   if [ "$JDKVER" == "loom" ]; then
@@ -333,6 +360,7 @@ else
   echo "JDKVER=12" >&2
   echo "JDKVER=13" >&2
   echo "JDKVER=14" >&2
+  echo "JDKVER=15" >&2
   echo "JDKVER=loom" >&2
   echo "JDKVER=tip" >&2
   exit 1

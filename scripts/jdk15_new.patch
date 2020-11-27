@@ -1,8 +1,8 @@
 diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
-index 0e4f4c283..647f41158 100644
+index 43653c115..4c5f960a8 100644
 --- a/make/autoconf/hotspot.m4
 +++ b/make/autoconf/hotspot.m4
-@@ -172,6 +172,11 @@ AC_DEFUN_ONCE([HOTSPOT_SETUP_MISC],
+@@ -138,6 +138,11 @@ AC_DEFUN_ONCE([HOTSPOT_SETUP_MISC],
      HOTSPOT_TARGET_CPU_DEFINE="ARM32"
    fi
  
@@ -13,13 +13,13 @@ index 0e4f4c283..647f41158 100644
 +
    # --with-cpu-port is no longer supported
    UTIL_DEPRECATED_ARG_WITH(with-cpu-port)
- ])
+ 
 diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
-index 5bc8df595..20d7f53d3 100644
+index 28742febe..57a97b5c2 100644
 --- a/src/hotspot/share/memory/metaspaceShared.cpp
 +++ b/src/hotspot/share/memory/metaspaceShared.cpp
-@@ -71,6 +71,7 @@
- #include "utilities/bitMap.inline.hpp"
+@@ -72,6 +72,7 @@
+ #include "utilities/ostream.hpp"
  #include "utilities/defaultStream.hpp"
  #include "utilities/hashtable.inline.hpp"
 +#include "gc/shared/softRefPolicy.hpp"
@@ -27,10 +27,10 @@ index 5bc8df595..20d7f53d3 100644
  #include "gc/g1/g1CollectedHeap.hpp"
  #endif
 diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
-index b325f9f16..da47aff73 100644
+index d27bf3474..35bc24c7b 100644
 --- a/src/hotspot/share/oops/constantPool.cpp
 +++ b/src/hotspot/share/oops/constantPool.cpp
-@@ -429,8 +429,12 @@ void ConstantPool::remove_unshareable_info() {
+@@ -437,8 +437,12 @@ void ConstantPool::remove_unshareable_info() {
  }
  
  int ConstantPool::cp_to_object_index(int cp_index) {
