@@ -1,5 +1,5 @@
 diff --git a/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp b/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp
-index 02941d167..5823ca71c 100644
+index 84053c343..68388215e 100644
 --- a/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp
 +++ b/src/hotspot/share/jfr/recorder/repository/jfrChunkWriter.cpp
 @@ -84,17 +84,17 @@ size_t JfrChunkWriter::close(int64_t metadata_offset) {
@@ -9,8 +9,8 @@ index 02941d167..5823ca71c 100644
 -  this->write_be_at_offset(size_written(), CHUNK_SIZE_OFFSET);
 +  this->write_be_at_offset((u8)size_written(), CHUNK_SIZE_OFFSET);
    // initial checkpoint event offset
--  this->write_be_at_offset(_chunkstate->previous_checkpoint_offset(), CHUNK_SIZE_OFFSET + (1 * FILEHEADER_SLOT_SIZE));
-+  this->write_be_at_offset((u8)_chunkstate->previous_checkpoint_offset(), CHUNK_SIZE_OFFSET + (1 * FILEHEADER_SLOT_SIZE));
+-  this->write_be_at_offset(_chunkstate->last_checkpoint_offset(), CHUNK_SIZE_OFFSET + (1 * FILEHEADER_SLOT_SIZE));
++  this->write_be_at_offset((u8)_chunkstate->last_checkpoint_offset(), CHUNK_SIZE_OFFSET + (1 * FILEHEADER_SLOT_SIZE));
    // metadata event offset
 -  this->write_be_at_offset(metadata_offset, CHUNK_SIZE_OFFSET + (2 * FILEHEADER_SLOT_SIZE));
 +  this->write_be_at_offset((u8)metadata_offset, CHUNK_SIZE_OFFSET + (2 * FILEHEADER_SLOT_SIZE));
