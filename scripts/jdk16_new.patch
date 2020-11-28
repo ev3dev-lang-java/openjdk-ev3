@@ -1,0 +1,46 @@
+diff --git a/make/autoconf/hotspot.m4 b/make/autoconf/hotspot.m4
+index 43653c115..4c5f960a8 100644
+--- a/make/autoconf/hotspot.m4
++++ b/make/autoconf/hotspot.m4
+@@ -138,6 +138,11 @@ AC_DEFUN_ONCE([HOTSPOT_SETUP_MISC],
+     HOTSPOT_TARGET_CPU_DEFINE="ARM32"
+   fi
+ 
++  if test "x$OPENJDK_BUILD_CPU" = xarm; then
++    HOTSPOT_BUILD_CPU=arm_32
++    HOTSPOT_BUILD_CPU_DEFINE="ARM32"
++  fi
++
+   # --with-cpu-port is no longer supported
+   UTIL_DEPRECATED_ARG_WITH(with-cpu-port)
+ 
+diff --git a/src/hotspot/share/memory/metaspaceShared.cpp b/src/hotspot/share/memory/metaspaceShared.cpp
+index 7adecd141..e895e21d1 100644
+--- a/src/hotspot/share/memory/metaspaceShared.cpp
++++ b/src/hotspot/share/memory/metaspaceShared.cpp
+@@ -71,6 +71,7 @@
+ #include "utilities/ostream.hpp"
+ #include "utilities/defaultStream.hpp"
+ #include "utilities/hashtable.inline.hpp"
++#include "gc/shared/softRefPolicy.hpp"
+ #if INCLUDE_G1GC
+ #include "gc/g1/g1CollectedHeap.inline.hpp"
+ #endif
+diff --git a/src/hotspot/share/oops/constantPool.cpp b/src/hotspot/share/oops/constantPool.cpp
+index 1761efa7a..cd0602cd0 100644
+--- a/src/hotspot/share/oops/constantPool.cpp
++++ b/src/hotspot/share/oops/constantPool.cpp
+@@ -443,8 +443,12 @@ void ConstantPool::remove_unshareable_info() {
+ }
+ 
+ int ConstantPool::cp_to_object_index(int cp_index) {
++  Array<u2> *map = reference_map();
++  if (map == 0)
++    return _no_index_sentinel;
++
+   // this is harder don't do this so much.
+-  int i = reference_map()->find(cp_index);
++  int i = map->find(cp_index);
+   // We might not find the index for jsr292 call.
+   return (i < 0) ? _no_index_sentinel : i;
+ }

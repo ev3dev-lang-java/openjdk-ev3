@@ -327,7 +327,7 @@ elif [ "$JDKVER" == "loom" ] || [ "$JDKVER" == "tip" ]; then
   else
     VERSION_POLICY="latest_tag"
     JAVA_REPO="https://github.com/openjdk/jdk.git"
-    PATCHVER="jdk15"
+    PATCHVER="jdk16"
   fi
   JAVA_SCM="git"
   AUTOGEN_STYLE="v2"
