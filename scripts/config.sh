@@ -302,15 +302,15 @@ elif [ "$JDKVER" == "15" ]; then
     HOSTJDK_FILE="$BUILDDIR/jdk-ev3.tar.gz"
     # stretch and buster have different versions
     if [ "$BUILDER_DISTRO" = "stretch" ]; then
-      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/stretch-14/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/stretch-15/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
     else
-      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/buster-14/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
+      HOSTJDK_URL="https://ci.adoptopenjdk.net/job/eljbuild/job/buster-15/lastSuccessfulBuild/artifact/build/jdk-ev3.tar.gz"
     fi
   else
     # same for both stretch & buster
-    HOSTJDK="$BUILDDIR/jdk-14.0.1+7"
-    HOSTJDK_FILE="$BUILDDIR/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
-    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk14-binaries/releases/download/jdk-14.0.1%2B7/OpenJDK14U-jdk_x64_linux_hotspot_14.0.1_7.tar.gz"
+    HOSTJDK="$BUILDDIR/jdk-15.0.1+9"
+    HOSTJDK_FILE="$BUILDDIR/OpenJDK15U-jdk_x64_linux_hotspot_15.0.1_9.tar.gz"
+    HOSTJDK_URL="https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-15.0.1%2B9/OpenJDK15U-jdk_x64_linux_hotspot_15.0.1_9.tar.gz"
   fi
   IMAGEDIR="$JDKDIR/build/linux-arm-${JDKVM}-${HOTSPOT_DEBUG}/images"
   HOTSPOT_ABI=arm-sflt
