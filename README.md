@@ -54,7 +54,7 @@ Builds for older boards should work on newer boards, the performance might just 
 
 ## Overview & documentation
 
-See [Docs](docs/openjdk-ev3-maintainer-manual.docx)
+See [Docs](docs/openjdk-ev3-maintainer-manual.pdf)
 
 
 ## Components
