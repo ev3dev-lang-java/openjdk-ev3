@@ -15,6 +15,7 @@ Builds for older boards should work on newer boards, the performance might just 
 | OpenJDK 12        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][5]][6]   | [![-> jenkins][7]][8]   |
 | OpenJDK 13        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][9]][10]  | [![-> jenkins][11]][12] |
 | OpenJDK 14        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][17]][18] | [![-> jenkins][19]][20] |
+| OpenJDK 15        | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][21]][22] | [![-> jenkins][23]][24] |
 | OpenJDK tip (dev) | EV3      | ARM→ARM | C1 JIT | [![-> jenkins][13]][14] | [![-> jenkins][15]][16] |
 
 [1]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-11/badge/icon
@@ -42,12 +43,18 @@ Builds for older boards should work on newer boards, the performance might just 
 [19]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-14/badge/icon
 [20]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-14/
 
+[21]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-15/badge/icon
+[22]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/stretch-15/
+[23]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-15/badge/icon
+[24]: https://ci.adoptopenjdk.net/view/ev3dev/job/eljbuild/job/buster-15/
+
+
 [archive]: https://github.com/ev3dev-lang-java/openjdk-ev3-archive
 
 
 ## Overview & documentation
 
-See https://docs.google.com/document/d/1rsBDU68_ETXm9b_Lb4b6oPVBbNwT9f4xEua2w3-Pm6A/edit?usp=sharing
+See [Docs](docs/openjdk-ev3-maintainer-manual.docx)
 
 
 ## Components
@@ -71,8 +78,8 @@ To see which modules are included in our case, take a look at the `JRI_MODULES` 
 # define parameters
 TARGET_WORKSPACE="$(pwd)/build" # 10 GB of free space should be sufficient, probably less
 TARGET_DEBIAN_VERSION="stretch" # stretch or buster
-TARGET_OPENJDK_VERSION="11" # 9, 10 - retired, may not be working
-                            # 11, 12, 13, 14 - most likely working
+TARGET_OPENJDK_VERSION="11" # 9, 10, 12, 13, 14 - retired, may not be working
+                            # 11, 15 - most likely working
                             # loom or tip - experimental, may be broken
 
 # clone repository
